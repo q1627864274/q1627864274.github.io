@@ -1,4 +1,4 @@
-   <transition name="fade-transform" mode="out-in">
+···   <transition name="fade-transform" mode="out-in">
          <div :key="page" style="height: 100%;">
             <component :is="componentToRender" :key="page"></component>
          </div>
@@ -17,5 +17,5 @@
   opacity: 0;
   transform: translateX(30px);
 }
-组件变化时，发现消失的时候生效，进入的时候没有生效
+组件变化时，发现消失的时候生效，进入的时候没有生效···
     
