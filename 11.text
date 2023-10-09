@@ -1,1 +1,1 @@
-类型别名可以操作任意类型，而接口只能操作对象类型。
+vue3+vite开发electron过程中，const { ipcRenderer } = require('electron'); 将项目跑在浏览器中的时候发现提示报错Uncaught ReferenceError: require is not defined，这个怎么解决
