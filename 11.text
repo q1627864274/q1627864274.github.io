@@ -1,1 +1,5 @@
-vue3+vite开发electron过程中，const { ipcRenderer } = require('electron'); 将项目跑在浏览器中的时候发现提示报错Uncaught ReferenceError: require is not defined，这个怎么解决
+vue3+vite开发electron过程中，
+在开发过程中项目运行在浏览器中时报错
+Uncaught ReferenceError: require is not defined，
+单在electron开发窗口运行正常，
+怎样修改，让其在浏览器环境中也能正常运行？
