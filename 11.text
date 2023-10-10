@@ -6,10 +6,9 @@
 
          return () => this.$http.post(linearFittingUrl, {});
       });
-      console.log(reqArr);
       Promise.all(reqArr.map((aa: any) => aa())).then((res: any) => {
 
       })
  
       }).catch(() => {});
-上述代码发现请求会多发一次，怎么优化只一次？
+上述代码发现在reqArr.map((aa: any) => aa())会调用执行一次，Promise.all还会执行一次，现在只想一次，怎么优化？
