@@ -1,1 +1,15 @@
-vite中使用require报错
+   let singleAttr = ['calibrationRate', 'calibrationRange'];
+      let linearAttr = ['calibrationRate', 'calibrationDelta', 'calibrationRange'];
+      let targetAttr = this.selectValue === 1 ? singleAttr : linearAttr;
+      let reqArr = targetAttr.map((req: any) => {
+         let linearFittingUrl = `${GlobalConfig.baseUrl}/rest/hal/v1/node-path/${this.pmX}.rf.rfgh/attr/${req}`;
+
+         return () => this.$http.post(linearFittingUrl, {});
+      });
+      console.log(reqArr);
+      Promise.all(reqArr.map((aa: any) => aa())).then((res: any) => {
+
+      })
+ 
+      }).catch(() => {});
+上述代码发现请求会多发一次，怎么优化只一次？
