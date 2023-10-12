@@ -1,7 +1,7 @@
-   let num = parseInt('0x21', 16) - 1;
-      while (num++ <= parseInt('0x3F', 16) - 1) {
-        this.settinglListOption[0].selectOptions.push({
-          label: num.toString(16),
-          value: num.toString(16),
-        });
-      }
+ this.setSettingData.data = [];
+      if (val.selectName === 'GasIdentity') {
+        let binSelect = Number(val.select).toString(16);
+        while (binSelect.length < 4) {
+          binSelect = `0${binSelect}`;
+        }
+上述代码含义
