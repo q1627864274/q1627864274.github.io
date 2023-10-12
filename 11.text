@@ -1,14 +1,121 @@
-   let singleAttr = ['calibrationRate', 'calibrationRange'];
-      let linearAttr = ['calibrationRate', 'calibrationDelta', 'calibrationRange'];
-      let targetAttr = this.selectValue === 1 ? singleAttr : linearAttr;
-      let reqArr = targetAttr.map((req: any) => {
-         let linearFittingUrl = `${GlobalConfig.baseUrl}/rest/hal/v1/node-path/${this.pmX}.rf.rfgh/attr/${req}`;
+export class MfcHeader {
+  // 协议版本
+  protocolVersion = '00000001'
 
-         return () => this.$http.post(linearFittingUrl, {});
-      });
-      Promise.all(reqArr.map((aa: any) => aa())).then((res: any) => {
+  // 帧长度，低字节
+  packetLengthLow = '00000010'
 
-      })
- 
-      }).catch(() => {});
-上述代码发现在reqArr.map((aa: any) => aa())会调用执行一次，Promise.all还会执行一次，现在只想一次，怎么优化？
+  // 帧长度，高字节
+  packetLengthHigh = '00000000'
+
+  // 大命令字
+  commandId = '00000000'
+
+  // 小命令字
+  subCommandId = '00000000'
+
+  // 完成码
+  compCode = '0'
+
+  // 数据域1~DataN（字节长度取值0~23）
+  data = []
+
+  // 校验和（Packet Length =》 Data）
+  checksum = '00000000'
+
+  constructor(commandId, subCommandId, data) {
+    this.commandId = commandId;
+    this.subCommandId = subCommandId;
+    this.data = data;
+
+    // 帧长度(cmd -> data)
+    let binLength = this.getPacketLength();
+    this.packetLengthHigh = this.getByte(binLength, 0);
+    this.packetLengthLow = this.getByte(binLength, 1);
+    this.checksum = this.getCheckSum();
+  }
+
+  /**
+   * 获取校验和
+   *
+   * @returns {校验和}
+   */
+  getCheckSum() {
+    let length = parseInt(this.packetLengthLow, 2) + parseInt(this.packetLengthHigh, 2) +
+    parseInt(this.commandId, 2) + parseInt(this.subCommandId, 2) + parseInt(this.compCode, 2);
+
+    // 数据域
+    if (this.data && this.data.length !== 0) {
+      this.data.forEach(byte => length = length + parseInt(byte, 16));
+    }
+    let sum = this.toBinaryStr(length);
+    return sum.substr(-8);
+  }
+
+  /**
+   * 获取帧长度
+   *
+   * @returns {帧长度}
+   */
+  getPacketLength() {
+    // 帧长度(cmd -> data)，两位cmd
+    let length = 2;
+
+    // 返回码
+    if (this.compCode !== '0') {
+      length = length + 1;
+    }
+
+    // 数据域
+    if (this.data && this.data.length !== 0) {
+      length = length + parseInt(this.data.length);
+
+      // this.data.forEach(byte => length = length + parseInt(byte));
+    }
+
+    // 转换为2进制补齐
+    let hexLength = parseInt(length).toString(2);
+    while (hexLength.length < 16) {
+      hexLength = `0${hexLength}`;
+    }
+    return hexLength;
+  }
+
+  /**
+   * 获取str的二进制数据
+   * @param str 原始数据
+   * @returns {二进制转换后的数据}
+   */
+  toBinaryStr(str) {
+    let val = '';
+    if (str) {
+      val = parseInt(str).toString(2);
+      while (val.length < 8) {
+        val = `0${val}`;
+      }
+    }
+    return val;
+  }
+
+  /**
+   * 提取指定字节数据
+   *
+   * @param binaryStr 原始二进制数据
+   * @param idx 获取字节索引，0起始
+   * @returns {字节流}
+   */
+  getByte(binaryStr, idx) {
+    return binaryStr.substr(idx * 8, 8);
+  }
+
+  /**
+   * 提取指定字节数据
+   *
+   * @param binaryStr 原始十六进制数据
+   * @param idx 获取字节索引，0起始
+   * @returns {字节流}
+   */
+  getByte16(binaryStr, idx) {
+    return binaryStr.substr(idx * 2, 2);
+  }
+}
