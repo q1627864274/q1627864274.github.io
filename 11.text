@@ -1,1 +1,94 @@
-https://gitlab.com/springfield-ham-radio/app/ham-radio-ui/-/blob/main/src-electron/electron-preload.ts
+/*
+ * This file is used specifically for security reasons.
+ * Here you can access Nodejs stuff and inject functionality into
+ * the renderer thread (accessible there through the "window" object)
+ *
+ * WARNING!
+ * If you import anything from node_modules, then make sure that the package is specified
+ * in package.json > dependencies and NOT in devDependencies
+ *
+ * Example (injects window.myAPI.doAThing() into renderer thread):
+ *
+ *   import { contextBridge } from 'electron'
+ *
+ *   contextBridge.exposeInMainWorld('myAPI', {
+ *     doAThing: () => {}
+ *   })
+ *
+ * WARNING!
+ * If accessing Node functionality (like importing @electron/remote) then in your
+ * electron-main.ts you will need to set the following when you instantiate BrowserWindow:
+ *
+ * mainWindow = new BrowserWindow({
+ *   // ...
+ *   webPreferences: {
+ *     // ...
+ *     sandbox: false // <-- to be able to import @electron/remote in preload script
+ *   }
+ * }
+ */
+
+import { contextBridge, ipcRenderer } from 'electron';
+import { SerialPort } from 'serialport';
+import { SerialPortManager } from '../src/common/serialport/serialport.js';
+
+contextBridge.exposeInMainWorld('serialport', {
+  list: () => {
+    return new Promise<string[]>(async (resolve) => {
+      const ports = await SerialPort.list();
+      const paths = ports.map((port) => port.path);
+      resolve(paths);
+    });
+  },
+
+  reset: (path: string) => {
+    return new Promise<void>((resolve, reject) => {
+      const port = new SerialPort({ path, baudRate: 9600, autoOpen: false });
+      port.open((error) => {
+        port.close(() => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve();
+          }
+        });
+      });
+    });
+  },
+});
+
+contextBridge.exposeInMainWorld('db', {
+   mm: () => {
+     return new SerialPortManager()
+   }
+});
+
+contextBridge.exposeInMainWorld('modules', {
+  getManufacturers: () => {
+    ipcRenderer.send('modules:getManufacturers');
+  },
+
+  getModels: (moduleId: string) => {
+    ipcRenderer.send('modules:getModels', moduleId);
+  },
+});
+
+contextBridge.exposeInMainWorld('radio', {
+  importFromRadio: (path: string) => {
+    ipcRenderer.send('radio:read', path);
+  },
+
+  cancelImport: () => {
+    ipcRenderer.send('radio:cancel');
+  },
+});
+
+contextBridge.exposeInMainWorld('electronAPI', {
+  onManufacturers: (callback) => ipcRenderer.on('manufacturers', callback),
+  onModels: (callback) => ipcRenderer.on('models', callback),
+  onRenderRadioProgram: (callback) => ipcRenderer.on('renderRadioProgram', callback),
+  onRadioProgressIndicator: (callback) => ipcRenderer.on('radioProgressIndicator', callback),
+  onDatabaseConnection: (callback) => ipcRenderer.on('databaseConnection', callback),
+});
+
+上述代码的含义是什么？
