@@ -1,11 +1,1 @@
- this.setSettingData.data = [];
-      if (val.selectName === 'GasIdentity') {
-        console.log('val.select', val.select)
-        let binSelect = Number(val.select).toString(16);
-        while (binSelect.length < 4) {
-          binSelect = `0${binSelect}`;
-        }
-        console.log('binSelect', binSelect)
-        this.setSettingData.data.push(binSelect.substr(2, 2));
-        this.setSettingData.data.push(binSelect.substr(0, 2));
-上述代码含义
+https://github.com/serialport/node-serialport
