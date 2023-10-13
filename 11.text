@@ -1,1 +1,2 @@
-https://github.com/serialport/node-serialport/issues/2440
+vite中使用serialport库报错，index.js:10 Uncaught TypeError: Class extends value undefined is not a constructor or null
+怎么解决？
