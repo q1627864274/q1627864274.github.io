@@ -1,3 +1,7 @@
-vue中使用keep-alive包括的组件发现，
-点击路由跳转之后，再回到该组件发现，该组件
-未缓存
+this.setGasIdentity(this.selectedDeviceInfo[0].options[parseInt(data[1].toString(16) + data[0].toString(16), 16)]);
+let writeData = {
+    commandId: '0x02',
+    subCommandId: '0xA0',
+    data: '',
+};
+上述代码中toString(16)和 subCommandId: '0xA0'中的0xA0是什么含义？
