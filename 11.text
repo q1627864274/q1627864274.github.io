@@ -1,1 +1,64 @@
-lodash库在vue3中怎么使用？
+const formProductConfig = ref([
+    {
+        type:'no',
+        label:'设备状态',
+        valueShow:'已扫描',
+    },
+    {
+        type:'input',
+        label:'Mac ID',
+        valueShow:'125',
+        valueSet:'1',
+        placeholder:'',
+    },
+    {
+        type:'select',
+        label:'安装姿态',
+        valueShow:'Vertical Inlet Up',
+        valueSet:'',
+        placeholder:'',
+        options:[
+            {label:'1', value:'2'}
+        ]
+    },
+    {
+        type:'select',
+        label:'出口压力类型',
+        valueShow:'大气环境',
+        valueSet:'',
+        placeholder:'',
+        options:[
+            {label:'1', value:'2'}
+        ]
+    }
+])
+ <div v-for="(item, index) in formProductConfig" :key="index" class="formItem">
+                    <template v-if="item.type === 'no'">
+                        <div :style="{ width: item.lableWidth }" class="formLable">{{ item.label }}</div>
+                        <div  class="formValueShow">{{ item.valueShow }}</div>
+                        <div class="formValueSet"></div>
+                    </template>
+                    <template v-if="item.type === 'input'">
+                        <div :style="{ width: item.lableWidth }" class="formLable">{{ item.label }}</div>
+                        <div  class="formValueShow">{{ item.valueShow }}</div>
+                        <div class="formValueSet">
+                            <hui-input type="number" v-model:value="item.valueSet" :placeholder="item.placeholder" />
+                        </div>
+                    </template>
+                    <template v-if="item.type === 'select'">
+                        <div :style="{ width: item.lableWidth }" class="formLable">{{ item.label }}</div>
+                        <div class="formValueShow">{{ item.valueShow }}</div>
+                        <div class="formValueSet">
+                            <hui-select v-model="item.valueSet" searchable class="selectInput">
+                                <hui-option
+                                    v-for="itemSelect in item.options" :key="itemSelect.value" :value="itemSelect.value"
+                                    :label="itemSelect.label"
+                                > </hui-option>
+                            </hui-select>
+                        </div>
+                    </template>
+                </div>
+
+
+上述代码中<hui-input type="number" v-model:value="item.valueSet" :placeholder="item.placeholder" />输入值小于0是将输出框的值重置为0
+这个怎么做？
