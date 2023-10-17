@@ -1,2 +1,41 @@
-const preload = path.join(__dirname, 'electron-preload.ts');
-发现对应的路径不对
+const formProductConfig = ref([
+    {
+        type:'no',
+        label:'设备状态',
+        valueShow:'已扫描',
+    },
+    {
+        type:'input',
+        label:'Mac ID',
+        valueShow:'125',
+        valueSet:'',
+        placeholder:'',
+    },
+    {
+        type:'select',
+        label:'安装姿态',
+        valueShow:'Vertical Inlet Up',
+        valueSet:'',
+        placeholder:'',
+        options:[
+            {label:'1', value:'2'}
+        ]
+    },
+    {
+        type:'select',
+        label:'出口压力类型',
+        valueShow:'大气环境',
+        valueSet:'',
+        placeholder:'',
+        options:[
+            {label:'1', value:'2'}
+        ]
+    }
+])
+在vue3中只想监听上述数组中，对象    {
+        type:'input',
+        label:'Mac ID',
+        valueShow:'125',
+        valueSet:'',
+        placeholder:'',
+    },中的valueSet值得变化，其他不想监听，这个怎么写？
