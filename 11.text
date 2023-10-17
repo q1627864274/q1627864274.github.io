@@ -1,7 +1,2 @@
-this.setGasIdentity(this.selectedDeviceInfo[0].options[parseInt(data[1].toString(16) + data[0].toString(16), 16)]);
-let writeData = {
-    commandId: '0x02',
-    subCommandId: '0xA0',
-    data: '',
-};
-上述代码中toString(16)和 subCommandId: '0xA0'中的0xA0是什么含义？
+parseInt(data[1].toString(16) + data[0].toString(16), 16)
+上述代码中parseInt（xx,16）这个是什么含义？
