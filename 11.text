@@ -1,2 +1,2 @@
-parseInt(data[1].toString(16) + data[0].toString(16), 16)
+data = data.map(list => parseInt(list, 16));
 上述代码中parseInt（xx,16）这个是什么含义？
