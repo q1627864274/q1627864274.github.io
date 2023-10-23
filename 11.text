@@ -1,35 +1,6 @@
-在vue3开发中
-在readExcel.js文件中
-import * as XLSX from "xlsx";
-import { ref } from "vue";
-export const readExcel = async () => {
-   let parsedData
-   try {
-      const response = await fetch("衍生编码申请汇总20230828.xlsx");
-      const blob = await response.blob();
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-         const data = e.target.result;
-         const workbook = XLSX.read(data, {
-            type: "binary"
-         });
-
-         const worksheetName = workbook.SheetNames[0];
-         const worksheet = workbook.Sheets[worksheetName];
-        
-         parsedData= XLSX.utils.sheet_to_json(worksheet);
-         console.log('parsedData' , parsedData)
-      };
-
-      reader.readAsBinaryString(blob);
-   } catch (error) {
-      console.error("Error reading the Excel file:", error);
-   }
-   return parsedData
-};
-在vue文件中使用
-import {readExcel} from '../utils/readExcel'
-console.log( '文件读取', readExcel())
-发现打印的值为文件读取 Promise {<pending>}
-我想要获取parsedData得结果，这个怎么改？
+let str = '质量流量控制器-气体质量流量控制器-热式-Ar-20 SCCM-NC-1/4"VCR-Devicenet-24V'
+或者为`质量流量控制器-气体质量流量控制器-热式-N2-10-30 SCCM-NC-IGS-Ethercat-24V`
+针对这个我要得到
+第一个就是: ['Ar', '20']
+第一个就是: ['N2', '10-30']
+使用js
