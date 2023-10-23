@@ -1,2 +1,35 @@
-在vue3中，使用xlsx库获取Excel中文件的内容，以对象的形式给我展示出来
-我点击按钮，获取相关的文档的内容并且以对象的形式给我展示出来
+在vue3开发中
+在readExcel.js文件中
+import * as XLSX from "xlsx";
+import { ref } from "vue";
+export const readExcel = async () => {
+   let parsedData
+   try {
+      const response = await fetch("衍生编码申请汇总20230828.xlsx");
+      const blob = await response.blob();
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+         const data = e.target.result;
+         const workbook = XLSX.read(data, {
+            type: "binary"
+         });
+
+         const worksheetName = workbook.SheetNames[0];
+         const worksheet = workbook.Sheets[worksheetName];
+        
+         parsedData= XLSX.utils.sheet_to_json(worksheet);
+         console.log('parsedData' , parsedData)
+      };
+
+      reader.readAsBinaryString(blob);
+   } catch (error) {
+      console.error("Error reading the Excel file:", error);
+   }
+   return parsedData
+};
+在vue文件中使用
+import {readExcel} from '../utils/readExcel'
+console.log( '文件读取', readExcel())
+发现打印的值为文件读取 Promise {<pending>}
+我想要获取parsedData得结果，这个怎么改？
