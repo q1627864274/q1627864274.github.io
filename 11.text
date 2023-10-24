@@ -1,2 +1,52 @@
-字符串去除空格和换行符
-使用js实现
+const options = ref([
+   {
+      num: 1,
+      type: '',
+      id: '13',
+      range: '100',
+      scale: 120,
+      status: '0',
+   },
+   {
+      num: 2,
+      type: '',
+      id: '2',
+      range: '50',
+      scale: 100,
+      status: '1'
+   },
+   {
+      num: 3,
+      type: '',
+      id: '3',
+      range: '80',
+      scale: 70,
+      status: '0'
+   },
+   {
+      num: 4,
+      type: '',
+      id: '',
+      range: '',
+      scale: '',
+      status: '0'
+   },
+   {
+      num: 5,
+      type: '',
+      id: '',
+      range: '',
+      scale: '',
+      status: '1'
+   },
+   {
+      num: 6,
+      type: '',
+      id: '',
+      range: '',
+      scale: '',
+      status: '0'
+   }
+])
+在vue3开发中，当options中的type发生变化，对应的
+id，也会发生修改，这个怎么实现？
