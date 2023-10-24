@@ -1,6 +1,17 @@
-let str = '质量流量控制器-气体质量流量控制器-热式-Ar-20 SCCM-NC-1/4"VCR-Devicenet-24V'
-或者为`质量流量控制器-气体质量流量控制器-热式-N2-10-30 SCCM-NC-IGS-Ethercat-24V`
-针对这个我要得到
-第一个就是: ['Ar', '20']
-第一个就是: ['N2', '10-30']
-使用js
+let gasTpyeItem = ref('')
+const getElectronicTag = () => {
+   let writeData = {
+      commandId: '0x02',
+      subCommandId: '0x18',
+      data: []
+   }
+   sendPortData(writeData, res => {
+      if (res) {
+         let { data } = res
+         gasTpyeItem.value = handleElectronicTagResult(data).Item
+
+   })
+}
+getElectronicTag(gasTpyeItem.value)
+运行上述代码，有可能getElectronicTag(gasTpyeItem.value)传入的gasTpyeItem.value为空
+怎么解决？
