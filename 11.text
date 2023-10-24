@@ -48,5 +48,11 @@ const options = ref([
       status: '0'
    }
 ])
-在vue3开发中，当options中的type发生变化，对应的
-id，也会发生修改，这个怎么实现？
+watch(options, (newOptions, oldOptions) => {
+      console.log('newOptions',newOptions)
+      console.log('oldOptions',oldOptions)
+      console.log(newOptions === oldOptions)
+}, { deep: true})
+options.value[0].type = 1
+    
+上述代码发现console.log(newOptions === oldOptions)的结果为true，这是什么情况？
