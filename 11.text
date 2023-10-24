@@ -1,17 +1,2 @@
-let gasTpyeItem = ref('')
-const getElectronicTag = () => {
-   let writeData = {
-      commandId: '0x02',
-      subCommandId: '0x18',
-      data: []
-   }
-   sendPortData(writeData, res => {
-      if (res) {
-         let { data } = res
-         gasTpyeItem.value = handleElectronicTagResult(data).Item
-
-   })
-}
-getElectronicTag(gasTpyeItem.value)
-运行上述代码，有可能getElectronicTag(gasTpyeItem.value)传入的gasTpyeItem.value为空
-怎么解决？
+字符串去除空格和换行符
+使用js实现
