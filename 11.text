@@ -1,14 +1,238 @@
-      let arr = [
-            "04",
-            "00",
-            "01",
-            "02",
-            "03",
-            "04",
-            "05",
-            "06",
-            "07",
-            "08"
-         ]
-将数组转化成["0004", "0201", "0403", "0605", "0807"]
-使用js
+  let arr =  [
+    {
+        "Code": 1,
+        "Symbol": "He"
+    },
+    {
+        "Code": 2,
+        "Symbol": "Ne"
+    },
+    {
+        "Code": 3,
+        "Symbol": "Rn"
+    },
+    {
+        "Code": 4,
+        "Symbol": "Ar"
+    },
+    {
+        "Code": 5,
+        "Symbol": "Kr"
+    },
+    {
+        "Code": 6,
+        "Symbol": "Xe"
+    },
+    {
+        "Code": 7,
+        "Symbol": "H2"
+    },
+    {
+        "Code": 8,
+        "Symbol": "Air"
+    },
+    {
+        "Code": 9,
+        "Symbol": "CO"
+    },
+    {
+        "Code": 10,
+        "Symbol": "HBr"
+    },
+    {
+        "Code": 11,
+        "Symbol": "HCl"
+    },
+    {
+        "Code": 12,
+        "Symbol": "HF"
+    },
+    {
+        "Code": 13,
+        "Symbol": "N2"
+    },
+    {
+        "Code": 14,
+        "Symbol": "D2"
+    },
+    {
+        "Code": 15,
+        "Symbol": "O2"
+    },
+    {
+        "Code": 16,
+        "Symbol": "NO"
+    },
+    {
+        "Code": 17,
+        "Symbol": "HI"
+    },
+    {
+        "Code": 18,
+        "Symbol": "F2"
+    },
+    {
+        "Code": 19,
+        "Symbol": "Cl2"
+    },
+    {
+        "Code": 20,
+        "Symbol": "H2O"
+    },
+    {
+        "Code": 21,
+        "Symbol": "Br2"
+    },
+    {
+        "Code": 22,
+        "Symbol": "H2S"
+    },
+    {
+        "Code": 23,
+        "Symbol": "H2Se"
+    },
+    {
+        "Code": 24,
+        "Symbol": "HCN"
+    },
+    {
+        "Code": 25,
+        "Symbol": "CO2"
+    },
+    {
+        "Code": 26,
+        "Symbol": "NO2"
+    },
+    {
+        "Code": 27,
+        "Symbol": "N2O"
+    },
+    {
+        "Code": 28,
+        "Symbol": "CH4"
+    },
+    {
+        "Code": 29,
+        "Symbol": "NH3"
+    },
+    {
+        "Code": 30,
+        "Symbol": "O3"
+    },
+    {
+        "Code": 31,
+        "Symbol": "PH3"
+    },
+    {
+        "Code": 32,
+        "Symbol": "SO2"
+    },
+    {
+        "Code": 33,
+        "Symbol": "CH3F"
+    },
+    {
+        "Code": 34,
+        "Symbol": "COS"
+    },
+    {
+        "Code": 35,
+        "Symbol": "AsH3"
+    },
+    {
+        "Code": 36,
+        "Symbol": "CH3Cl"
+    },
+    {
+        "Code": 37,
+        "Symbol": "ClCN"
+    },
+    {
+        "Code": 38,
+        "Symbol": "C2H4"
+    },
+    {
+        "Code": 39,
+        "Symbol": "SiH4"
+    },
+    {
+        "Code": 40,
+        "Symbol": "CS2"
+    },
+    {
+        "Code": 41,
+        "Symbol": "OF2"
+    },
+    {
+        "Code": 42,
+        "Symbol": "C2H2"
+    },
+    {
+        "Code": 43,
+        "Symbol": "GeH4"
+    },
+    {
+        "Code": 44,
+        "Symbol": "CH3Br"
+    },
+    {
+        "Code": 45,
+        "Symbol": "C2H4O"
+    },
+    {
+        "Code": 46,
+        "Symbol": "CF2O"
+    },
+    {
+        "Code": 47,
+        "Symbol": "CH4S"
+    },
+    {
+        "Code": 48,
+        "Symbol": "BF3"
+    }]
+    let arr2 = ['4', '201', '403', '605', '807']
+    let arr3 = [
+   {
+      num: 1,
+      type: '',
+      id: '',
+      range: '',
+      scale: '',
+      status: '0',
+   },
+   {
+      num: 2,
+      type: '',
+      id: '',
+      range: '',
+      scale: '',
+      status: '1'
+   },
+   {
+      num: 3,
+      type: '',
+      id: '',
+      range: '',
+      scale: '',
+      status: '0'
+   },
+   {
+      num: 4,
+      type: '',
+      id: '',
+      range: '',
+      scale: '',
+      status: '0'
+   },
+   {
+      num: 5,
+      type: '',
+      id: '',
+      range: '',
+      scale: '',
+      status: '1'
+   }
+]
+    arr2中第一个为4时，在arr中找到4对应的symbol值，并将arr3对应的type值修改为找到的symbol
+    以此类推，完成转化
