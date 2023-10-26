@@ -1,10 +1,1 @@
-const handleGasName = (data) => {
-   let match = data.match(/-(\w+)-(\d+(-\d+)?\s?(SLM|SCCM))-/);
-   if (match) {
-      return [match[1], match[2].replace(/\s?(SLM|SCCM)/, '')];
-   }
-   return [];
-}
-handleGasName(质量流量控制器-气体质量流量控制器-热式-N2-30-40 SLM-NC-IGS-Ethercat-24V)
-能提到['N2', '30-40']
-对上述代码扩展，能提取到['N2', '30-40', 'SLM']如果是SLM则是SLM，如果是SCCM则是['N2', '30-40', 'SCCM']
+js中，怎么样十进制转化为十六进制，十六进制转化为十进制？
