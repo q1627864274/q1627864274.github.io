@@ -1,4 +1,7 @@
-   let bin = {
+const handleFgData = async (item) => {
+   let data = []
+   data.push(String(item.num - 1))
+   let binObj = {
       '1': '10-30',
       '2': '30-100',
       '3': '100-300',
@@ -10,4 +13,17 @@
       '9': '30000-40000',
       '10': '40000-50000',
    }
-例如str = '10-30' 取出对应的值为'1'
+   let bin = Object.keys(binObj).find(key => binObj[key] === originFullScaleRange.value)
+   data.push(bin)
+   data.push(item.id)
+   let fglist = await readExcel('fg_list.xlsx')
+   let itemFglist = fglist.find(m => {
+      return m['目标气体'] === item.type
+   })
+   console.log('itemFglist', itemFglist)
+   data.push(String(itemFglist.F))
+   data.push(String(itemFglist.G))
+   return data
+}
+   console.log(handleFgData(options.value[0]))
+打印的结果怎么是个promise？？
