@@ -1,10 +1,70 @@
-[
-    "0",
-    "3",
-    "0004",
-    "3FEE1CAC083126E9",
+const setFgList = async () => {
+ options.value.forEach(item => {
+      runFgitem(item)
+ )
+}
+const runFgitem = async (item) => {
+   let writeData = {
+      commandId: '0x07',
+      subCommandId: '0x2c',
+      data: data1
+   }
+   sendPortData(writeData, res => {
+      if (res) {
+         console.log('res', res)
+      }
+   })
+}
 
-]
-将数组转换为
-['0', '1', '04',00', 'E9','26','31','08','AC','1C','EE',3F']
-使用js
+write({ commandId, subCommandId, data }, callback) {
+    if (!this.serialport.isOpen) {
+      callback(false);
+      return;
+    }
+    let request = new MfcRequest(commandId, subCommandId, data);
+    this.requestArr.push({
+      request,
+      callback,
+    });
+    console.log('write中的this.requestArr', this.requestArr)
+    console.log('write中的this.isRun',this.isRun)
+    if (!this.isRun) {
+      this.isRun = true;
+      this.run();
+    }
+  }
+    run() {
+    let [request] = this.requestArr;
+    if (!request) {
+      this.isRun = false;
+      return;
+    }
+    this.callback = request.callback;
+    console.log('run函数中的this.isRun',this.isRun)
+    this.serialport.write(request.request.getBuffer());
+  }
+
+  next() {
+    this.requestArr.shift();
+    setTimeout(()=> {
+      this.run();
+    }, this.time);
+  }
+this.serialport.on('data', res => {
+    let result = new MfcResult(res.toString('hex'));
+    this.callback(result);
+    this.next();
+sendPortData会触发write方法，this.serialport.on会监听
+options.value.forEach(item => {
+      runFgitem(item)
+ )这样发现只发送一条请求，但是通过
+
+ const setFgList = async () => {
+  await runFgitem(options.value[0])
+   await runFgitem(options.value[1])
+   await runFgitem(options.value[2])
+   await runFgitem(options.value[3])
+   await runFgitem(options.value[4])
+ }能发送五条，请问什么原因造成的？
+
+  
