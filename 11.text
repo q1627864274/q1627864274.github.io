@@ -60,11 +60,11 @@ options.value.forEach(item => {
  )这样发现只发送一条请求，但是通过
 
  const setFgList = async () => {
-  await runFgitem(options.value[0])
-   await runFgitem(options.value[1])
-   await runFgitem(options.value[2])
-   await runFgitem(options.value[3])
-   await runFgitem(options.value[4])
+   runFgitem(options.value[0])
+    runFgitem(options.value[1])
+    runFgitem(options.value[2])
+    runFgitem(options.value[3])
+    runFgitem(options.value[4])
  }能发送五条，请问什么原因造成的？
 
   
