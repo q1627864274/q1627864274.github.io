@@ -1,2 +1,39 @@
-0.941 转成3FEE1CAC083126E9
-浮点数转成16进制？使用js
+  getBuffer() {
+    let binary = '';
+    let binData = '';
+    let arr = [];
+    let bufferArr = [];
+    binary += this.protocolVersion;
+    binary += this.packetLengthLow;
+    binary += this.packetLengthHigh;
+    binary += this.commandId;
+    binary += this.subCommandId;
+
+    // 数据域
+    if (this.data && this.data.length !== 0) {
+      this.data.forEach(byte => {
+        binData = parseInt(byte, 16).toString(2);
+        while (binData.length < 8) {
+          binData = `0${binData}`;
+        }
+        console.log('binData', binData)
+        binary += binData;
+      });
+    }
+    binary += this.checksum;
+    for (let i = 0, len = binary.length / 8; i < len; i++) {
+      let subStr = binary.substr(0, 8);
+      let hexStr = parseInt(subStr, 2).toString(16);
+      while (hexStr.length < 2) {
+        hexStr = `0${hexStr}`;
+      }
+      arr.push(hexStr);
+      binary = binary.replace(subStr, '');
+    }
+    arr.forEach(val => {
+      bufferArr.push(`0x${val}`);
+    });
+    let buffer = Buffer.from(bufferArr);
+    console.log('buffer', buffer)
+    return buffer;
+  }
