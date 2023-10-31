@@ -1,2 +1,4 @@
-找到类名为hui-icon-arrowdown-filled的元素
-并再添加一个类名hui-icon-drop-down-round
+      let str = 31
+      console.log(Number(str).toString(16)) // 结果是1f
+      转化为16位不够位数，前面补0操作，[0000000000001f] 总共16位
+      然后转为为从后往前两个一组, ['1f','00','00','00',xx] 总共8组
