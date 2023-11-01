@@ -1,16 +1,2 @@
-    l1 = []
-    l2 = []
-    i = 0
-    frame = 0
-    frame_all = 0
-    bin_crc = 0
-    l1_all.clear()
-    if ".bin" in file:
-        with open(file, "rb") as file:
-            for line in file:
-                l1.extend(line) #print_hex(line).split()
-            frame = len(l1) // div
-            test = crc16()
-            bin_crc = test.CalCrc16(l1)
-
-  上述代码中调用CalCrc16方法的时候传入的l1是什么？
+let arr =[1,2,3]
+转化为'123'
