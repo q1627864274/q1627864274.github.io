@@ -1,2 +1,93 @@
-[85, 110, 105, 90, 73, 80, 48]
-里面的数据使用forEach通过toString转化为16进制
+const { proxy } = getCurrentInstance();
+const sendPortData = (writeData, callback) => {
+   proxy.$SerialPortManager.write(writeData, res => {
+      if (res) {
+         callback(res);
+      } else {
+         HuiMessage({
+            message: `${res}`,
+            duration: 3000,
+            type: 'error'
+         })
+      }
+   });
+}
+
+// 下载下发信息
+const downloadInfo = () => {
+   return new Promise((resolve, reject) => {
+      writeData.value.commandId = '0x0B'
+      writeData.value.subCommandId = '0x01'
+      writeData.value.data.push('1')
+      writeData.value.data.push(...convertTo16(totalFrames.value))
+      writeData.value.data.push(...convertTo16('512'))
+      writeData.value.data.push(...convertTo16(crc.value))
+      sendPortData(writeData.value, res => {
+         let { data, commandId, subCommandId, compCode } = res
+         console.log('res', res)
+         if (data.length === 0 && commandId === '0b' && subCommandId === '01') {
+            resolve(true)
+         } else if (commandId === '0b' && (subCommandId === '02' || subCommandId === '03')) {
+            // MFC请求帧数
+            let resFrameNumber = parseInt(data[0] + compCode, 16)
+            console.log('downloadInfo里面的resFrameNumber帧数', resFrameNumber)
+            let sliceData = bytArray.value.slice(resFrameNumber * 512, (resFrameNumber + 1) * 512)
+            let sliceDataCopy = []
+            sliceData.forEach(item => {
+               sliceDataCopy.push(Number(item).toString(16))
+            })
+            downloadDataItem(resFrameNumber, sliceDataCopy)
+         }
+      })
+   })
+}
+
+const downloadDataItem = (frameNumber, sliceData) => {
+   console.log('frameNumber', frameNumber)
+   console.log('sliceData', sliceData)
+   let writeDataCopy = {
+      commandId: '',
+      subCommandId: '',
+      data: []
+   }
+   writeDataCopy.commandId = '0x0B'
+   writeDataCopy.subCommandId = '0x02'
+   let frameNumberCopy = Number(frameNumber).toString(16)
+   while (frameNumberCopy.length < 4) {
+      frameNumberCopy = `0${frameNumberCopy}`;
+   }
+   let frameNumberCopyArry = [frameNumberCopy.substr(2, 2), frameNumberCopy.substr(0, 2)]
+   console.log('frameNumberCopyArry', frameNumberCopyArry)
+   writeDataCopy.data.push(...frameNumberCopyArry)
+   writeDataCopy.data.push(...sliceData)
+ 
+   console.log('downloadDataItem的writeDataCopy', writeDataCopy)
+   sendPortData(writeDataCopy, res => {
+      let { data, commandId, subCommandId, compCode } = res
+      console.log('downloadDataItem中的res', res)
+      if (commandId === '0b' && (subCommandId === '02' || subCommandId === '03')) {
+         // MFC请求帧数
+         if (subCommandId === '02') {
+            let resFrameNumber = parseInt(data[0] + compCode, 16)
+            console.log('downloadDataItem的resFrameNumber帧数', resFrameNumber)
+            let sliceData = bytArray.value.slice(resFrameNumber * 512, (resFrameNumber + 1) * 512)
+            let sliceDataCopy = []
+            sliceData.forEach(item => {
+               sliceDataCopy.push(Number(item).toString(16))
+            })
+            downloadDataItem(resFrameNumber, sliceDataCopy)
+         }else if (subCommandId === '03') {
+            console.log('结束发送')
+         }
+      }
+   })
+}
+打开串口会，后端会发送数据数据，在代码中通过this.serialport.on监听到数据
+this.serialport.on('data', res => {
+            let result = new MfcResult(res.toString('hex'));
+            this.callback(result);
+            console.log('seriaport中的result', result)
+            this.next();
+          });
+通过 this.callback(result)传给sendPortData函数中的res，现在发现downloadInfo只接受两次
+res，为什么？不是一直后端发就接受？
