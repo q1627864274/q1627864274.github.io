@@ -63,24 +63,13 @@ const downloadDataItem = (frameNumber, sliceData) => {
  
    console.log('downloadDataItem的writeDataCopy', writeDataCopy)
    sendPortData(writeDataCopy, res => {
-      let { data, commandId, subCommandId, compCode } = res
-      console.log('downloadDataItem中的res', res)
-      if (commandId === '0b' && (subCommandId === '02' || subCommandId === '03')) {
-         // MFC请求帧数
-         if (subCommandId === '02') {
-            let resFrameNumber = parseInt(data[0] + compCode, 16)
-            console.log('downloadDataItem的resFrameNumber帧数', resFrameNumber)
-            let sliceData = bytArray.value.slice(resFrameNumber * 512, (resFrameNumber + 1) * 512)
-            let sliceDataCopy = []
-            sliceData.forEach(item => {
-               sliceDataCopy.push(Number(item).toString(16))
-            })
-            downloadDataItem(resFrameNumber, sliceDataCopy)
-         }else if (subCommandId === '03') {
-            console.log('结束发送')
-         }
       }
    })
+}
+const upgrade = async () => {
+   await downloadInfo()
+)
+
 }
 打开串口会，后端会发送数据数据，在代码中通过this.serialport.on监听到数据
 this.serialport.on('data', res => {
@@ -89,5 +78,22 @@ this.serialport.on('data', res => {
             console.log('seriaport中的result', result)
             this.next();
           });
-通过 this.callback(result)传给sendPortData函数中的res，现在发现downloadInfo只接受两次
-res，为什么？不是一直后端发就接受？
+通过 this.callback(result)传给sendPortData函数中的res，
+
+点击按钮触发upgrade函数
+第一次的res会进入
+ if (data.length === 0 && commandId === '0b' && subCommandId === '01') {
+resolve(true)这个判断中，第二次以及后面都会进入
+else if (commandId === '0b' && (subCommandId === '02' || subCommandId === '03')) {
+            // MFC请求帧数
+            let resFrameNumber = parseInt(data[0] + compCode, 16)
+            console.log('downloadInfo里面的resFrameNumber帧数', resFrameNumber)
+            let sliceData = bytArray.value.slice(resFrameNumber * 512, (resFrameNumber + 1) * 512)
+            let sliceDataCopy = []
+            sliceData.forEach(item => {
+               sliceDataCopy.push(Number(item).toString(16))
+            })
+            downloadDataItem(resFrameNumber, sliceDataCopy)
+         }
+的判断中，现在发现只有第一，第二条行，后面的次数不进入downloadInfo里面的res判断，如果去掉  downloadDataItem(resFrameNumber, sliceDataCopy)
+会发现，所有的都会进入downloadInfo里面的res判断中，这是为什么？
