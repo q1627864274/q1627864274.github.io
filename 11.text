@@ -20,9 +20,8 @@
     
    }
 
-上述代码的这两行能不能优化
-const date = new Date(dateString.replace(' ', 'T') + 'Z');
- localISO = localISO.slice(0, localISO.length - 1); // 移除字符串末尾的'Z'
- 变成const date = new Date(dateString.replace(' ', 'T'));去除
+上述代码为什么中，这里为什么要加
+ const date = new Date(dateString.replace(' ', 'T') + 'Z');
+ Z
   localISO = localISO.slice(0, localISO.length - 1); // 移除字符串末尾的'Z'
-  这一行
+  这里又要去除Z，感觉多此一举
