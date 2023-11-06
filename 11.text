@@ -1,5 +1,5 @@
-    convertDate(dateString) {
-          // 创建一个日期对象使用 UTC 时间
+      function convertDate(dateString) {
+         // 创建一个日期对象使用 UTC 时间
          const date = new Date(dateString.replace(' ', 'T') + 'Z');
          // 获取用户的本地时区偏移量
          const offset = -date.getTimezoneOffset();
@@ -11,17 +11,10 @@
          // 计算并获取本地时间的字符串（不包括毫秒）
          let localISO = new Date(date.getTime() + offset * 60000).toISOString();
          localISO = localISO.slice(0, localISO.length - 1); // 移除字符串末尾的'Z'
-         
-         // 去除毫秒部分
-         const indexOfDot = localISO.indexOf('.');
-         localISO = localISO.slice(0, indexOfDot);
          // 重新构建字符串以包含正确的时区偏移
          return localISO + sign + offsetHours + ':' + offsetMinutes;
-    
-   }
 
-上述代码为什么中，这里为什么要加
- const date = new Date(dateString.replace(' ', 'T') + 'Z');
- Z
-  localISO = localISO.slice(0, localISO.length - 1); // 移除字符串末尾的'Z'
-  这里又要去除Z，感觉多此一举
+      }
+      
+      console.log(convertDate('2023-11-06 22:31:43')) // 2023-11-07T06:31:43.000+08:00
+      得到的结果.000为什么全是000没得其他数？
