@@ -1,17 +1,2 @@
-    convertDate(dateString) {
-         // 创建一个日期对象使用 UTC 时间
-         const date = new Date(dateString.replace(' ', 'T') + 'Z');
-         // 获取用户的本地时区偏移量
-         const offset = -date.getTimezoneOffset();
-         const absOffset = Math.abs(offset);
-         const sign = offset > 0 ? '+' : '-';
-         const offsetHours = Math.floor(absOffset / 60).toString().padStart(2, '0');
-         const offsetMinutes = (absOffset % 60).toString().padStart(2, '0');
-
-         // 计算并获取本地时间的 ISO 字符串
-         const localISO = new Date(date.getTime() + offset * 60000).toISOString();
-
-         // 重新构建字符串以包含正确的时区偏移
-         return localISO.slice(0, localISO.length - 1) + sign + offsetHours + ':' + offsetMinutes;
-    }
-这个函数得到的结果是这个格式2023-11-06T19:20:15.000+08:00，我想去掉那个.00变成2023-11-06T19:20:15+08:00这种格式
+在vue文件中将这个格式2023-11-06T19:20:15转化为2023-11-06T19:20:15+08:00这种格式
+不同地区时区不一样，使用dayjs库怎么实现？
