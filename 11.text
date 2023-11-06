@@ -1,4 +1,7 @@
-    timeFormat(timsStamp) {
+this.timer = setInterval(() => {
+            this.dynamicTime = new Date(new Date().getTime() + times);
+}, 1000);
+  timeFormat(timsStamp) {
       let year = new Date(timsStamp).getFullYear();
       let month =
         new Date(timsStamp).getMonth() + 1 < 10
@@ -20,6 +23,10 @@
         new Date(timsStamp).getSeconds() < 10
           ? "0" + new Date(timsStamp).getSeconds()
           : new Date(timsStamp).getSeconds();
-      return year + "-" + month + "-" + day + " " + hh + ":" + mm + ":" + ss;
+      let ms = new Date(timsStamp).getMilliseconds().toString().padStart(3, '0');
+      return year + "-" + month + "-" + day + " " + hh + ":" + mm + ":" + ss +'.' +ms;
     },
-扩展函数使它有毫秒数2023-09-25 16:23:41.000类似这样
+    发现timeFormat函数的值存在dateString 2023-11-06 17:24:53.457
+index.vue:332 dateString 2023-11-06 17:24:54.457
+index.vue:332 dateString 2023-11-06 17:25:11.994
+为什么毫秒会变化？
