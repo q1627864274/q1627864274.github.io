@@ -1,32 +1,3 @@
-this.timer = setInterval(() => {
-            this.dynamicTime = new Date(new Date().getTime() + times);
-}, 1000);
-  timeFormat(timsStamp) {
-      let year = new Date(timsStamp).getFullYear();
-      let month =
-        new Date(timsStamp).getMonth() + 1 < 10
-          ? "0" + (new Date(timsStamp).getMonth() + 1)
-          : new Date(timsStamp).getMonth() + 1;
-      let day =
-        new Date(timsStamp).getDate() < 10
-          ? "0" + new Date(timsStamp).getDate()
-          : new Date(timsStamp).getDate();
-      let hh =
-        new Date(timsStamp).getHours() < 10
-          ? "0" + new Date(timsStamp).getHours()
-          : new Date(timsStamp).getHours();
-      let mm =
-        new Date(timsStamp).getMinutes() < 10
-          ? "0" + new Date(timsStamp).getMinutes()
-          : new Date(timsStamp).getMinutes();
-      let ss =
-        new Date(timsStamp).getSeconds() < 10
-          ? "0" + new Date(timsStamp).getSeconds()
-          : new Date(timsStamp).getSeconds();
-      let ms = new Date(timsStamp).getMilliseconds().toString().padStart(3, '0');
-      return year + "-" + month + "-" + day + " " + hh + ":" + mm + ":" + ss +'.' +ms;
-    },
-    发现timeFormat函数的值存在dateString 2023-11-06 17:24:53.457
-index.vue:332 dateString 2023-11-06 17:24:54.457
-index.vue:332 dateString 2023-11-06 17:25:11.994
-为什么毫秒会变化？
+let arr = [1,2,3,4,5]
+得到数组[1,2] 和 [3,4,5]
+使用js处理
