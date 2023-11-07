@@ -1,3 +1,24 @@
-let arr = [1,2,3,4,5]
-得到数组[1,2] 和 [3,4,5]
-使用js处理
+const logData = () => {
+   let num = 0
+   let data1 = num.toString(16).padStart(4, '0')
+   let writeDataCopy = {
+      commandId: '0x0C',
+      subCommandId: '0x02',
+      data: [data1.substr(2, 2), data1.substr(0, 2)]
+   }
+   sendPortData(writeDataCopy, res => {
+      console.log('res', res)
+      let { commandId, subCommandId, data } = res
+      if (commandId === '0c' && subCommandId === '02') {
+         logDataArray.value.push(...data.slice(2))
+         let frames = data.slice(0, 2)
+         frames = parseInt(frames[1] + frames[0], 16)
+         if (num === frames) {
+            num++
+            logData()
+         }
+      }
+   })
+上述代码中num++
+logData()
+下次调用logData其中num会变为1吗？
