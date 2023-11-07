@@ -1,4 +1,4 @@
-  const info = reactive({
+  const info = ref({
           name: "why",
           age: 18,
           height: 1.88
@@ -6,4 +6,4 @@
 
 
 const { name, age } = info
-为什么reactive被解构后会变成普通的值, 失去响应式
+info结构还会具有响应性吗？
