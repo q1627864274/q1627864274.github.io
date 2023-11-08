@@ -1,17 +1,3 @@
- <h2>info: {{ info.name }}</h2>
-<button @click="handleInfo">修改info的值</button>
-const info = reactive({
-          name: "why",
-          age: 18,
-          height: 1.88
-        })
-
-    const handleInfo = () => {
-         info = {
-            name: "why1",
-            age: 181,
-            height: 1.881
-         }
-         console.log('info', info)
-      }
-点击按钮修改info的值，发现 info.name未修改，是怎么回事？
+App.vue:12 [Vue warn]: Vue received a Component which was made a reactive object. This can lead to unnecessary performance overhead, and should be avoided by marking the component with `markRaw` or using `shallowRef` instead of `ref`. 
+Component that was made reactive:
+上述产生的原因
