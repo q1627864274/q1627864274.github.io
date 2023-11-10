@@ -1,3 +1,17 @@
+<template>
+   <div class="BasicInfo">
+      <rightHead></rightHead>
+      <div ref="chartContainer" style="width: 600px; height: 400px;"></div>
+   </div>
+</template>
+
+<script setup>
+import rightHead from '../components/rightHead.vue'
+import * as echarts from 'echarts';
+import { onMounted, onUnmounted, ref } from 'vue';
+const chartContainer = ref(null);
+let myChart = null
+// 初始化图表
 const initChart = () => {
    myChart = echarts.init(chartContainer.value);
    myChart.setOption({
@@ -20,7 +34,7 @@ const initChart = () => {
       },
       grid: {
          left: '3%',
-         right: '4%',
+         right: '10%',
          bottom: '3%',
          containLabel: true,
          show: true, // 显示边框
@@ -35,7 +49,8 @@ const initChart = () => {
          }
       },
       xAxis: {
-         type: 'category',
+         type: 'value',
+
          boundaryGap: false,
          data: ['0', '0.5', '1.0', '1.5', '2.0', '2.5', '3.0', '3.5', '4.0', '4.5'],
          name: 'Time s', // 在 x 轴末尾添加单位
@@ -69,11 +84,12 @@ const initChart = () => {
          {
             name: 'rpm Y1',
             type: 'line',
+            // stack: '总量',
             data: [
                // 直接给出 30 个数据点
-               -120, 88, -100, 66, 90, 230, 70, 65, 80, 110,
-               120, 130, -100, 134, 90, 230, 210, 100, 98, 95,
-               80, 60, 40, -34, 30, 20, 10, 0, 50, 100
+              [0.3, -50],
+              [0.5, 100],
+              [3.5, 110]
             ],
             symbol: 'circle', // 数据点标记的形状为圆形
             symbolSize: 6, // 数据点标记的大小
@@ -94,4 +110,26 @@ const initChart = () => {
       ],
    });
 };
-发现显示的点，x轴都为0 ，0.5 ，1.0,1.5上面，如果有横坐标为0.3的点想显示在图中怎么搞定？
+
+// 窗口大小变化时，更新图表
+const resizeChart = () => {
+   if (myChart) {
+      myChart.resize();
+   }
+};
+
+onMounted(() => {
+   initChart();
+   window.addEventListener('resize', resizeChart);
+});
+
+onUnmounted(() => {
+   window.removeEventListener('resize', resizeChart);
+   if (myChart) {
+      myChart.dispose();
+   }
+});
+</script>
+<style></style>
+发现实现的折线图，x轴范围不是'0', '0.5', '1.0', '1.5', '2.0', '2.5', '3.0', '3.5', '4.0', '4.5'这样的等距刻度 而是只到了3.5
+轴范围不是[-150, -100, -50, 0, 50, 100]'这样的等距刻度 而是-60到120等距为30 并且y轴有刻度线显示出来了
