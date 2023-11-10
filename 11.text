@@ -1,12 +1,22 @@
-myChart.setOption({
+const initChart = () => {
+   myChart = echarts.init(chartContainer.value);
+   myChart.setOption({
       title: {
          text: 'ECharts 折线图示例'
       },
       tooltip: {
-         trigger: 'axis'
+         trigger: 'axis',
+         // formatter: function (params) {
+         //    let res = params[0].name; // 获取 x 轴的值，通常是时间
+         //    params.forEach(function (param) {
+         //       // 对每个系列，显示系列名和值
+         //       res += '<br/>' + param.seriesName + ' : ' + param.value;
+         //    });
+         //    return res;
+         // }
       },
       legend: {
-         data: ['销量']
+         data: ['rpm Y1', 'Time s']
       },
       grid: {
          left: '3%',
@@ -37,7 +47,8 @@ myChart.setOption({
             show: false, // 不显示刻度线
          },
          axisLine: {
-            show: true, // 显示 X 轴线
+            show: false, // 显示 X 轴线
+            onZero: false, // 不强制 X 轴绑定在 Y 轴的 0 刻度上
             lineStyle: {
                color: '#939393', // X轴线颜色设置
                width: 2, // X轴线宽度
@@ -47,7 +58,7 @@ myChart.setOption({
       },
       yAxis: {
          type: 'value',
-         data: [0, 50, 100,150,200,250], // Y轴的刻度
+         data: [-150, -100, -50, 0, 50, 100], // Y轴的刻度
          name: 'rpm Y1', // 在 y 轴末尾添加单位
          nameLocation: 'end', // 设置单位显示的位置在轴的末端
          splitLine: {
@@ -56,14 +67,13 @@ myChart.setOption({
       },
       series: [
          {
-            name: '销量',
+            name: 'rpm Y1',
             type: 'line',
-            // stack: '总量',
             data: [
                // 直接给出 30 个数据点
-               120, 88, 100, 66, 90, 230, 70, 65, 80, 110,
-               120, 130, 100, 134, 90, 230, 210, 100, 98, 95,
-               80, 60, 40, 34,   30, 20, 10, 0, 50, 100
+               -120, 88, -100, 66, 90, 230, 70, 65, 80, 110,
+               120, 130, -100, 134, 90, 230, 210, 100, 98, 95,
+               80, 60, 40, -34, 30, 20, 10, 0, 50, 100
             ],
             symbol: 'circle', // 数据点标记的形状为圆形
             symbolSize: 6, // 数据点标记的大小
@@ -83,4 +93,5 @@ myChart.setOption({
          }
       ],
    });
-   发现series中的data只展示了十个点，怎么让它展示完全？
+};
+发现显示的点，x轴都为0 ，0.5 ，1.0,1.5上面，如果有横坐标为0.3的点想显示在图中怎么搞定？
