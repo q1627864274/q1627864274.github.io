@@ -1,3 +1,88 @@
-x轴是0  0.5 1.0 ...     4.5   单位是：Time s
-y轴是-150  -100  ...     100  单位是：rpm Y1
-折线图上有30个点
+   myChart.setOption({
+      title: {
+         text: 'ECharts 折线图示例'
+      },
+      tooltip: {
+         trigger: 'axis'
+      },
+      legend: {
+         data: ['销量']
+      },
+      grid: {
+         left: '3%',
+         right: '4%',
+         bottom: '3%',
+         containLabel: true
+      },
+      toolbox: {
+         feature: {
+            saveAsImage: {}
+         }
+      },
+      xAxis: {
+         type: 'category',
+         boundaryGap: false,
+         data: ['0', '0.5', '1.0', '1.5', '2.0', '2.5', '3.0', '3.5', '4.0', '4.5'],
+         name: 'Time s', // 在 x 轴末尾添加单位
+         nameLocation: 'end', // 设置单位显示的位置在轴的末端
+         splitLine: {
+            show: true
+         },
+         axisTick: {
+            show: false, // 不显示刻度线
+         },
+         axisLine: {
+            show: true, // 显示 X 轴线
+            lineStyle: {
+               color: '#939393', // X轴线颜色设置
+               width: 2, // X轴线宽度
+               type: 'solid' // X轴线类型设置为实线
+            }
+         },
+      },
+      yAxis: {
+         type: 'value',
+         data: [-150, -100, -50, 0, 50, 100], // Y轴的刻度
+         name: 'rpm Y1', // 在 y 轴末尾添加单位
+         nameLocation: 'end', // 设置单位显示的位置在轴的末端
+         splitLine: {
+            show: true
+         },
+      },
+      series: [
+         {
+            name: '销量',
+            type: 'line',
+            stack: '总量',
+            data: [
+               // 直接给出 30 个数据点
+               -120, -88, -100, 66, 90, -230, 70, -65, 80, 110,
+               120, 130, 100, 134, 90, 230, 210, -100, -98, 95,
+               80, 60, -40, 34, -30, 20, 10, 0, 50, 100
+            ],
+            symbol: 'circle', // 数据点标记的形状为圆形
+            symbolSize: 6, // 数据点标记的大小
+            itemStyle: {
+               color: '#6235F7', // 实心圆的颜色
+               borderColor: '#6235F7', // 边框颜色也设置为红色（与实心圆颜色相同）
+               borderWidth: 0 // 边框宽度，可以设为 0 如果你不想要边框
+            },
+            // 设置线条样式
+            lineStyle: {
+               width: 2, // 线宽
+               type: 'solid', // 线型，'solid' 表示实线
+               color: '#6235F7',
+               lineCap: 'round', // 设置线条末端为圆形
+               opacity: 0.5 // 线条的透明度
+            },
+         }
+      ],
+      grid: {
+         show: true, // 显示边框
+         borderColor: '#939393', // 边框颜色
+         borderWidth: 1,// 边框宽度,
+         borderType: 'solid' // 边框类型，默认为实线，可以不设置
+      },
+   });
+
+   上述echarts配置中，x轴的name在图中展示为y0这条线上，并且这里有一条实线，怎么去掉？
