@@ -1,9 +1,14 @@
- toolbox: {
+      toolbox: {
          show: true,
          feature: {
             dataZoom: {
-               yAxisIndex: 'none'
+               yAxisIndex: 'none',
+               icon: {
+                zoom: 'path://../assets/basicInfo/缩小.svg', // 自定义放大图标路径
+                back: 'path://../assets/basicInfo/缩小.svg'  // 自定义还原图标路径
+            }
             },
+            // restore: {},
          }
-}
-上述代码中，实现了区域缩放，但是图标固定了，怎么进行修改？
+      },
+   发现图标未显示
