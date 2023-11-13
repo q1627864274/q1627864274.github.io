@@ -1,14 +1,14 @@
-      toolbox: {
-         show: true,
-         feature: {
-            dataZoom: {
-               yAxisIndex: 'none',
-               icon: {
-                zoom: 'path://../assets/basicInfo/缩小.svg', // 自定义放大图标路径
-                back: 'path://../assets/basicInfo/缩小.svg'  // 自定义还原图标路径
-            }
-            },
-            // restore: {},
+ECharts的配置中
+ dataZoom: [
+         {
+            type: 'inside',
+            start: 0,
+            end: 20
+         },
+         {
+            start: 0,
+            end: 30
          }
-      },
-   发现图标未显示
+],
+发现数据区域缩放组件与x轴重合了，
+需要x轴向下移动
