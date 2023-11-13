@@ -1,11 +1,16 @@
-   if (data.code === 200) {
-        if (data.data) {
-          let times =
-            new Date().getTime() - new Date(data.data.currentTime).getTime();
-         console.log('times', times)
+    const info = reactive({
+        name: "why",
+        age: 18,
+        friend: {
+          name: "kobe"
+        }
+      })
+     // 3.监听reactive数据变化后, 获取普通对象
+      watch(() => ({ ...info }), (newValue, oldValue) => {
+        console.log(newValue, oldValue)
+      }, {
+        immediate: true,
+        deep: true
+      })
 
-          this.timer = setInterval(() => {
-            this.dynamicTime = new Date(new Date().getTime() + times);
-          }, 1000);
-data.data是后端返回的数据，data.data.currentTime为这个2023-11-13 19:53:21
-上述代码的含义是什么？
+上述代码中() => ({ ...info }),是什么写法？
