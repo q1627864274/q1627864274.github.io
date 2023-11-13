@@ -1,14 +1,29 @@
-ECharts的配置中
- dataZoom: [
-         {
-            type: 'inside',
-            start: 0,
-            end: 20
-         },
-         {
-            start: 0,
-            end: 30
-         }
-],
-发现数据区域缩放组件与x轴重合了，
-需要x轴向下移动
+
+通过    timeFormat(timsStamp) {
+      let year = new Date(timsStamp).getFullYear();
+      let month =
+        new Date(timsStamp).getMonth() + 1 < 10
+          ? "0" + (new Date(timsStamp).getMonth() + 1)
+          : new Date(timsStamp).getMonth() + 1;
+      let day =
+        new Date(timsStamp).getDate() < 10
+          ? "0" + new Date(timsStamp).getDate()
+          : new Date(timsStamp).getDate();
+      let hh =
+        new Date(timsStamp).getHours() < 10
+          ? "0" + new Date(timsStamp).getHours()
+          : new Date(timsStamp).getHours();
+      let mm =
+        new Date(timsStamp).getMinutes() < 10
+          ? "0" + new Date(timsStamp).getMinutes()
+          : new Date(timsStamp).getMinutes();
+      let ss =
+        new Date(timsStamp).getSeconds() < 10
+          ? "0" + new Date(timsStamp).getSeconds()
+          : new Date(timsStamp).getSeconds();
+      let ms = new Date(timsStamp).getMilliseconds().toString().padStart(3, '0');
+      return year + "-" + month + "-" + day + " " + hh + ":" + mm + ":" + ss +'.' +ms;
+    },
+在vue2的后台管理系统中，使用定时器，一秒获取一次时间，展示在页面，修改电脑的日期和时间其中的时区，
+发现能够同步实现修改，但是刷新浏览器页面，发现不同步了，例如先在电脑的时间是
+23:40  但是后台管理系统先显示23:40然后又变成03:40 一直这样，请问什么原因造成的
