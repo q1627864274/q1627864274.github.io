@@ -1,16 +1,15 @@
-    const info = reactive({
-        name: "why",
-        age: 18,
-        friend: {
-          name: "kobe"
-        }
-      })
-     // 3.监听reactive数据变化后, 获取普通对象
-      watch(() => ({ ...info }), (newValue, oldValue) => {
-        console.log(newValue, oldValue)
-      }, {
-        immediate: true,
-        deep: true
-      })
-
-上述代码中() => ({ ...info }),是什么写法？
+echarts中的配置   
+toolbox: {
+         show: true,
+         feature: {
+            dataZoom: {
+               yAxisIndex: 'none',
+               icon: {
+                  zoom: `image://${zoomOutIcon}`, // 自定义放大图标路径
+                  back: `image://${zoomOutIcon}`  // 自定义还原图标路径
+               }
+            },
+         }
+      },
+功能为方法和缩小，它有自己的图标，我想自定义一个dom按钮，然后通过按钮去调用这个功能
+怎么实现？
