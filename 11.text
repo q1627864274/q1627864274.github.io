@@ -1,121 +1,68 @@
-export class MfcHeader {
-  // 协议版本
-  protocolVersion = '00000001'
+import { MfcHeader } from './MfcHeader';
 
-  // 帧长度，低字节
-  packetLengthLow = '00000010'
-
-  // 帧长度，高字节
-  packetLengthHigh = '00000000'
-
-  // 大命令字
-  commandId = '00000000'
-
-  // 小命令字
-  subCommandId = '00000000'
-
-  // 完成码
-  compCode = '0'
-
-  // 数据域1~DataN（字节长度取值0~23）
-  data = []
-
-  // 校验和（Packet Length =》 Data）
-  checksum = '00000000'
-
+/**
+ * 请求格式报文
+ */
+export class MfcRequest extends MfcHeader {
   constructor(commandId, subCommandId, data) {
-    this.commandId = commandId;
-    this.subCommandId = subCommandId;
-    this.data = data;
-
-    // 帧长度(cmd -> data)
-    let binLength = this.getPacketLength();
-    this.packetLengthHigh = this.getByte(binLength, 0);
-    this.packetLengthLow = this.getByte(binLength, 1);
-    this.checksum = this.getCheckSum();
-  }
-
-  /**
-   * 获取校验和
-   *
-   * @returns {校验和}
-   */
-  getCheckSum() {
-    let length = parseInt(this.packetLengthLow, 2) + parseInt(this.packetLengthHigh, 2) +
-    parseInt(this.commandId, 2) + parseInt(this.subCommandId, 2) + parseInt(this.compCode, 2);
-
-    // 数据域
-    if (this.data && this.data.length !== 0) {
-      this.data.forEach(byte => length = length + parseInt(byte, 16));
-    }
-    let sum = this.toBinaryStr(length);
-    return sum.substr(-8);
-  }
-
-  /**
-   * 获取帧长度
-   *
-   * @returns {帧长度}
-   */
-  getPacketLength() {
-    // 帧长度(cmd -> data)，两位cmd
-    let length = 2;
-
-    // 返回码
-    if (this.compCode !== '0') {
-      length = length + 1;
-    }
-
-    // 数据域
-    if (this.data && this.data.length !== 0) {
-      length = length + parseInt(this.data.length);
-
-      // this.data.forEach(byte => length = length + parseInt(byte));
-    }
-
-    // 转换为2进制补齐
-    let hexLength = parseInt(length).toString(2);
-    while (hexLength.length < 16) {
-      hexLength = `0${hexLength}`;
-    }
-    return hexLength;
-  }
-
-  /**
-   * 获取str的二进制数据
-   * @param str 原始数据
-   * @returns {二进制转换后的数据}
-   */
-  toBinaryStr(str) {
-    let val = '';
-    if (str) {
-      val = parseInt(str).toString(2);
-      while (val.length < 8) {
-        val = `0${val}`;
+    let binCommandId = '';
+    if (commandId) {
+      binCommandId = parseInt(commandId, 16).toString(2);
+      while (binCommandId.length < 8) {
+        binCommandId = `0${binCommandId}`;
       }
     }
-    return val;
+    let binSubCommandId = '';
+    if (subCommandId) {
+      binSubCommandId = parseInt(subCommandId, 16).toString(2);
+      while (binSubCommandId.length < 8) {
+        binSubCommandId = `0${binSubCommandId}`;
+      }
+    }
+    super(binCommandId, binSubCommandId, data);
   }
 
   /**
-   * 提取指定字节数据
+   * 转换为二进制码流
    *
-   * @param binaryStr 原始二进制数据
-   * @param idx 获取字节索引，0起始
-   * @returns {字节流}
+   * @returns {二进制码流}
    */
-  getByte(binaryStr, idx) {
-    return binaryStr.substr(idx * 8, 8);
-  }
+  getBuffer() {
+    let binary = '';
+    let binData = '';
+    let arr = [];
+    let bufferArr = [];
+    binary += this.protocolVersion;
+    binary += this.packetLengthLow;
+    binary += this.packetLengthHigh;
+    binary += this.commandId;
+    binary += this.subCommandId;
 
-  /**
-   * 提取指定字节数据
-   *
-   * @param binaryStr 原始十六进制数据
-   * @param idx 获取字节索引，0起始
-   * @returns {字节流}
-   */
-  getByte16(binaryStr, idx) {
-    return binaryStr.substr(idx * 2, 2);
+    // 数据域
+    if (this.data && this.data.length !== 0) {
+      this.data.forEach(byte => {
+        binData = parseInt(byte, 16).toString(2);
+        while (binData.length < 8) {
+          binData = `0${binData}`;
+        }
+        binary += binData;
+      });
+    }
+    binary += this.checksum;
+    for (let i = 0, len = binary.length / 8; i < len; i++) {
+      let subStr = binary.substr(0, 8);
+      let hexStr = parseInt(subStr, 2).toString(16);
+      while (hexStr.length < 2) {
+        hexStr = `0${hexStr}`;
+      }
+      arr.push(hexStr);
+      binary = binary.replace(subStr, '');
+    }
+    arr.forEach(val => {
+      bufferArr.push(`0x${val}`);
+    });
+    let buffer = Buffer.from(bufferArr);
+    console.log('getBuffer方法中的buffer', buffer)
+    return buffer;
   }
 }
