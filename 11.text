@@ -1,12 +1,3 @@
-ProductQuery.vue使得
- modalVisible.value = true
- hooks里面
-    watchEffect(() => {
-      console.log('modalVisible', modalVisible.value)
-      modalVisible1.value = modalVisible.value
-      console.log('modalVisible1', modalVisible1.value)
-   })
-
-   在UnlockModeal.vue
-   的const {modalVisible1, passwordInput} = useUnlockModeal()
-   modalVisible1不会改变
+是不是意味着
+在vue文件修改hook中的ref变量，
+这个变量的修改，不会传递给，用到它的vue文件？
