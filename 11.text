@@ -1,129 +1,21 @@
-// import { SerialPort } from 'serialport';
-const {SerialPort} = require('serialport')
-import { MfcRequest } from './MfcRequest';
-import { MfcResult } from './MfcResult';
-export class SerialPortManager {
-  constructor() {
-    this.serialport = {};
-    this.callback = null;
-    this.requestArr = [];
-    this.time = 100;
-    this.isRun = false;
-  }
+import { MfcHeader } from './MfcHeader';
 
-  // 获取串口列表
-  listPort(callback) {
-    this.callback = callback;
-    SerialPort.list().then((ports, err) => {
-      if (err) {
-        return err;
-      } else {
-        this.callback(ports);
-        return true;
-      }
-    });
-  }
-
-  /**
-   * 打开串口
-   * @param {path}   串口号
-   * @param {baudRate} 波特率
-   * @return {Promise} 打开状态  成功/失败
-   */
-  open(path, baudRate) {
-    if (!path || !baudRate) {
-      return false;
+/**
+ * 返回格式报文
+ */
+export class MfcResult extends MfcHeader {
+  constructor(binary) {
+    super(null, null, []);
+    this.protocolVersion = this.getByte16(binary, 0);
+    this.packetLengthLow = this.getByte16(binary, 1);
+    this.packetLengthHigh = this.getByte16(binary, 2);
+    this.commandId = this.getByte16(binary, 3);
+    this.subCommandId = this.getByte16(binary, 4);
+    this.compCode = this.getByte16(binary, 5);
+    let dataLength = parseInt(this.packetLengthHigh, 16) * 256 + parseInt(this.packetLengthLow, 16);
+    for (let i = 0; i < dataLength - 3; i++) {
+      this.data.push(this.getByte16(binary, 6 + i));
     }
-    this.serialport = new SerialPort({
-      path: path,
-      baudRate: baudRate,
-      parity: 'odd',
-      autoOpen: false,
-    });
-    return new Promise(resolve => {
-      this.serialport.open(err => {
-        if (this.serialport.isOpen) {
-          resolve(true);
-          this.serialport.on('data', res => {
-            let result = new MfcResult(res.toString('hex'));
-            this.callback(result);
-            this.next();
-          });
-          this.serialport.on('error', error => {
-            this.callback(error);
-            this.next();
-          });
-        } else {
-          if (err) {
-            resolve(err);
-          }
-        }
-      });
-    });
-  }
-
-  /**
-   * 关闭串口
-   * @return {Promise} 关闭状态
-   */
-  close(path) {
-    return new Promise(resolve => {
-      this.serialport.close(err => {
-        if (!this.serialport.isOpen && this.serialport.path === path) {
-          resolve(true);
-        } else {
-          if (err) {
-            resolve(err);
-          } else {
-            resolve(false);
-          }
-        }
-      });
-    });
-  }
-
-  /**
-   * 串口发送数据
-   * @return {commandId} 大命令字
-   * @return {subCommandId} 小命令字
-   * @return {data} 命令数据
-   */
-  write({ commandId, subCommandId, data }, callback) {
-    if (!this.serialport.isOpen) {
-      callback(false);
-      return;
-    }
-    let request = new MfcRequest(commandId, subCommandId, data);
-    console.log('write方法中的request', request)
-    this.requestArr.push({
-      request,
-      callback,
-    });
-    if (!this.isRun) {
-      this.isRun = true;
-      this.run();
-    }
-  }
-
-  /**
-   * 执行requestArr队列
-   */
-  run() {
-    let [request] = this.requestArr;
-    if (!request) {
-      this.isRun = false;
-      return;
-    }
-    this.callback = request.callback;
-    console.log('run中的request', request)
-    console.log('request.request.getBuffer()', request.request.getBuffer())
-    this.serialport.write(request.request.getBuffer());
-  }
-
-  next() {
-    this.requestArr.shift();
-    setTimeout(()=> {
-      this.run();
-    }, this.time);
+    this.checksum = this.getByte16(binary, 3 + dataLength);
   }
 }
