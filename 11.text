@@ -1,28 +1,12 @@
-父组件：
-      <unlockModeal></unlockModeal>
 
-import unlockModeal from '../components/UnlockModeal.vue'
-import useUnlockModeal from '../hooks/useUnlockModeal'
-点击父组件按钮触发下面方法
-const changeModel = (val) => {
-      modalVisible.value = true
-}
-UnlockModeal.vue文件
+在UnlockModeal.vue文件
   <hui-modal width="458px" title="解锁编辑权限" v-model:visible="modalVisible" customClass="dialog" cancelText="Cancel"
       confirmText='OK'>
       <hui-input v-model:value="passwordInput" placeholder="请输入密码" />
    </hui-modal>
 import useUnlockModeal from '../hooks/useUnlockModeal'
 const {modalVisible, passwordInput} = useUnlockModeal()
-useUnlockModeal.ji文件
-import { ref, watchEffect} from 'vue'
-export default function useUnlockModeal() {
-   const modalVisible = ref(false)
-   const passwordInput = ref('')
-   return {
-      modalVisible,
-      passwordInput,
-   }
-}
-发现点击按钮 modalVisible.value = true，弹窗不弹出来， v-model:visible="modalVisible" 这里双向绑定了
-是什么原因导致的？
+watchEffect(() => {
+   console.log('组件中的modalVisible值', modalVisible.value)
+})
+发现当modalVisible.value = true，watchEffect没有触发，modalVisible.value一开始是false
