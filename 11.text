@@ -1,12 +1,12 @@
+ProductQuery.vue使得
+ modalVisible.value = true
+ hooks里面
+    watchEffect(() => {
+      console.log('modalVisible', modalVisible.value)
+      modalVisible1.value = modalVisible.value
+      console.log('modalVisible1', modalVisible1.value)
+   })
 
-在UnlockModeal.vue文件
-  <hui-modal width="458px" title="解锁编辑权限" v-model:visible="modalVisible" customClass="dialog" cancelText="Cancel"
-      confirmText='OK'>
-      <hui-input v-model:value="passwordInput" placeholder="请输入密码" />
-   </hui-modal>
-import useUnlockModeal from '../hooks/useUnlockModeal'
-const {modalVisible, passwordInput} = useUnlockModeal()
-watchEffect(() => {
-   console.log('组件中的modalVisible值', modalVisible.value)
-})
-发现当modalVisible.value = true，watchEffect没有触发，modalVisible.value一开始是false
+   在UnlockModeal.vue
+   的const {modalVisible1, passwordInput} = useUnlockModeal()
+   modalVisible1不会改变
