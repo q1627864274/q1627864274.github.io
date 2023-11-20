@@ -1,68 +1,129 @@
-import { MfcHeader } from './MfcHeader';
+// import { SerialPort } from 'serialport';
+const {SerialPort} = require('serialport')
+import { MfcRequest } from './MfcRequest';
+import { MfcResult } from './MfcResult';
+export class SerialPortManager {
+  constructor() {
+    this.serialport = {};
+    this.callback = null;
+    this.requestArr = [];
+    this.time = 100;
+    this.isRun = false;
+  }
 
-/**
- * 请求格式报文
- */
-export class MfcRequest extends MfcHeader {
-  constructor(commandId, subCommandId, data) {
-    let binCommandId = '';
-    if (commandId) {
-      binCommandId = parseInt(commandId, 16).toString(2);
-      while (binCommandId.length < 8) {
-        binCommandId = `0${binCommandId}`;
+  // 获取串口列表
+  listPort(callback) {
+    this.callback = callback;
+    SerialPort.list().then((ports, err) => {
+      if (err) {
+        return err;
+      } else {
+        this.callback(ports);
+        return true;
       }
-    }
-    let binSubCommandId = '';
-    if (subCommandId) {
-      binSubCommandId = parseInt(subCommandId, 16).toString(2);
-      while (binSubCommandId.length < 8) {
-        binSubCommandId = `0${binSubCommandId}`;
-      }
-    }
-    super(binCommandId, binSubCommandId, data);
+    });
   }
 
   /**
-   * 转换为二进制码流
-   *
-   * @returns {二进制码流}
+   * 打开串口
+   * @param {path}   串口号
+   * @param {baudRate} 波特率
+   * @return {Promise} 打开状态  成功/失败
    */
-  getBuffer() {
-    let binary = '';
-    let binData = '';
-    let arr = [];
-    let bufferArr = [];
-    binary += this.protocolVersion;
-    binary += this.packetLengthLow;
-    binary += this.packetLengthHigh;
-    binary += this.commandId;
-    binary += this.subCommandId;
-
-    // 数据域
-    if (this.data && this.data.length !== 0) {
-      this.data.forEach(byte => {
-        binData = parseInt(byte, 16).toString(2);
-        while (binData.length < 8) {
-          binData = `0${binData}`;
-        }
-        binary += binData;
-      });
+  open(path, baudRate) {
+    if (!path || !baudRate) {
+      return false;
     }
-    binary += this.checksum;
-    for (let i = 0, len = binary.length / 8; i < len; i++) {
-      let subStr = binary.substr(0, 8);
-      let hexStr = parseInt(subStr, 2).toString(16);
-      while (hexStr.length < 2) {
-        hexStr = `0${hexStr}`;
-      }
-      arr.push(hexStr);
-      binary = binary.replace(subStr, '');
-    }
-    arr.forEach(val => {
-      bufferArr.push(`0x${val}`);
+    this.serialport = new SerialPort({
+      path: path,
+      baudRate: baudRate,
+      parity: 'odd',
+      autoOpen: false,
     });
-    let buffer = Buffer.from(bufferArr);
-    console.log('getBuffer方法中的buffer', buffer)
-    return buffer;
+    return new Promise(resolve => {
+      this.serialport.open(err => {
+        if (this.serialport.isOpen) {
+          resolve(true);
+          this.serialport.on('data', res => {
+            let result = new MfcResult(res.toString('hex'));
+            this.callback(result);
+            this.next();
+          });
+          this.serialport.on('error', error => {
+            this.callback(error);
+            this.next();
+          });
+        } else {
+          if (err) {
+            resolve(err);
+          }
+        }
+      });
+    });
+  }
+
+  /**
+   * 关闭串口
+   * @return {Promise} 关闭状态
+   */
+  close(path) {
+    return new Promise(resolve => {
+      this.serialport.close(err => {
+        if (!this.serialport.isOpen && this.serialport.path === path) {
+          resolve(true);
+        } else {
+          if (err) {
+            resolve(err);
+          } else {
+            resolve(false);
+          }
+        }
+      });
+    });
+  }
+
+  /**
+   * 串口发送数据
+   * @return {commandId} 大命令字
+   * @return {subCommandId} 小命令字
+   * @return {data} 命令数据
+   */
+  write({ commandId, subCommandId, data }, callback) {
+    if (!this.serialport.isOpen) {
+      callback(false);
+      return;
+    }
+    let request = new MfcRequest(commandId, subCommandId, data);
+    console.log('write方法中的request', request)
+    this.requestArr.push({
+      request,
+      callback,
+    });
+    if (!this.isRun) {
+      this.isRun = true;
+      this.run();
+    }
+  }
+
+  /**
+   * 执行requestArr队列
+   */
+  run() {
+    let [request] = this.requestArr;
+    if (!request) {
+      this.isRun = false;
+      return;
+    }
+    this.callback = request.callback;
+    console.log('run中的request', request)
+    console.log('request.request.getBuffer()', request.request.getBuffer())
+    this.serialport.write(request.request.getBuffer());
+  }
+
+  next() {
+    this.requestArr.shift();
+    setTimeout(()=> {
+      this.run();
+    }, this.time);
   }
 }
