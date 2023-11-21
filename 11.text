@@ -1,2 +1,37 @@
-let result = new MfcResult(res.toString('hex'));
-上述代码中的toString('hex')是什么意思？
+
+const {SerialPort} = require('serialport')
+this.serialport = new SerialPort({
+      path: path,
+      baudRate: baudRate,
+      parity: 'odd',
+      autoOpen: false,
+    });
+    return new Promise(resolve => {
+      this.serialport.open(err => {
+        if (this.serialport.isOpen) {
+          resolve(true);
+          this.serialport.on('data', res => {
+            console.log('接收到的原始值', res)
+            console.log("接收到的值", res.toString('hex'))
+            let result = new MfcResult(res.toString('hex'));
+            this.callback(result);
+            this.next();
+          });
+          this.serialport.on('error', error => {
+            console.log("接收到的错误值", res.toString('hex'))
+            this.callback(error);
+            this.next();
+          });
+        } else {
+          if (err) {
+            resolve(err);
+          }
+        }
+      });
+
+发现机器返回的值，分两次返回给我了，是不是要修改new SerialPort({
+      path: path,
+      baudRate: baudRate,
+      parity: 'odd',
+      autoOpen: false,
+    });这个第三方库的配置？
