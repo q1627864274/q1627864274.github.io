@@ -1,21 +1,19 @@
-import { MfcHeader } from './MfcHeader';
+      let arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 
-/**
- * 返回格式报文
- */
-export class MfcResult extends MfcHeader {
-  constructor(binary) {
-    super(null, null, []);
-    this.protocolVersion = this.getByte16(binary, 0);
-    this.packetLengthLow = this.getByte16(binary, 1);
-    this.packetLengthHigh = this.getByte16(binary, 2);
-    this.commandId = this.getByte16(binary, 3);
-    this.subCommandId = this.getByte16(binary, 4);
-    this.compCode = this.getByte16(binary, 5);
-    let dataLength = parseInt(this.packetLengthHigh, 16) * 256 + parseInt(this.packetLengthLow, 16);
-    for (let i = 0; i < dataLength - 3; i++) {
-      this.data.push(this.getByte16(binary, 6 + i));
-    }
-    this.checksum = this.getByte16(binary, 3 + dataLength);
-  }
-}
+      function mm(arr) {
+         let data2 = []
+         arr.forEach(item => {
+            Number(item).toString(16)
+            console.log(item)
+            while (item.length < 4) {
+               console.log(item)
+               item = `0${item}`;
+            }
+            console.log(item)
+            data2.push(item.substring(0, 2))
+            data2.push(item.substring(2, 4))
+         })
+         return data2
+
+      }
+      console.log(mm(arr))
