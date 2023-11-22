@@ -1,34 +1,19 @@
-
-const {SerialPort} = require('serialport')
-this.serialport = new SerialPort({
-      path: path,
-      baudRate: baudRate,
-      parity: 'none',
-      autoOpen: false,
-      highWaterMark: 16384
+    let request = new MfcRequest(commandId, subCommandId, data);
+    console.log('write中的this.requestArr1', this.requestArr)  //  打印结果为：[]
+    console.log('write中request', request)  //  打印结果为：MfcRequest {head: '0xAA', cmd: '0x03', size: '02', checksum: 'a0', data: Array(2)}
+    this.requestArr.push({
+      request,
+      callback,
     });
-    return new Promise(resolve => {
-      this.serialport.open(err => {
-        if (this.serialport.isOpen) {
-          resolve(true);
-          this.serialport.on('data', res => {
-            console.log('接收到的原始值', res)
-            console.log("接收到的值", res.toString('hex'))
-            let result = new MfcResult(res.toString('hex'));
-            this.callback(result);
-            this.next();
-          });
-          this.serialport.on('error', error => {
-            console.log("接收到的错误值", res.toString('hex'))
-            this.callback(error);
-            this.next();
-          });
-        } else {
-          if (err) {
-            resolve(err);
-          }
-        }
-      });
+    console.log('write中的this.requestArr2', this.requestArr)
+     console.log('write中的this.requestArr2的长度', this.requestArr.length)  // 1
 
-发现机器返回的值，分两次返回给我了，就是 this.serialport.on这个连续触发了两次，
-这是为什么?
+上述代码 console.log('write中的this.requestArr2', this.requestArr)打印结果为
+[{…}]
+0: {request: MfcRequest, callback: ƒ}
+1: {request: MfcRequest, callback: ƒ}
+2: {request: MfcRequest, callback: ƒ}
+length: 3
+[[Prototype]]: Array(0)
+
+为啥长度还是3？
