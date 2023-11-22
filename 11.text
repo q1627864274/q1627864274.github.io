@@ -3,8 +3,9 @@ const {SerialPort} = require('serialport')
 this.serialport = new SerialPort({
       path: path,
       baudRate: baudRate,
-      parity: 'odd',
+      parity: 'none',
       autoOpen: false,
+      highWaterMark: 16384
     });
     return new Promise(resolve => {
       this.serialport.open(err => {
@@ -29,9 +30,5 @@ this.serialport = new SerialPort({
         }
       });
 
-发现机器返回的值，分两次返回给我了，是不是要修改new SerialPort({
-      path: path,
-      baudRate: baudRate,
-      parity: 'odd',
-      autoOpen: false,
-    });这个第三方库的配置？
+发现机器返回的值，分两次返回给我了，就是 this.serialport.on这个连续触发了两次，
+这是为什么?
