@@ -1,68 +1,39 @@
-echarts中折线图的数据配置为
-const Xlinedata = ref([0])
-xAxis: {
-   type: 'value',
-   boundaryGap: false,
-   data: Xlinedata.value,
-   // interval: 5, // 设置x轴刻度间隔
-   offset: 31,
-   name: '     Time s', // 在 x 轴末尾添加单位
-   nameTextStyle: {
-      verticalAlign: "top",
-      lineHeight: '25'
-   },
-   nameLocation: 'end', // 设置单位显示的位置在轴的末端
-   splitLine: {
-      show: true
-   },
-   axisTick: {
-      show: false, // 不显示刻度线
-   },
-   axisLine: {
-      show: false, // 显示 X 轴线
-      onZero: false, // 不强制 X 轴绑定在 Y 轴的 0 刻度上
-      lineStyle: {
-         color: '#939393', // X轴线颜色设置
-         width: 2, // X轴线宽度
-         type: 'solid' // X轴线类型设置为实线
-      }
-   },
-},
-
-   setInterval(() => {
-      let SpeedValue = Math.floor(Math.random() * 2001 - 1000)
-      console.log('SpeedValue', SpeedValue)
-      newX += 0.1
-      lineGraphSerialdata.value.push([newX, SpeedValue])
-      Xlinedata.value.push(newX)
-      if (Xlinedata.value.length > 45) {
-         lineGraphSerialdata.value.shift()
-         console.log('Xlinedata.value1', Xlinedata.value)
-         Xlinedata.value.shift()
-         console.log('Xlinedata.value2', Xlinedata.value)
-
-      }
-      let arr = []
-      lineGraphSerialdata.value.forEach(item => {
-         arr.push(item[1])
-      })
-      let maxValue = Math.max(...arr) / 0.8
-      let minValue = Math.min(...arr) * 0.8
-      myChart.setOption({
-         xAxis: {
-           data: Xlinedata.value,
-         //   interval: 5, // 设置x轴刻度间隔
+echarts中折线图的数据配置中
+当
+grid: {
+ containLabel: false,
+}
+      xAxis: {
+         type: 'value',
+         boundaryGap: false,
+         data: Xlinedata.value,
+         // interval: 5, // 设置x轴刻度间隔
+         offset: 31,
+         name: '     Time s', // 在 x 轴末尾添加单位
+         nameTextStyle: {
+            verticalAlign: "top",
+            lineHeight: '25'
          },
-         yAxis: [{
-            min: minValue, // 设置Y轴最小值
-            max: maxValue, // 设置Y轴最大值
-         }],
-         series: [
-            {
-               data: lineGraphSerialdata.value,
+         nameLocation: 'end', // 设置单位显示的位置在轴的末端
+         splitLine: {
+            show: true
+         },
+         axisTick: {
+            show: false, // 不显示刻度线
+         },
+         axisLine: {
+            show: false, // 显示 X 轴线
+            onZero: false, // 不强制 X 轴绑定在 Y 轴的 0 刻度上
+            lineStyle: {
+               color: '#939393', // X轴线颜色设置
+               width: 2, // X轴线宽度
+               type: 'solid' // X轴线类型设置为实线
             }
-         ]
-      })
-   }, 1000)
+         },
+         axisLabel: {
+            show : true
+         } 
+      },
 
-  发现x轴的最左边坐标不变一直是0，按道理应该随着Xlinedata值变化，5一个
+x轴标签不显示。当containLabel: true就显示
+
