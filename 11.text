@@ -1,1 +1,10 @@
-electron中SerialPort（串口）接收数据不完整
+electron中SerialPort通过
+  this.serialport = new SerialPort({
+      path: path,
+      baudRate: baudRate,
+      parity: 'none',
+      autoOpen: false,
+    })
+
+this.serialport.on('data', res => {})接收数据分几次才返回给我
+这是什么情况，怎么做才能一次给我？
