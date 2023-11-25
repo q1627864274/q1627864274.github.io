@@ -1,39 +1,38 @@
-echarts中折线图的数据配置中
-当
-grid: {
- containLabel: false,
-}
-      xAxis: {
-         type: 'value',
-         boundaryGap: false,
-         data: Xlinedata.value,
-         // interval: 5, // 设置x轴刻度间隔
-         offset: 31,
-         name: '     Time s', // 在 x 轴末尾添加单位
-         nameTextStyle: {
-            verticalAlign: "top",
-            lineHeight: '25'
-         },
-         nameLocation: 'end', // 设置单位显示的位置在轴的末端
-         splitLine: {
-            show: true
-         },
-         axisTick: {
-            show: false, // 不显示刻度线
-         },
-         axisLine: {
-            show: false, // 显示 X 轴线
-            onZero: false, // 不强制 X 轴绑定在 Y 轴的 0 刻度上
-            lineStyle: {
-               color: '#939393', // X轴线颜色设置
-               width: 2, // X轴线宽度
-               type: 'solid' // X轴线类型设置为实线
-            }
-         },
-         axisLabel: {
-            show : true
-         } 
-      },
-
-x轴标签不显示。当containLabel: true就显示
-
+使用const {SerialPort} = require('serialport')
+  open(path, baudRate) {
+    if (!path || !baudRate) {
+      return false;
+    }
+    this.serialport = new SerialPort({
+      path: path,
+      baudRate: baudRate,
+      parity: 'odd',
+      autoOpen: false,
+    });
+    return new Promise(resolve => {
+      this.serialport.open(err => {
+        if (this.serialport.isOpen) {
+          resolve(true);
+          this.serialport.on('data', res => {
+            let result = new MfcResult(res.toString('hex'));
+            this.callback(result);
+            this.next();
+          });
+          this.serialport.on('error', error => {
+            this.callback(error);
+            this.next();
+          });
+        } else {
+          if (err) {
+            resolve(err);
+          }
+        }
+      });
+    });
+  }
+  发送一次请求，发现返回的数据不完整即       this.serialport.on('data', res => {
+            let result = new MfcResult(res.toString('hex'));
+            this.callback(result);
+            this.next();
+          });
+          这里收到的数据不完整
