@@ -1,1 +1,4 @@
-https://serialport.io/docs/
+通过serialport库的serialport.on('data', res => {
+
+}）返回的数据不完整，这个是什么原因？
+            
