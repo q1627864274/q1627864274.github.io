@@ -1,4 +1,1 @@
-通过serialport库的serialport.on('data', res => {
-
-}）返回的数据不完整，这个是什么原因？
-            
+electron中SerialPort（串口）接收数据不完整
