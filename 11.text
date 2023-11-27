@@ -1,24 +1,69 @@
+// import { SerialPort } from 'serialport';
+const {SerialPort} = require('serialport')
+import { YtbRequest } from './YtbRequest';
+import { YtbResult } from './YtbResult';
+export class SerialPortManager {
+  constructor() {
+    this.serialport = {};
+    this.callback = null;
+    this.requestArr = [];
+    this.time = 100;
+    this.isRun = false;
+  }
+
+  // 获取串口列表
+  listPort(callback) {
+    this.callback = callback;
+    SerialPort.list().then((ports, err) => {
+      if (err) {
+        return err;
+      } else {
+        this.callback(ports);
+        return true;
+      }
+    });
+  }
+
+  /**
+   * 打开串口
+   * @param {path}   串口号
+   * @param {baudRate} 波特率
+   * @return {Promise} 打开状态  成功/失败
+   */
+  open(path, baudRate) {
+    if (!path || !baudRate) {
+      return false;
+    }
+    this.serialport = new SerialPort({
+      path: path,
+      baudRate: baudRate,
+      parity: 'none',
+      autoOpen: false,
+    });
+    return new Promise(resolve => {
       this.serialport.open(err => {
         if (this.serialport.isOpen) {
           resolve(true);
           let dataString = '';
-          let dataEventCount = 0;
+          let timer = null;
           this.serialport.on('data', res => {
-            // 累积接收到的数据
+            // 每次接收到的数据
             console.log('每次接收的数据', res.toString('hex'))
             dataString += res.toString('hex');
-            dataEventCount++
             
-            if (dataEventCount === 2) {
-                // 处理数据
-               // console.log('两次接收到的数据', dataString)
-               let result = new YtbResult(dataString);
-               this.callback(result);
-               this.next();
-               // 重置计数器和缓冲区
-               dataEventCount = 0;
-               dataString = '';
-            }
+            // 如果计时器不存在，则创建一个
+            if (!timer) {
+               timer = setTimeout(() => {
+                   console.log('100ms内接收的数据', dataString)
+                   let result = new YtbResult(dataString);
+                   this.callback(result);
+                   this.next();
+
+                   // 重置数据和计时器
+                   dataString = '';
+                   timer = null;
+               }, 100); // 设置 100 毫秒的超时时间
+           }
           });
           this.serialport.on('error', error => {
             this.callback(error);
@@ -30,17 +75,76 @@
           }
         }
       });
+    });
+  }
 
-现在是两次收到数据，然后走下面逻辑
-               let result = new YtbResult(dataString);
-               this.callback(result);
-               this.next();
-修改逻辑不是两次，接收到总长度字符串的第五六位表示后面, 将五六位
-的字符串从16进制转化为10进制，表示后面还要接收到的2倍+2的字符串，
-加上之前的这就是字符串的总长度，最后校验一下，将从3位开始，两个，两个转化成10进制
-最后两位不参与，然后将加起来，再转化成16进制，转化结果位数不足四位往前补0，得到结果取最后两位，然后和
-之前的总长度字符串最后两位对比，是否相等，相等则最终通过走
-下面逻辑
-               let result = new YtbResult(dataString);
-               this.callback(result);
-               this.next();
+  /**
+   * 关闭串口
+   * @return {Promise} 关闭状态
+   */
+  close(path) {
+    return new Promise(resolve => {
+      this.serialport.close(err => {
+        if (!this.serialport.isOpen && this.serialport.path === path) {
+          resolve(true);
+        } else {
+          if (err) {
+            resolve(err);
+          } else {
+            resolve(false);
+          }
+        }
+      });
+    });
+  }
+
+  /**
+   * 串口发送数据
+   * @return {commandId} 大命令字
+   * @return {header} 小命令字
+   * @return {data} 命令数据
+   */
+  write({ commandId, header, data }, callback) {
+    if (!this.serialport.isOpen) {
+      callback(false);
+      return;
+    }
+    let request = new YtbRequest(commandId, header, data);
+    this.requestArr.push({
+      request,
+      callback,
+    });
+
+    if (!this.isRun) {
+      this.isRun = true;
+      this.run();
+    }
+  }
+
+  /**
+   * 执行requestArr队列
+   */
+  run() {
+    let [request] = this.requestArr;
+    if (!request) {
+      this.isRun = false;
+      return;
+    }
+    this.callback = request.callback;
+    this.serialport.write(request.request.getBuffer());
+  }
+
+  next() {
+    this.requestArr.shift();
+    setTimeout(()=> {
+      this.run();
+    }, this.time);
+  }
+}
+上述代码中通过write方法触发发送数据，然后通过 this.serialport.on('data'，res => {
+    this.callback(result);
+   this.next();
+})
+返回数据，然后 this.next()执行下一个，问题是如果发送请求了，但是后端没
+返回给我，即没得触发data监听，就会导致卡死在这儿，能不能定个超时时间例如
+300ms没收到，继续下一条？
