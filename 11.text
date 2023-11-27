@@ -1,10 +1,38 @@
-electron中SerialPort通过
-  this.serialport = new SerialPort({
-      path: path,
-      baudRate: baudRate,
-      parity: 'none',
-      autoOpen: false,
-    })
+      this.serialport.open(err => {
+        if (this.serialport.isOpen) {
+          resolve(true);
+          let dataString = '';
+          let dataEventCount = 0;
+          this.serialport.on('data', res => {
+            // 累积接收到的数据
+            console.log('每次接收的数据', res.toString('hex'))
+            dataString += res.toString('hex');
+            dataEventCount++
+            
+            if (dataEventCount === 2) {
+                // 处理数据
+               // console.log('两次接收到的数据', dataString)
+               let result = new YtbResult(dataString);
+               this.callback(result);
+               this.next();
+               // 重置计数器和缓冲区
+               dataEventCount = 0;
+               dataString = '';
+            }
+          });
+          this.serialport.on('error', error => {
+            this.callback(error);
+            this.next();
+          });
+        } else {
+          if (err) {
+            resolve(err);
+          }
+        }
+      });
 
-this.serialport.on('data', res => {})接收数据分几次才返回给我
-这是什么情况，怎么做才能一次给我？
+现在是两次收到数据，然后走下面逻辑
+               let result = new YtbResult(dataString);
+               this.callback(result);
+               this.next();
+修改为定一个超时时间为100ms，将这个时间段的拼接起来，然后走下面逻辑
