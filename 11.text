@@ -1,150 +1,114 @@
-// import { SerialPort } from 'serialport';
-const {SerialPort} = require('serialport')
-import { YtbRequest } from './YtbRequest';
-import { YtbResult } from './YtbResult';
-export class SerialPortManager {
-  constructor() {
-    this.serialport = {};
-    this.callback = null;
-    this.requestArr = [];
-    this.time = 100;
-    this.isRun = false;
-  }
+      let combinArrayCopy = [{
+            "label": "Current_DriveA",
+            "value": 0
+         },
+         {
+            "label": "Current_DriveB",
+            "value": 0
+         },
+         {
+            "label": "Current_BearingA",
+            "value": 0
+         },
+         {
+            "label": "Current_BearingB",
+            "value": 0
+         },
+         {
+            "label": "Speed_Feedback",
+            "value": 0
+         },
+         {
+            "label": "Temp_IGBT",
+            "value": 25
+         },
+         {
+            "label": "Temp_Motor",
+            "value": 43.8
+         },
+         {
+            "label": "Ubus",
+            "value": 49
+         },
+         {
+            "label": "FaultCodeHight16",
+            "value": "0000000000000000"
+         },
+         {
+            "label": "FaultCodeLow16",
+            "value": "0000000001000001"
+         }
+      ]
+      let stausInfo = ref([
+         {
+            label: '温度',
+            valueShow: [
+               {
+                  label: 'IGBT',
+                  valueShow: '20°C'
+               },
+               {
+                  label: 'Motor',
+                  valueShow: '20°C'
+               },
+            ]
+         },
+         {
+            label: '转速反馈',
+            valueShow: [
+               {
+                  label: 'Speed',
+                  valueShow: '20rpm'
+               },
+            ]
+         },
+         {
+            label: '母线电压',
+            valueShow: [
+               {
+                  label: 'Ubus',
+                  valueShow: '20V'
+               },
+            ]
+         },
+         {
+            label: '悬浮电流',
+            valueShow: [
+               {
+                  label: 'BearingA',
+                  valueShow: '10mA'
+               },
+               {
+                  label: 'BearingB',
+                  valueShow: '10mA'
+               },
+            ]
+         },
+         {
+            label: '驱动电流',
+            valueShow: [
+               {
+                  label: 'BearingA',
+                  valueShow: '10mA'
+               },
+               {
+                  label: 'BearingB',
+                  valueShow: '10mA'
+               },
+            ]
+         },
+      ])
+   
+      // 这两个数组的对应关系，combinArrayCopy数组中Current_DriveA的value值对应着stausInfo中
+      // label为驱动电流valueShow的label为BearingA的，valueShow的值 ,例如0 对应着应该是 0mA,需要加上单位
 
-  // 获取串口列表
-  listPort(callback) {
-    this.callback = callback;
-    SerialPort.list().then((ports, err) => {
-      if (err) {
-        return err;
-      } else {
-        this.callback(ports);
-        return true;
-      }
-    });
-  }
-
-  /**
-   * 打开串口
-   * @param {path}   串口号
-   * @param {baudRate} 波特率
-   * @return {Promise} 打开状态  成功/失败
-   */
-  open(path, baudRate) {
-    if (!path || !baudRate) {
-      return false;
-    }
-    this.serialport = new SerialPort({
-      path: path,
-      baudRate: baudRate,
-      parity: 'none',
-      autoOpen: false,
-    });
-    return new Promise(resolve => {
-      this.serialport.open(err => {
-        if (this.serialport.isOpen) {
-          resolve(true);
-          let dataString = '';
-          let timer = null;
-          this.serialport.on('data', res => {
-            // 每次接收到的数据
-            console.log('每次接收的数据', res.toString('hex'))
-            dataString += res.toString('hex');
-            
-            // 如果计时器不存在，则创建一个
-            if (!timer) {
-               timer = setTimeout(() => {
-                   console.log('100ms内接收的数据', dataString)
-                   let result = new YtbResult(dataString);
-                   this.callback(result);
-                   this.next();
-
-                   // 重置数据和计时器
-                   dataString = '';
-                   timer = null;
-               }, 100); // 设置 100 毫秒的超时时间
-           }
-          });
-          this.serialport.on('error', error => {
-            this.callback(error);
-            this.next();
-          });
-        } else {
-          if (err) {
-            resolve(err);
-          }
-        }
-      });
-    });
-  }
-
-  /**
-   * 关闭串口
-   * @return {Promise} 关闭状态
-   */
-  close(path) {
-    return new Promise(resolve => {
-      this.serialport.close(err => {
-        if (!this.serialport.isOpen && this.serialport.path === path) {
-          resolve(true);
-        } else {
-          if (err) {
-            resolve(err);
-          } else {
-            resolve(false);
-          }
-        }
-      });
-    });
-  }
-
-  /**
-   * 串口发送数据
-   * @return {commandId} 大命令字
-   * @return {header} 小命令字
-   * @return {data} 命令数据
-   */
-  write({ commandId, header, data }, callback) {
-    if (!this.serialport.isOpen) {
-      callback(false);
-      return;
-    }
-    let request = new YtbRequest(commandId, header, data);
-    this.requestArr.push({
-      request,
-      callback,
-    });
-
-    if (!this.isRun) {
-      this.isRun = true;
-      this.run();
-    }
-  }
-
-  /**
-   * 执行requestArr队列
-   */
-  run() {
-    let [request] = this.requestArr;
-    if (!request) {
-      this.isRun = false;
-      return;
-    }
-    this.callback = request.callback;
-    this.serialport.write(request.request.getBuffer());
-  }
-
-  next() {
-    this.requestArr.shift();
-    setTimeout(()=> {
-      this.run();
-    }, this.time);
-  }
-}
-上述代码中通过write方法触发发送数据，然后通过 this.serialport.on('data'，res => {
-    this.callback(result);
-   this.next();
-})
-返回数据，然后 this.next()执行下一个，问题是如果发送请求了，但是后端没
-返回给我，即没得触发data监听，就会导致卡死在这儿，能不能定个超时时间例如
-300ms没收到，继续下一条？
+      // 其他对应关系为
+      // Current_DriveB   ==>  label为驱动电流valueShow的label为BearingB的，valueShow的值
+      // Current_BearingA   ==>  label为悬浮电流valueShow的label为BearingA的，valueShow的值
+      // Current_BearingB   ==>  label为悬浮电流valueShow的label为BearingB的，valueShow的值
+      // Speed_Feedback   ==>  label为转速反馈valueShow的label为Speed的，valueShow的值
+      // Temp_IGBT   ==>  label为温度valueShow的label为IGBT的，valueShow的值
+      // Temp_Motor   ==>  label为温度valueShow的label为Motor的，valueShow的值
+      // Ubus   ==>  label为母线电压valueShow的label为Ubus的，valueShow的值
+      
+      // 按照上述关系将stausInfo转化过来
