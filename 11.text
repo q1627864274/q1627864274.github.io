@@ -1,4 +1,41 @@
-      let combinArrayCopy = [{
+     // 绘制折线图
+      const drawLine = (SpeedValue) => {
+         count++
+         newX = Number((newX + 0.1).toFixed(1))
+         lineGraphSerialdata.value.push([Number(newX.toFixed(2)), SpeedValue.toFixed(0)])
+         Xlinedata.value.push(Number(newX.toFixed(1)))
+         if (Xlinedata.value.length > 44) {
+            lineGraphSerialdata.value.splice(0, 5)
+            Xlinedata.value.splice(0, 5)
+         }
+         let arr = []
+         let xMin = Math.min(...Xlinedata.value);
+         let xMax = Math.max(...Xlinedata.value);
+         lineGraphSerialdata.value.forEach(item => {
+            arr.push(item[1])
+         })
+         let maxValue = (Math.max(...arr) / 0.8).toFixed(0)
+         let minValue = (Math.min(...arr) * 0.8).toFixed(0)
+         if (count === 5) {
+            myChart.setOption({
+               xAxis: {
+                  min: xMin,
+                  max: xMax,
+                  interval: 0.5, // 设置x轴刻度间隔
+               },
+               yAxis: [{
+                  min: minValue, // 设置Y轴最小值
+                  max: maxValue, // 设置Y轴最大值
+                  interval: 70, // 设置x轴刻度间隔
+               }],
+               series: [{
+                  data: lineGraphSerialdata.value,
+               }]
+            })
+            count = 0
+         }
+      }
+      let processArr = [{
             "label": "Current_DriveA",
             "value": 0
          },
@@ -39,76 +76,90 @@
             "value": "0000000001000001"
          }
       ]
-      let stausInfo = ref([
-         {
-            label: '温度',
-            valueShow: [
-               {
-                  label: 'IGBT',
-                  valueShow: '20°C'
-               },
-               {
-                  label: 'Motor',
-                  valueShow: '20°C'
-               },
-            ]
-         },
-         {
-            label: '转速反馈',
-            valueShow: [
-               {
-                  label: 'Speed',
-                  valueShow: '20rpm'
-               },
-            ]
-         },
-         {
-            label: '母线电压',
-            valueShow: [
-               {
-                  label: 'Ubus',
-                  valueShow: '20V'
-               },
-            ]
-         },
-         {
-            label: '悬浮电流',
-            valueShow: [
-               {
-                  label: 'BearingA',
-                  valueShow: '10mA'
-               },
-               {
-                  label: 'BearingB',
-                  valueShow: '10mA'
-               },
-            ]
-         },
-         {
-            label: '驱动电流',
-            valueShow: [
-               {
-                  label: 'BearingA',
-                  valueShow: '10mA'
-               },
-               {
-                  label: 'BearingB',
-                  valueShow: '10mA'
-               },
-            ]
-         },
-      ])
-   
-      // 这两个数组的对应关系，combinArrayCopy数组中Current_DriveA的value值对应着stausInfo中
-      // label为驱动电流valueShow的label为BearingA的，valueShow的值 ,例如0 对应着应该是 0mA,需要加上单位
-
-      // 其他对应关系为
-      // Current_DriveB   ==>  label为驱动电流valueShow的label为BearingB的，valueShow的值
-      // Current_BearingA   ==>  label为悬浮电流valueShow的label为BearingA的，valueShow的值
-      // Current_BearingB   ==>  label为悬浮电流valueShow的label为BearingB的，valueShow的值
-      // Speed_Feedback   ==>  label为转速反馈valueShow的label为Speed的，valueShow的值
-      // Temp_IGBT   ==>  label为温度valueShow的label为IGBT的，valueShow的值
-      // Temp_Motor   ==>  label为温度valueShow的label为Motor的，valueShow的值
-      // Ubus   ==>  label为母线电压valueShow的label为Ubus的，valueShow的值
-      
-      // 按照上述关系将stausInfo转化过来
+      const Speeditem = processArr.find(item => item.label === 'Speed_Feedback')
+      const SpeedValue = Speeditem.value
+      drawLine(SpeedValue)
+      // 之前的逻辑
+      // lineGraphSerialdata.value = [[0.0, 0.0]]
+      // 现在
+      // lineGraphSerialdata.value = [
+      // {
+      //    label: 'Currents',
+      //    data: [{
+      //          label: 'Current_DriveA',
+      //          data: [
+      //             [0.0, 0.0]
+      //          ]
+      //       },
+      //       {
+      //          label: 'Current_DriveB',
+      //          data: [
+      //             [0.0, 0.0]
+      //          ]
+      //       },
+      //       {
+      //          label: 'Current_BearingA',
+      //          data: [
+      //             [0.0, 0.0]
+      //          ]
+      //       },
+      //       {
+      //          label: 'Current_BearingB',
+      //          data: [
+      //             [0.0, 0.0]
+      //          ]
+      //       },
+      //    ]
+      // }, {
+      //    label: 'Speed',
+      //    data: [{
+      //       label: 'Speed_Feedback',
+      //       data: [
+      //          [0.0, 0.0]
+      //       ]
+      //    }, ]
+      // }, {
+      //    label: 'Temperature',
+      //    data: [{
+      //          label: 'Temp_IGBT',
+      //          data: [
+      //             [0.0, 0.0]
+      //          ]
+      //       },
+      //       {
+      //          label: 'Temp_Motor',
+      //          data: [
+      //             [0.0, 0.0]
+      //          ]
+      //       },
+      //       {
+      //          label: 'Ubus',
+      //          data: [
+      //             [0.0, 0.0]
+      //          ]
+      //       },
+      //    ]
+      // },
+      // ]
+      // 这一步 lineGraphSerialdata.value.push([Number(newX.toFixed(2)), SpeedValue.toFixed(0)])
+      // 现在要将对应的都加上 , Xlinedata.value.length > 44 时候删除的时候每个对应的data都要删除
+      // arr数组push的时候把所有的都加进去，然后比较
+      // 调用drawLine多加一个参数，Currents/Speed/Temperature 根据他们下面的data数据的数据长度来
+      //  myChart.setOption({
+      //    xAxis: {
+      //       min: xMin,
+      //       max: xMax,
+      //       interval: 0.5, // 设置x轴刻度间隔
+      //    },
+      //    yAxis: [{
+      //       min: minValue, // 设置Y轴最小值
+      //       max: maxValue, // 设置Y轴最大值
+      //       interval: 70, // 设置x轴刻度间隔
+      //    }],
+      //    series: [
+      //       {
+      //          data: lineGraphSerialdata.value,
+      //       }
+      //    ]
+      // })
+      // series中[]中的对象的个数，并依次写
