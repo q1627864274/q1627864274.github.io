@@ -1,4 +1,4 @@
-     // 绘制折线图
+      // 绘制折线图
       const drawLine = (SpeedValue) => {
          count++
          newX = Number((newX + 0.1).toFixed(1))
@@ -79,87 +79,87 @@
       const Speeditem = processArr.find(item => item.label === 'Speed_Feedback')
       const SpeedValue = Speeditem.value
       drawLine(SpeedValue)
-      // 之前的逻辑
-      // lineGraphSerialdata.value = [[0.0, 0.0]]
-      // 现在
-      // lineGraphSerialdata.value = [
-      // {
-      //    label: 'Currents',
-      //    data: [{
-      //          label: 'Current_DriveA',
-      //          data: [
-      //             [0.0, 0.0]
-      //          ]
-      //       },
-      //       {
-      //          label: 'Current_DriveB',
-      //          data: [
-      //             [0.0, 0.0]
-      //          ]
-      //       },
-      //       {
-      //          label: 'Current_BearingA',
-      //          data: [
-      //             [0.0, 0.0]
-      //          ]
-      //       },
-      //       {
-      //          label: 'Current_BearingB',
-      //          data: [
-      //             [0.0, 0.0]
-      //          ]
-      //       },
-      //    ]
-      // }, {
-      //    label: 'Speed',
-      //    data: [{
-      //       label: 'Speed_Feedback',
-      //       data: [
-      //          [0.0, 0.0]
-      //       ]
-      //    }, ]
-      // }, {
-      //    label: 'Temperature',
-      //    data: [{
-      //          label: 'Temp_IGBT',
-      //          data: [
-      //             [0.0, 0.0]
-      //          ]
-      //       },
-      //       {
-      //          label: 'Temp_Motor',
-      //          data: [
-      //             [0.0, 0.0]
-      //          ]
-      //       },
-      //       {
-      //          label: 'Ubus',
-      //          data: [
-      //             [0.0, 0.0]
-      //          ]
-      //       },
-      //    ]
-      // },
-      // ]
-      // 这一步 lineGraphSerialdata.value.push([Number(newX.toFixed(2)), SpeedValue.toFixed(0)])
-      // 现在要将对应的都加上 , Xlinedata.value.length > 44 时候删除的时候每个对应的data都要删除
-      // arr数组push的时候把所有的都加进去，然后比较
-      // 调用drawLine多加一个参数，Currents/Speed/Temperature 根据他们下面的data数据的数据长度来
-      //  myChart.setOption({
-      //    xAxis: {
-      //       min: xMin,
-      //       max: xMax,
-      //       interval: 0.5, // 设置x轴刻度间隔
-      //    },
-      //    yAxis: [{
-      //       min: minValue, // 设置Y轴最小值
-      //       max: maxValue, // 设置Y轴最大值
-      //       interval: 70, // 设置x轴刻度间隔
-      //    }],
-      //    series: [
-      //       {
-      //          data: lineGraphSerialdata.value,
-      //       }
-      //    ]
-      // })
-      // series中[]中的对象的个数，并依次写
+      之前的逻辑
+      lineGraphSerialdata.value = [[0.0, 0.0]]
+      现在
+      lineGraphSerialdata.value = [
+      {
+         label: 'Currents',
+         data: [{
+               label: 'Current_DriveA',
+               data: [
+                  [0.0, 0.0]
+               ]
+            },
+            {
+               label: 'Current_DriveB',
+               data: [
+                  [0.0, 0.0]
+               ]
+            },
+            {
+               label: 'Current_BearingA',
+               data: [
+                  [0.0, 0.0]
+               ]
+            },
+            {
+               label: 'Current_BearingB',
+               data: [
+                  [0.0, 0.0]
+               ]
+            },
+         ]
+      }, {
+         label: 'Speed',
+         data: [{
+            label: 'Speed_Feedback',
+            data: [
+               [0.0, 0.0]
+            ]
+         }, ]
+      }, {
+         label: 'Temperature',
+         data: [{
+               label: 'Temp_IGBT',
+               data: [
+                  [0.0, 0.0]
+               ]
+            },
+            {
+               label: 'Temp_Motor',
+               data: [
+                  [0.0, 0.0]
+               ]
+            },
+            {
+               label: 'Ubus',
+               data: [
+                  [0.0, 0.0]
+               ]
+            },
+         ]
+      },
+      ]
+      这一步 lineGraphSerialdata.value.push([Number(newX.toFixed(2)), SpeedValue.toFixed(0)])
+      现在要将对应的都加上 , Xlinedata.value.length > 44 时候删除的时候每个对应的data都要删除
+      arr数组push的时候把所有的都加进去，然后比较
+      调用drawLine多加一个参数，Currents/Speed/Temperature 根据他们下面的data数据的数据长度来
+       myChart.setOption({
+         xAxis: {
+            min: xMin,
+            max: xMax,
+            interval: 0.5, // 设置x轴刻度间隔
+         },
+         yAxis: [{
+            min: minValue, // 设置Y轴最小值
+            max: maxValue, // 设置Y轴最大值
+            interval: 70, // 设置x轴刻度间隔
+         }],
+         series: [
+            {
+               data: lineGraphSerialdata.value,
+            }
+         ]
+      })
+      series中[]中的对象的个数，并依次写，按照要求进行修改代码
