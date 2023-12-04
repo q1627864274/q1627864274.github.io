@@ -1,86 +1,84 @@
-      let lineGraphSerialdata = [{
-            label: 'Currents',
-            data: [{
-                  label: 'Current_DriveA',
-                  data: [
-                     [0.0, 0.1],
-                     [0.0, 0.2],
-                  ]
-               },
-               {
-                  label: 'Current_DriveB',
-                  data: [
-                     [0.0, 0.3],
-                     [0.0, 0.4],
-                  ]
-               },
-               {
-                  label: 'Current_BearingA',
-                  data: [
-                     [0.0, 0.5],
-                     [0.0, 0.6],
-                  ]
-               },
-               {
-                  label: 'Current_BearingB',
-                  data: [
-                     [0.0, 0.7],
-                     [0.0, 0.8],
-                  ]
-               },
-            ]
+     const sensorInfo = ref([
+         {
+            label: 'ECSX',
+            value: '10um'
          },
          {
-            label: 'Speed',
-            data: [{
-               label: 'Speed_Feedback',
-               data: [
-                  [0.0, 0.9],
-                  [0.0, 1.0],
-               ]
-            }, ]
+            label: 'ECSY',
+            value: '10mum'
          },
          {
-            label: 'Temperature',
-            data: [{
-                  label: 'Temp_IGBT',
-                  data: [
-                     [0.0, 1.1],
-                     [0.0, 1.2],
-                  ]
-               },
-               {
-                  label: 'Temp_Motor',
-                  data: [
-                     [0.0, 1.3],
-                     [0.0, 1.4],
-                  ]
-               },
-            ]
+            label: 'Hall_A',
+            value: '2°'
          },
+         {
+            label: 'Hall_B',
+            value: '5°'
+         },
+         {
+            label: 'Ana_Ref',
+            value: '10mA'
+         },
+         {
+            label: 'Ana_Fdb',
+            value: '10mA'
+         },
+         {
+            label: 'Anv_Ref',
+            value: '5V'
+         },
+         {
+            label: 'Anv_Fdb',
+            value: '5V'
+         },
+      ])
+
+      const processArr = [{
+            "label": "ECSX",
+            "value": 632
+         },
+         {
+            "label": "ECSY",
+            "value": 87
+         },
+         {
+            "label": "Hall-A",
+            "value": 34965
+         },
+         {
+            "label": "Hall-B",
+            "value": 34579
+         },
+         {
+            "label": "AnaIn1",
+            "value": 0
+         },
+         {
+            "label": "AnaIn2",
+            "value": 0
+         },
+         {
+            "label": "AnaIn3",
+            "value": 0
+         },
+         {
+            "label": "AnaIn4",
+            "value": 0
+         },
+         {
+            "label": "spare-3",
+            "value": 0
+         },
+         {
+            "label": "spare-4",
+            "value": 0
+         }
       ]
-      let label = 'Currents'
-      let length = 0
-      const getSeries = () => {
-         let arr = []
-         return arr
-      }
-      myChart.setOption({
-         series: getSeries()
-      })
-      // 当label = 'Currents'的时候。根据lineGraphSerialdata中label = 'Currents'的data下面有3个对象，所以length = 3 
-      // getSeries() = [
-         //  {
-         //    type: 'line',
-         //    data: 根据lineGraphSerialdata中label = 'Currents'的data下面有3个对象的第一个
-         //  },
-         //  {
-         //    type: 'line',
-         //    data: 根据lineGraphSerialdata中label = 'Currents'的data下面有3个对象的第二个
-         //  },
-         //  {
-         //    type: 'line',
-         //    data: 根据lineGraphSerialdata中label = 'Currents'的data下面有3个对象的第三个
-         //  },
-      // ]
-      // 按照上述内容的例子，完善上述代码
+     
+
+      // 根据processArr中对应的值去修改sensorInfo的值
+      // 例如  processArr中
+      // label=ECSX  值为632  ==> 对应将sensorInfo中ECSX的值修改为632um 需要加上单位
+      // 其他的依次类推，
+      // 其中AnaIn1、AnaIn2、AnaIn3、AnaIn4 分别对应 Ana_Ref、Ana_Fdb、Anv_Ref、Anv_Fdb
+      // 使用js写一个函数进行转化
