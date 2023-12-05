@@ -1,7 +1,1 @@
-  let m = 1810
-      console.log('最大值', m / 0.8)
-      console.log('最小值',m * 0.8)
-      let n = -1810
-      console.log('最大值', n / 0.8)
-      console.log('最小值',n * 0.8)
-      // 当为正数时，这个方式是对的，但是为负数就相反了，怎么解决？
+       let [request] = this.requestArr;
