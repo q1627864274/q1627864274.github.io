@@ -1,53 +1,119 @@
-       let [request] = this.requestArr;
-      let arr = [
-         "0x01",
-         "0x02",
-         "0x03",
-         "0x04",
-         "0x05",
-         "0x06",
-         "0x07",
-         "0x08",
-         "0x09",
-         "0x10",
-         "0x11",
-         "0x01",
-         "0x02",
-         "0x03",
-         "0x04"
-      ]
+      const PLCInfo = ref([{
+            label: 'PLC接口信息',
+            data: [{
+                  label: 'Digital Input 1 (Reset)',
+                  value: '24V - Active'
+               },
+               {
+                  label: 'Digital Input 2 (Mode)',
+                  value: '24V - Process Mode'
+               },
+               {
+                  label: 'Digital Input 3 (Enable)',
+                  value: '24V - Active'
+               },
 
-      function plcConvertHexPairsToDecimal(arr) {
-         let result = [];
-         arr = arr.map(item => {
-            return item.replace('0x', '')
-         })
-         result.push(arr[0])
-         result.push(arr[1])
-         result.push(arr[2])
-         result.push(arr[3] + arr[4])
-         result.push(arr[5] + arr[6])
-         result.push(arr[7] + arr[8])
-         result.push(arr[9] + arr[10])
-         result.push(arr[11])
-         result.push(arr[12])
-         result.push(arr[13])
-         result.push(arr[14])
-         result = result.map(item => {
-            return parseInt(item, 16)
-         })
-         return result;
-      }
-      // 上述plcConvertHexPairsToDecimal中的这一串
-      //          result.push(arr[0])
-      // result.push(arr[1])
-      //    result.push(arr[2])
-      //    result.push(arr[3] + arr[4])
-      //    result.push(arr[5] + arr[6])
-      //    result.push(arr[7] + arr[8])
-      //    result.push(arr[9] + arr[10])
-      //    result.push(arr[11])
-      //    result.push(arr[12])
-      //    result.push(arr[13])
-      //    result.push(arr[14])
-      // 能不能进行优化？
+            ]
+         },
+         {
+            label: 'Analog Output 1 (Actual Speed)',
+            data: [{
+                  label: 'Actual Speed',
+                  value: '100rpm'
+               },
+               {
+                  label: 'Physical Output',
+                  value: '5V'
+               }
+            ]
+         },
+         {
+            label: 'Analog Output 2 (Actual Process Value)',
+            data: [{
+                  label: 'Actual Process Value',
+                  value: '80.07%'
+               },
+               {
+                  label: 'Physical Output',
+                  value: '7V'
+               },
+               {
+                  label: 'Digital Output 1(Status of Control System)',
+                  value: 'Relay Open - Not Active'
+               },
+               {
+                  label: 'Digital Output 2(Error)',
+                  value: 'Relay Open - Active'
+               },
+               {
+                  label: 'Digital Output 3(Waming)',
+                  value: 'Relay Open - Active'
+               },
+               {
+                  label: 'Digital Output 4(Config Waming / Priming)',
+                  value: 'Relay Open'
+               },
+            ]
+         },
+
+
+      ])
+      const combinArray = [{
+            "label": "Digital Input 1 (Reset)",
+            "value": 0
+         },
+         {
+            "label": "Digital Input 2 (Mode)",
+            "value": 0
+         },
+         {
+            "label": "Digital Input 3 (Enable)",
+            "value": 0
+         },
+         {
+            "label": "Actual Speed",
+            "value": 0
+         },
+         {
+            "label": "Physical Output",
+            "value": 0
+         },
+         {
+            "label": "Actual Process Value",
+            "value": 0
+         },
+         {
+            "label": "Physical Output",
+            "value": 0
+         },
+         {
+            "label": "Digital Output 1(Status of Control System)",
+            "value": 0
+         },
+         {
+            "label": "Digital Output 2(Error)",
+            "value": 0
+         },
+         {
+            "label": "Digital Output 3(Waming)",
+            "value": 0
+         },
+         {
+            "label": "Digital Output 4(Config Waming / Priming)",
+            "value": 0
+         }
+      ]
+      // 根据combinArray的标签值，对应PLCInfo中的label下面的label
+      //  并替换下面的值，替换的结果还要处理
+      //  例如：label为Digital Input 1 (Reset) 替换结果为1 就是 value+V - Active  为0就是value+V - Not Active
+      //  Digital Input 2 (Mode)    替换结果为1 就是 value+V - Process Mode  为0就是value+V - Speed Mode
+      //  例如：label为Digital Input 3 (Enable) 替换结果为1 就是 value+V - Active  为0就是value+V - Not Active
+      //  例如：label为Digital Output 1(Status of Control System) 替换结果为1 就是 Relay Open - Active  为0就是Relay Open - Not Active
+      //  例如：label为Digital Output 2(Error)替换结果为1 就是 Relay Open - Active  为0就是Relay Open - Not Active
+      //  例如：label为Digital Output 3(Waming) 替换结果为1 就是 Relay Open - Active  为0就是Relay Open - Not Active
+      //  例如：label为Digital Output 4(Config Waming / Priming) 替换结果为1 就是 Relay Open - Active  为0就是Relay Open - Not Active
+      //  例如：label为Actual Speed 替换结果为 value+rpm
+      //  例如：label为Physical Output 替换结果为 value+V
+      //  例如：label为Actual Process Value 替换结果为 value+%
+     
+      // 将上述使用函数转化
