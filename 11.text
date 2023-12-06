@@ -1,1 +1,53 @@
        let [request] = this.requestArr;
+      let arr = [
+         "0x01",
+         "0x02",
+         "0x03",
+         "0x04",
+         "0x05",
+         "0x06",
+         "0x07",
+         "0x08",
+         "0x09",
+         "0x10",
+         "0x11",
+         "0x01",
+         "0x02",
+         "0x03",
+         "0x04"
+      ]
+
+      function plcConvertHexPairsToDecimal(arr) {
+         let result = [];
+         arr = arr.map(item => {
+            return item.replace('0x', '')
+         })
+         result.push(arr[0])
+         result.push(arr[1])
+         result.push(arr[2])
+         result.push(arr[3] + arr[4])
+         result.push(arr[5] + arr[6])
+         result.push(arr[7] + arr[8])
+         result.push(arr[9] + arr[10])
+         result.push(arr[11])
+         result.push(arr[12])
+         result.push(arr[13])
+         result.push(arr[14])
+         result = result.map(item => {
+            return parseInt(item, 16)
+         })
+         return result;
+      }
+      // 上述plcConvertHexPairsToDecimal中的这一串
+      //          result.push(arr[0])
+      // result.push(arr[1])
+      //    result.push(arr[2])
+      //    result.push(arr[3] + arr[4])
+      //    result.push(arr[5] + arr[6])
+      //    result.push(arr[7] + arr[8])
+      //    result.push(arr[9] + arr[10])
+      //    result.push(arr[11])
+      //    result.push(arr[12])
+      //    result.push(arr[13])
+      //    result.push(arr[14])
+      // 能不能进行优化？
