@@ -1,4 +1,4 @@
-      const PLCInfo = ref([{
+      const PLCInfo = [{
             label: 'PLC接口信息',
             data: [{
                   label: 'Digital Input 1 (Reset)',
@@ -57,7 +57,7 @@
          },
 
 
-      ])
+      ]
       const combinArray = [{
             "label": "Digital Input 1 (Reset)",
             "value": 0
@@ -76,7 +76,7 @@
          },
          {
             "label": "Physical Output",
-            "value": 0
+            "value": 1
          },
          {
             "label": "Actual Process Value",
@@ -103,17 +103,45 @@
             "value": 0
          }
       ]
-      // 根据combinArray的标签值，对应PLCInfo中的label下面的label
-      //  并替换下面的值，替换的结果还要处理
-      //  例如：label为Digital Input 1 (Reset) 替换结果为1 就是 value+V - Active  为0就是value+V - Not Active
-      //  Digital Input 2 (Mode)    替换结果为1 就是 value+V - Process Mode  为0就是value+V - Speed Mode
-      //  例如：label为Digital Input 3 (Enable) 替换结果为1 就是 value+V - Active  为0就是value+V - Not Active
-      //  例如：label为Digital Output 1(Status of Control System) 替换结果为1 就是 Relay Open - Active  为0就是Relay Open - Not Active
-      //  例如：label为Digital Output 2(Error)替换结果为1 就是 Relay Open - Active  为0就是Relay Open - Not Active
-      //  例如：label为Digital Output 3(Waming) 替换结果为1 就是 Relay Open - Active  为0就是Relay Open - Not Active
-      //  例如：label为Digital Output 4(Config Waming / Priming) 替换结果为1 就是 Relay Open - Active  为0就是Relay Open - Not Active
-      //  例如：label为Actual Speed 替换结果为 value+rpm
-      //  例如：label为Physical Output 替换结果为 value+V
-      //  例如：label为Actual Process Value 替换结果为 value+%
-     
       // 将上述使用函数转化
+      function updatePLCInfo(PLCInfo, combinArray) {
+         // 遍历PLCInfo
+         PLCInfo.forEach(plcItem => {
+            plcItem.data.forEach(dataItem => {
+               // 在combinArray中找到匹配的label
+               const matchingItem = combinArray.find(combin => combin.label === dataItem.label);
+               if (matchingItem) {
+                  // 根据label和value更新PLCInfo中的值
+                  switch (dataItem.label) {
+                     case 'Digital Input 1 (Reset)':
+                     case 'Digital Input 3 (Enable)':
+                        dataItem.value = matchingItem.value === 1 ? `${matchingItem.value}V - Active` : `${matchingItem.value}V - Not Active`;
+                        break;
+                     case 'Digital Input 2 (Mode)':
+                        dataItem.value = matchingItem.value === 1 ? `${matchingItem.value}V - Process Mode` :
+                           `${matchingItem.value}V - Speed Mode`;
+                        break;
+                     case 'Actual Speed':
+                        dataItem.value = matchingItem.value + 'rpm';
+                        break;
+                     case 'Physical Output':
+                        dataItem.value = matchingItem.value + 'V';
+                        break;
+                     case 'Actual Process Value':
+                        dataItem.value = matchingItem.value + '%';
+                        break;
+                     default:
+                        if (dataItem.label.startsWith('Digital Output')) {
+                           dataItem.value = matchingItem.value === 1 ? 'Relay Open - Active' :
+                              'Relay Open - Not Active';
+                        }
+                        break;
+                  }
+               }
+            });
+         });
+      }
+      updatePLCInfo(PLCInfo,combinArray)
+      console.log(PLCInfo)
+      // 使用updatePLCInfo处理发现一个问题，因为combinArray有两个相同的label为Physical Output
+      // 这样导致PLCInfo中label为Physical Output都为同一个值了，怎么处理
