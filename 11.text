@@ -1,2 +1,4 @@
-      // 因为是通过setInterval 100ms，3个请求，
-      // 如果设置请求队列最大长度，担心大于100之后，每次只添加第一个，导致队列里面只剩第一个请求了
+     // 在hooks/useRightHead.js文件中使用
+     // import { useStatusStore } from '../store/index';
+    // let StatusStore = useStatusStore()
+    // 发现控制台报错：Uncaught Error: [🍍]: "getActivePinia()" was called but there was no active Pinia. Are you trying to use a store before calling "app.use(pinia)"?
