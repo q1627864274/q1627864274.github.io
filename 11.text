@@ -1,4 +1,32 @@
-     // 在hooks/useRightHead.js文件中使用
-     // import { useStatusStore } from '../store/index';
-    // let StatusStore = useStatusStore()
-    // 发现控制台报错：Uncaught Error: [🍍]: "getActivePinia()" was called but there was no active Pinia. Are you trying to use a store before calling "app.use(pinia)"?
+     // vue3中
+      const cardData = ref([{
+            id: 11,
+            title: '模拟输入-选择',
+            contents: [{
+                  id: 111,
+                  title: '',
+                  head: '设置参考点输入信号',
+                  isSelect: true,
+                  value: '0',
+                  unit: '',
+                  min: 0,
+                  max: 1000,
+                  description: '(*0=电流输入 / 1=电压输入)'
+               },
+               {
+                  id: 112,
+                  title: '',
+                  head: '设置传感器反馈信号',
+                  isSelect: true,
+                  value: '0',
+                  unit: '',
+                  min: 0,
+                  max: 1000,
+                  description: '(*0=电流输入 / 1=电压输入)'
+               }
+            ]
+         },
+      ]);
+     // cardData中title为模拟输入-选择中
+     // contentsx下数组两个对象中value的值分别是两个下拉框v-model的值
+     // 现在需求是：第二个值需要跟第一个值一致，当检测不同的时候给提示信息需一致，并将第二个值改成与第一个一样
