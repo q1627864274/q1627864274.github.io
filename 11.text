@@ -1,3 +1,23 @@
+      function hexArrayToFloat(hexArray) {
+         // 检查数组长度是否为4（32位浮点数的字节数）
+         if (hexArray.length !== 4) {
+            throw new Error("Invalid hex array length");
+         }
 
-      // ['0x71', '0x3d', '0x8a', '0x3f']数据中的数据均为16进制
-      // 使用js函数进行转化，使得最后结果为浮点数1.08, 这个怎么处理
+         // 创建一个新的ArrayBuffer和一个Uint8Array视图
+         let buffer = new ArrayBuffer(4);
+         let uint8View = new Uint8Array(buffer);
+
+         // 将十六进制值填充到Uint8Array中
+         hexArray.forEach((hex, index) => {
+            uint8View[index] = parseInt(hex, 16);
+         });
+
+         // 使用与ArrayBuffer共享相同内存的Float32Array来读取浮点数
+         let float32View = new Float32Array(buffer);
+         return float32View[0];
+      }
+
+      // 测试函数
+      console.log(hexArrayToFloat(['0x71', '0x3d', '0x8a', '0x3f'])); 
+      // 结果为1.0800000429153442   能不能再提高点精度？
