@@ -1,5 +1,1 @@
-      // 在APP.vue文件
-      // <keep-alive :include="['Configuration']">
-      //    <component :is="componentToRender"></component>
-      // </keep-alive>
-      // 使用这个keep-alive缓存了Configuration这个组件，当我点击侧边栏左上角的按钮，想让这个页面销毁不缓存了，怎么做？
+将'3F8A3D71'转化为713D8A3F
