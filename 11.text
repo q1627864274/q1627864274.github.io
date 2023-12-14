@@ -1,2 +1,6 @@
-      let arr = [[1,2,3],[4,5,6]]
-      // 转化 [1,2,3,4,5,6] 使用js转化
+、      valueArray = contents.map((item, index) => {
+         if (index < 2) {
+            return item.value
+         }
+      })
+      // 发现结果 ['0', '0', undefined, undefined] 我只想要['0', '0']怎么办？
