@@ -1,20 +1,120 @@
-      let data = [
-         "00",
-         "01",
-         "01",
-
-         "00",
-         "5a",
-
-         "01",
-
-         "00",
-         "14",
-
-         "00",
-         "00",
-         "01"
+      let contents = [
+         [{
+               id: 521,
+               title: 'Digital Output 4 Output Configuration',
+               head: 'Output mode',
+               isSelect: true,
+               unit: 'rmp',
+               value: 0,
+               min: 0,
+               max: 100,
+               description: '(*0=conf.warn; 1=prim)'
+            },
+            {
+               id: 522,
+               title: 'Digital Output 4 Signal Logic',
+               head: 'Digital Output 4 Signal Logic',
+               isSelect: true,
+               unit: 'rpm',
+               value: 1,
+               min: 0,
+               max: 100,
+               description: '(*0=NO; 1=NC)'
+            },
+            {
+               id: 523,
+               title: 'Motor Temperature Warning',
+               head: 'Warning Temperature Threshold',
+               isSelect: false,
+               selectCheckBox_value: true,
+               selectCheckBox: 'Enable Motor Temp. Warning on Dig. Out. 4',
+               unit: '℃',
+               value: 90,
+               min: 0,
+               max: 100,
+               description: ''
+            }
+         ],
+         [{
+               id: 531,
+               title: 'Controller Temperature Warning',
+               head: 'Warning Temperature Threshold',
+               isSelect: false,
+               isInput: true,
+               selectCheckBox_value: true,
+               selectCheckBox: 'Enable Controller Temp. Warning on Dig. Out. 4',
+               unit: 'rmp',
+               value: 20,
+               min: 0,
+               max: 100,
+               description: ''
+            },
+            {
+               id: 532,
+               title: 'Dryrunnning Warning',
+               head: '',
+               isSelect: false,
+               selectCheckBox_value: false,
+               selectCheckBox: 'Enable Dryrunnning Warning on Dig. Out. 4',
+               unit: '',
+               value: 0,
+               min: 0,
+               max: 100,
+               description: ''
+            },
+            {
+               id: 533,
+               title: 'Process Alam Warning',
+               head: '',
+               isSelect: false,
+               selectCheckBox_value: false,
+               selectCheckBox: 'Enable Process Alam on Dig. Out. 4',
+               unit: '',
+               value: 0,
+               min: 0,
+               max: 100,
+               description: ''
+            },
+            {
+               id: 534,
+               title: 'Trend Warning',
+               head: '',
+               isSelect: false,
+               selectCheckBox_value: true,
+               selectCheckBox: 'Enable Trend Warning on Dig. Out. 4',
+               unit: '',
+               value: 0,
+               min: 0,
+               max: 100,
+               description: ''
+            }
+         ]
       ]
-         // 上述数组 ，将每一个通过parseInt(item, 16))转化
-      // 但是index为3,4 需要拼接然后转化
-      // 但是index为6,7 需要拼接然后转化
+      result = [
+         0,
+         1,
+         1,
+         90,
+         1,
+         20,
+         0,
+         0,
+         1
+      ]
+
+      //依次的对应关系
+      // 0 ==> id为521的value值
+      // 1 ==> id为522的value值
+      // 1 ==> id为523的selectCheckBox_value值
+      //       为1electCheckBox_value值为true
+      //       为0electCheckBox_value值为false
+      // 90 ==> id为523的value值
+
+      // 1 ==> id为531的selectCheckBox_value值
+      //       为1electCheckBox_value值为true
+      //       为0electCheckBox_value值为false
+      // 20 ==> id为531的value值
+      // 0 ==> id为532的value值
+      // 0 ==> id为533的value值
+      // 1 ==> id为534的value值
+      // 按照上述对应关系，将contents进行修改
