@@ -1,120 +1,16 @@
-      let contents = [
-         [{
-               id: 521,
-               title: 'Digital Output 4 Output Configuration',
-               head: 'Output mode',
-               isSelect: true,
-               unit: 'rmp',
-               value: 0,
-               min: 0,
-               max: 100,
-               description: '(*0=conf.warn; 1=prim)'
-            },
-            {
-               id: 522,
-               title: 'Digital Output 4 Signal Logic',
-               head: 'Digital Output 4 Signal Logic',
-               isSelect: true,
-               unit: 'rpm',
-               value: 1,
-               min: 0,
-               max: 100,
-               description: '(*0=NO; 1=NC)'
-            },
-            {
-               id: 523,
-               title: 'Motor Temperature Warning',
-               head: 'Warning Temperature Threshold',
-               isSelect: false,
-               selectCheckBox_value: true,
-               selectCheckBox: 'Enable Motor Temp. Warning on Dig. Out. 4',
-               unit: '℃',
-               value: 90,
-               min: 0,
-               max: 100,
-               description: ''
-            }
-         ],
-         [{
-               id: 531,
-               title: 'Controller Temperature Warning',
-               head: 'Warning Temperature Threshold',
-               isSelect: false,
-               isInput: true,
-               selectCheckBox_value: true,
-               selectCheckBox: 'Enable Controller Temp. Warning on Dig. Out. 4',
-               unit: 'rmp',
-               value: 20,
-               min: 0,
-               max: 100,
-               description: ''
-            },
-            {
-               id: 532,
-               title: 'Dryrunnning Warning',
-               head: '',
-               isSelect: false,
-               selectCheckBox_value: false,
-               selectCheckBox: 'Enable Dryrunnning Warning on Dig. Out. 4',
-               unit: '',
-               value: 0,
-               min: 0,
-               max: 100,
-               description: ''
-            },
-            {
-               id: 533,
-               title: 'Process Alam Warning',
-               head: '',
-               isSelect: false,
-               selectCheckBox_value: false,
-               selectCheckBox: 'Enable Process Alam on Dig. Out. 4',
-               unit: '',
-               value: 0,
-               min: 0,
-               max: 100,
-               description: ''
-            },
-            {
-               id: 534,
-               title: 'Trend Warning',
-               head: '',
-               isSelect: false,
-               selectCheckBox_value: true,
-               selectCheckBox: 'Enable Trend Warning on Dig. Out. 4',
-               unit: '',
-               value: 0,
-               min: 0,
-               max: 100,
-               description: ''
-            }
-         ]
-      ]
-      result = [
-         0,
-         1,
-         1,
-         90,
-         1,
-         20,
-         0,
-         0,
-         1
-      ]
+      vue3 + electron+vite 写桌面应用
+      现在需要搞一个config.ini 配置文件
+      内容如下：
+      [ % General]
+      config = 1 是否启动配置功能
+      logLevel = 1 LOG打印级别
+      maxLine = 8 日志显示最大行数
 
-      //依次的对应关系
-      // 0 ==> id为521的value值
-      // 1 ==> id为522的value值
-      // 1 ==> id为523的selectCheckBox_value值
-      //       为1electCheckBox_value值为true
-      //       为0electCheckBox_value值为false
-      // 90 ==> id为523的value值
-
-      // 1 ==> id为531的selectCheckBox_value值
-      //       为1electCheckBox_value值为true
-      //       为0electCheckBox_value值为false
-      // 20 ==> id为531的value值
-      // 0 ==> id为532的value值
-      // 0 ==> id为533的value值
-      // 1 ==> id为534的value值
-      // 按照上述对应关系，将contents进行修改
+      [serialPort]
+      com = COM10 串口号
+      baud = 115200 波特率
+      dataBit = 8 数据位
+      parity = None 效验位
+      stopBit = 1 停止位
+      使得打开桌面应用，就能读取文件，然后将相关内容，展示在页面上
+      用户也能打开config.ini文件，进行配置，这种需求怎么实现？
