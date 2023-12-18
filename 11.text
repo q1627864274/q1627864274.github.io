@@ -1,42 +1,36 @@
-const fs = require('fs');
-const ini = require('ini');
-console.log(ini.parse(fs.readFileSync('./data/template.ini', 'utf-8')))
+[%General]
+config=1            是否启动配置功能
+logLevel=1         LOG打印级别
+maxLine=8         日志显示最大行数
 
-// 读取的内容如下：
-// [Object: null prototype] {
-//    '%General': [Object: null prototype] {
-//      config: '1            锟角凤拷锟斤拷锟斤拷锟斤拷锟矫癸拷锟斤拷',
-//      logLevel: '1         LOG锟斤拷印锟斤拷锟斤拷',
-//      maxLine: '8         锟斤拷志锟斤拷示锟斤拷锟斤拷锟斤拷锟?
-//    },
-//    serialPort: [Object: null prototype] {
-//      com: 'COM10      锟斤拷锟节猴拷',
-//      baud: '115200      锟斤拷锟斤拷锟斤拷',
-//      dataBit: '8            锟斤拷锟斤拷位',
-//      parity: 'None       效锟斤拷位',
-//      stopBit: '1            停止位'
-//    },
-//    customPlot: [Object: null prototype] {
-//      autoScaling: 'true     锟斤拷锟斤拷应',
-//      y1Min: '0                  Y锟斤拷锟疥范围',
-//      y1Max: '0                  Y锟斤拷锟疥范围',
-//      y2Min: '0                  Y锟斤拷锟疥范围',
-//      y2Max: '0                  Y锟斤拷锟疥范围',
-//      xRange: '0.02            X锟斤拷锟斤拷锟斤拷锟绞憋拷锟?,
-//      viewMode: '0            锟斤拷锟竭和憋拷锟斤拷锟斤拷示锟叫伙拷模式',
-//      dataViewLine: '5       锟斤拷锟斤拷锟斤拷示锟斤拷锟斤拷锟斤拷锟?,
-//      trendPoint: '50          锟斤拷锟狡碉拷锟斤拷'
-//    },
-//    csv: [Object: null prototype] {
-//      csvPath: 'C:/Users/lwx1097343/Desktop/hwQtMotorTools-V2-1.11-0316-eeprom/business/build-pumpTools-Desktop_Qt_5_9_3_MinGW_32bit-Release/release/csv',
-//      csvTimeInter: '3        时锟斤拷锟斤拷模式'
-//    },
-//    ui: [Object: null prototype] {
-//      language: '1                  锟斤拷锟斤拷',
-//      PLC: '1                          锟角凤拷锟窖LC',
-//      flowCtrl: 'false               锟角凤拷使锟杰癸拷锟斤拷模式',
-//      idlingDetection: 'true     锟角凤拷使锟杰匡拷转锟斤拷锟?,
-//      sysSampleInter: '100      系统锟斤拷锟斤拷时锟斤拷'
-//    },
-//    procotol: [Object: null prototype] { timeout: '200                 协锟介超时锟芥警时锟斤拷' }
-// 怎么将上述读取内容转化为， '[ % General]\nconfig = 1            是否启动配置功能\nlogLevel = 1           LOG打印级别\nmaxLine = 8\n...'这种样子？
+[serialPort]
+com=COM10      串口号
+baud=115200      波特率
+dataBit=8            数据位
+parity=None       效验位
+stopBit=1            停止位
+
+[customPlot]
+autoScaling=true     自适应
+y1Min=0                  Y坐标范围
+y1Max=0                  Y坐标范围
+y2Min=0                  Y坐标范围
+y2Max=0                  Y坐标范围
+xRange=0.02            X坐标最大时间         
+viewMode=0            曲线和表格显示切换模式
+dataViewLine=5       表格显示最大行数 
+trendPoint=50          趋势点数
+
+[csv]
+csvPath=C:/Users/lwx1097343/Desktop/hwQtMotorTools-V2-1.11-0316-eeprom/business/build-pumpTools-Desktop_Qt_5_9_3_MinGW_32bit-Release/release/csv
+csvTimeInter=3        时间间隔模式
+
+[ui]
+language=1                  语言
+PLC=1                          是否点选PLC
+flowCtrl=false               是否使能过程模式
+idlingDetection=true     是否使能空转检测
+sysSampleInter=100      系统采样时间
+
+[procotol]
+timeout=200                 协议超时告警时间
