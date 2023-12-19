@@ -1,36 +1,27 @@
-[%General]
-config=1            是否启动配置功能
-logLevel=1         LOG打印级别
-maxLine=8         日志显示最大行数
+const fs = require('fs');
+const ini = require('ini');
+文档内的内容为：
+[ %General]
+config = 1            是否启动配置功能
+logLevel = 1           LOG打印级别
+maxLine = 8
 
 [serialPort]
-com=COM10      串口号
-baud=115200      波特率
-dataBit=8            数据位
-parity=None       效验位
-stopBit=1            停止位
-
-[customPlot]
-autoScaling=true     自适应
-y1Min=0                  Y坐标范围
-y1Max=0                  Y坐标范围
-y2Min=0                  Y坐标范围
-y2Max=0                  Y坐标范围
-xRange=0.02            X坐标最大时间         
-viewMode=0            曲线和表格显示切换模式
-dataViewLine=5       表格显示最大行数 
-trendPoint=50          趋势点数
-
-[csv]
-csvPath=C:/Users/lwx1097343/Desktop/hwQtMotorTools-V2-1.11-0316-eeprom/business/build-pumpTools-Desktop_Qt_5_9_3_MinGW_32bit-Release/release/csv
-csvTimeInter=3        时间间隔模式
-
-[ui]
-language=1                  语言
-PLC=1                          是否点选PLC
-flowCtrl=false               是否使能过程模式
-idlingDetection=true     是否使能空转检测
-sysSampleInter=100      系统采样时间
-
-[procotol]
-timeout=200                 协议超时告警时间
+com=COM10            串口号
+baud=115200           波特率
+dataBit=8    数据位
+// 通过
+console.log(ini.parse(fs.readFileSync('./data/template.ini', 'utf-8')))
+打印的结果是：{
+    "%General": {
+        "config": "1            是否启动配置功能",
+        "logLevel": "1           LOG打印级别",
+        "maxLine": "8"
+    },
+    "serialPort": {
+        "com": "COM10            串口号",
+        "baud": "115200           波特率",
+        "dataBit": "8    数据位"
+    }
+}
+我现在写入要传入一个上述这样的对象然后写入文档，这样怎么写？
