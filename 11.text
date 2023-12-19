@@ -1,7 +1,171 @@
-写入的时候{
-   "%General": {
-      "config": "1  是否启动配置功能",
-      "logLevel": "1  LOG打印级别",
-      "maxLine": "8  日志显示最大行数"
-  },
-  但是我觉得value值 "1  是否启动配置功能"太长，我只用1，但是写入格式又要求这样，我怎么处理？
+      // 读取配置
+      const readConfig = () => {
+         const configPath = getConfigPath();
+         if (!fs.existsSync(configPath)) {
+            // 如果文件不存在，创建默认配置
+            let defaultConfig = addDescription(configValues);
+            defaultConfig = ini.stringify(defaultConfig)
+            fs.writeFileSync(configPath, defaultConfig);
+         }
+         let config = ini.parse(fs.readFileSync(configPath, 'utf-8'))
+         console.log('config', config)
+         config = removeDescription(config)
+         return config;
+      };
+      得到结果
+      {
+    "%General": {
+        "config": "1",
+        "logLevel": "1",
+        "maxLine": "8"
+    },
+    "serialPort": {
+        "com": "COM10",
+        "baud": "115200",
+        "dataBit": "8",
+        "parity": "None",
+        "stopBit": "1"
+    },
+    "customPlot": {
+        "autoScaling": "true",
+        "y1Min": "0",
+        "y1Max": "0",
+        "y2Min": "0",
+        "y2Max": "0",
+        "xRange": "0.02",
+        "viewMode": "0",
+        "dataViewLine": "5",
+        "trendPoint": "0"
+    },
+    "csv": {
+        "csvPath": "C:/Users/lwx1097343/Desktop/hwQtMotorTools-V2-1.11-0316-eeprom/business/build-pumpTools-Desktop_Qt_5_9_3_MinGW_32bit-Release/release/csv",
+        "csvTimeInter": "3"
+    },
+    "ui": {
+        "language": "1",
+        "PLC": "1",
+        "flowCtrl": "false",
+        "idlingDetection": "true",
+        "sysSampleInter": "100"
+    },
+    "procotol": {
+        "timeout": "200"
+    }
+}
+ini文件内容：
+[%General]
+config=1  是否启动配置功能
+logLevel=1  LOG打印级别
+maxLine=8  日志显示最大行数
+
+[serialPort]
+com=COM10  串口号
+baud=115200  波特率
+dataBit=8  数据位
+parity=None  效验位
+stopBit=1  停止位
+
+[customPlot]
+autoScaling=true  自适应
+y1Min=0  Y坐标范围
+y1Max=0  Y坐标范围
+y2Min=0  Y坐标范围
+y2Max=0  Y坐标范围
+xRange=0.02  X坐标最大时间
+viewMode=0  曲线和表格显示切换模式
+dataViewLine=5  表格显示最大行数
+trendPoint=0  趋势点数
+
+[csv]
+csvPath=C:/Users/lwx1097343/Desktop/hwQtMotorTools-V2-1.11-0316-eeprom/business/build-pumpTools-Desktop_Qt_5_9_3_MinGW_32bit-Release/release/csv
+csvTimeInter=3  时间间隔模式
+
+[ui]
+language=1  语言
+PLC=1  是否点选PLC
+flowCtrl=false  是否使能过程模式
+idlingDetection=true  是否使能空转检测
+sysSampleInter=100  系统采样时间
+
+[procotol]
+timeout=200  协议超时告警时间
+
+当我修改%General下面的config=2 logLevel=2 maxLine=10 再读取发现数据不是期望那样
+{
+    "[%General]": true,
+    "config": "2  是否启动配置功能",
+    "logLevel": "2  LOG打印级别",
+    "maxLine": "10  日志显示最大行数",
+    "serialPort": {
+        "com": "COM10",
+        "baud": "115200",
+        "dataBit": "8",
+        "parity": "None",
+        "stopBit": "1"
+    },
+    "customPlot": {
+        "autoScaling": "true",
+        "y1Min": "0",
+        "y1Max": "0",
+        "y2Min": "0",
+        "y2Max": "0",
+        "xRange": "0.02",
+        "viewMode": "0",
+        "dataViewLine": "5",
+        "trendPoint": "0"
+    },
+    "csv": {
+        "csvPath": "C:/Users/lwx1097343/Desktop/hwQtMotorTools-V2-1.11-0316-eeprom/business/build-pumpTools-Desktop_Qt_5_9_3_MinGW_32bit-Release/release/csv",
+        "csvTimeInter": "3"
+    },
+    "ui": {
+        "language": "1",
+        "PLC": "1",
+        "flowCtrl": "false",
+        "idlingDetection": "true",
+        "sysSampleInter": "100"
+    },
+    "procotol": {
+        "timeout": "200"
+    }
+}
+但是修改serialPort下面的com=COM11
+{
+    "[%General]": true,
+    "config": "2  是否启动配置功能",
+    "logLevel": "2  LOG打印级别",
+    "maxLine": "10  日志显示最大行数",
+    "serialPort": {
+        "com": "COM11",
+        "baud": "115200",
+        "dataBit": "8",
+        "parity": "None",
+        "stopBit": "1"
+    },
+    "customPlot": {
+        "autoScaling": "true",
+        "y1Min": "0",
+        "y1Max": "0",
+        "y2Min": "0",
+        "y2Max": "0",
+        "xRange": "0.02",
+        "viewMode": "0",
+        "dataViewLine": "5",
+        "trendPoint": "0"
+    },
+    "csv": {
+        "csvPath": "C:/Users/lwx1097343/Desktop/hwQtMotorTools-V2-1.11-0316-eeprom/business/build-pumpTools-Desktop_Qt_5_9_3_MinGW_32bit-Release/release/csv",
+        "csvTimeInter": "3"
+    },
+    "ui": {
+        "language": "1",
+        "PLC": "1",
+        "flowCtrl": "false",
+        "idlingDetection": "true",
+        "sysSampleInter": "100"
+    },
+    "procotol": {
+        "timeout": "200"
+    }
+}
+内容正常修改，这是什么原因导致的，怎么解决？
