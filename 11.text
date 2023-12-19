@@ -1,27 +1,7 @@
-const fs = require('fs');
-const ini = require('ini');
-文档内的内容为：
-[ %General]
-config = 1            是否启动配置功能
-logLevel = 1           LOG打印级别
-maxLine = 8
-
-[serialPort]
-com=COM10            串口号
-baud=115200           波特率
-dataBit=8    数据位
-// 通过
-console.log(ini.parse(fs.readFileSync('./data/template.ini', 'utf-8')))
-打印的结果是：{
-    "%General": {
-        "config": "1            是否启动配置功能",
-        "logLevel": "1           LOG打印级别",
-        "maxLine": "8"
-    },
-    "serialPort": {
-        "com": "COM10            串口号",
-        "baud": "115200           波特率",
-        "dataBit": "8    数据位"
-    }
-}
-我现在写入要传入一个上述这样的对象然后写入文档，这样怎么写？
+写入的时候{
+   "%General": {
+      "config": "1  是否启动配置功能",
+      "logLevel": "1  LOG打印级别",
+      "maxLine": "8  日志显示最大行数"
+  },
+  但是我觉得value值 "1  是否启动配置功能"太长，我只用1，但是写入格式又要求这样，我怎么处理？
