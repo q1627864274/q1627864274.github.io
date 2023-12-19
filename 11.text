@@ -1,25 +1,63 @@
-     // pina中
-         import { defineStore } from 'pinia'
-         import { updateFormatDateYMD, updateFormatDateHMS} from '../utils/dateUtils'
-         const { ipcRenderer } = require('electron');
-         export const useStatusStore = defineStore('StatusStore', {
+      // pina中
+      import {
+         defineStore
+      } from 'pinia'
+      import {
+         updateFormatDateYMD,
+         updateFormatDateHMS
+      } from '../utils/dateUtils'
+      const {
+         ipcRenderer
+      } = require('electron');
+      const data = await ipcRenderer.invoke('getConfig')
+      export const useStatusStore = defineStore('StatusStore', {
          state: () => ({
-            isShow: false,
-            timeLineArry:[
-            ],
-            configIniFileData: ipcRenderer.invoke('getConfig')
+            configIniFileData: data
          }),
          actions: {
-            changeStaus(n){
-               this.isShow = n;
-            },
-            changeTimeLineArry(titledesc){
-               this.timeLineArry.push({
-                  title:updateFormatDateYMD(),
-                  subtitle:updateFormatDateHMS(),
-                  titledesc
-               })
-            },
+            changeConfigIniFileData(key1, key2, value) {
+
+            }
          }
-         })
-         在其他vue文件中,发现console.log('StatusStore.configIniFileData', StatusStore.configIniFileData)是一个Promise，这咋办?
+      })
+      configIniFileData = {
+         "%General": {
+            "config": "4",
+            "logLevel": "5",
+            "maxLine": "20"
+         },
+         "serialPort": {
+            "com": "COM4",
+            "baud": "38400",
+            "dataBit": "8",
+            "parity": "None",
+            "stopBit": "1"
+         },
+         "customPlot": {
+            "autoScaling": "true",
+            "y1Min": "0",
+            "y1Max": "0",
+            "y2Min": "0",
+            "y2Max": "0",
+            "xRange": "0.02",
+            "viewMode": "0",
+            "dataViewLine": "5",
+            "trendPoint": "0"
+         },
+         "csv": {
+            "csvPath": "C:/Users/lwx1097343/Desktop/hwQtMotorTools-V2-1.11-0316-eeprom/business/build-pumpTools-Desktop_Qt_5_9_3_MinGW_32bit-Release/release/csv",
+            "csvTimeInter": "3"
+         },
+         "ui": {
+            "language": "1",
+            "PLC": "1",
+            "flowCtrl": "false",
+            "idlingDetection": "true",
+            "sysSampleInter": "100"
+         },
+         "procotol": {
+            "timeout": "200"
+         }
+      }
+      // 需要写一个changeConfigIniFileData(key1, key2, value)去找到对应的value，然后将configIniFileData改变
+      // 怎么写？
