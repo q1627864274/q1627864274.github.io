@@ -1,63 +1,45 @@
-      // pina中
-      import {
-         defineStore
-      } from 'pinia'
-      import {
-         updateFormatDateYMD,
-         updateFormatDateHMS
-      } from '../utils/dateUtils'
-      const {
-         ipcRenderer
-      } = require('electron');
-      const data = await ipcRenderer.invoke('getConfig')
-      export const useStatusStore = defineStore('StatusStore', {
-         state: () => ({
-            configIniFileData: data
-         }),
-         actions: {
-            changeConfigIniFileData(key1, key2, value) {
-
-            }
+   let processArr =  [{
+            "label": "Current_DriveA",
+            "value": "3535.53"
+         },
+         {
+            "label": "Current_DriveB",
+            "value": "5000.00"
+         },
+         {
+            "label": "Current_BearingA",
+            "value": -3535.53
+         },
+         {
+            "label": "Current_BearingB",
+            "value": -5000
+         },
+         {
+            "label": "Speed_Feedback",
+            "value": 3000
+         },
+         {
+            "label": "Temp_IGBT",
+            "value": 50
+         },
+         {
+            "label": "Temp_Motor",
+            "value": -50
+         },
+         {
+            "label": "Ubus",
+            "value": 300
+         },
+         {
+            "label": "FaultCodeHight16",
+            "value": "0000000000000001"
+         },
+         {
+            "label": "FaultCodeLow16",
+            "value": "0000001000000011"
          }
-      })
-      configIniFileData = {
-         "%General": {
-            "config": "4",
-            "logLevel": "5",
-            "maxLine": "20"
-         },
-         "serialPort": {
-            "com": "COM4",
-            "baud": "38400",
-            "dataBit": "8",
-            "parity": "None",
-            "stopBit": "1"
-         },
-         "customPlot": {
-            "autoScaling": "true",
-            "y1Min": "0",
-            "y1Max": "0",
-            "y2Min": "0",
-            "y2Max": "0",
-            "xRange": "0.02",
-            "viewMode": "0",
-            "dataViewLine": "5",
-            "trendPoint": "0"
-         },
-         "csv": {
-            "csvPath": "C:/Users/lwx1097343/Desktop/hwQtMotorTools-V2-1.11-0316-eeprom/business/build-pumpTools-Desktop_Qt_5_9_3_MinGW_32bit-Release/release/csv",
-            "csvTimeInter": "3"
-         },
-         "ui": {
-            "language": "1",
-            "PLC": "1",
-            "flowCtrl": "false",
-            "idlingDetection": "true",
-            "sysSampleInter": "100"
-         },
-         "procotol": {
-            "timeout": "200"
-         }
-      }
-      // 需要写一个changeConfigIniFileData(key1, key2, value)去找到对应的value，然后将configIniFileData改变
-      // 怎么写？
+      ]
+    // 将上述数组转化为：
+    [
+      {Current_DriveA:3535.53, Current_DriveB: 5000.00, ...类似前面这样}
+    ]
