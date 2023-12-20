@@ -1,43 +1,24 @@
-   在Configuration.vue页面开启定时器获取数据
-   const startTimer = () => {
-      timer.value = setInterval(() => {
-         getSensorParameters()
-         getSystemParameter()
-      }, 100)
+const getSensorParameters = () => {
+   let writeData = {
+      header: '0xAA',
+      commandId: '0x05',
+      data: []
    }
-   每一次运行定时器，运行getSystemParameter()函数得到A = {
-      "Current_DriveA": "3535.53",
-      "Current_DriveB": "5000.00",
-      "Current_BearingA": "-3535.53",
-      "Current_BearingB": "-5000",
-      "Speed_Feedback": "3000",
-      "Temp_IGBT": "50",
-      "Temp_Motor": "-50",
-      "Ubus": "300",
-      "FaultCodeHight16": "0000000000000001",
-      "FaultCodeLow16": "0000001000000011"
-  } 
-  运行getSensorParameters()函数得到 B = {
-    "ECSX": "-26631",
-    "ECSY": "-20611",
-    "Hall_A": "-26759",
-    "Hall_B": "-20491",
-    "Ana_Ref": "-14337",
-    "Ana_Fdb": "-29696",
-    "Anv_Ref": "0",
-    "Anv_Fdb": "0",
-    "spare-3": "0",
-    "spare-4": "0"
-}
-最后需要将这两个对象合并成为[
- {A,B}
-]
-每次定时器运行都这样添加,
-多次运行就变成
-[
- {A,B},
- {A,B},
- .....
-]
-怎么实现上述需求？
+   sendPortData(writeData, res => {
+      if (res.cmd === '0x05') {
+         // console.log('获取传感器参数', res)
+         let convertData = convertHexPairsToDecimal(res.data)
+         let keysArray = ['ECSX', 'ECSY', 'Hall_A',
+            'Hall_B', 'Ana_Ref', 'Ana_Fdb', 'Anv_Ref', 'Anv_Fdb',
+            'spare-3', 'spare-4']
+         let combinArray = combineArraysAsObject(keysArray, convertData)
+         let processArr = processArray(combinArray)
+         // 更新传感器读值 
+         updateSensorInfo(processArr)
 
+         // 对折线图数据进行修改，对globalProcessArr进行更新
+         updateglobalProcessArr(processArr)
+      }
+   })
+}
+// 函数是这样，A = processArr
