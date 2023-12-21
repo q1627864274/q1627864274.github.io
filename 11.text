@@ -1,11 +1,34 @@
-      // vue3+electron+vite项目中
-       
- ipcMain.on('save-excel', (event, { data, path }) => {
-   const workbook = XLSX.utils.book_new();
-   const worksheet = XLSX.utils.json_to_sheet(data);
-   XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
-   
-   const wbout = XLSX.write(workbook, { type: 'buffer' });
-   fs.writeFileSync(path, wbout);
- });
- // 这种是覆盖写法，能不能采用追加的形式进行写？
+      ipcMain.on('save-excel', (event, { data, path }) => {
+   let workbook;
+   let worksheet;
+   const sheetName = "Data";
+   let oldData = [];
+
+   // 检查文件是否存在并读取旧数据
+   if (fs.existsSync(path)) {
+      workbook = XLSX.readFile(path);
+      if (workbook.SheetNames.includes(sheetName)) {
+         worksheet = workbook.Sheets[sheetName];
+         oldData = XLSX.utils.sheet_to_json(worksheet);
+      }
+   } else {
+      workbook = XLSX.utils.book_new();
+   }
+
+   // 合并旧数据和新数据
+   const newData = oldData.concat(data);
+
+   // 创建新的工作表并添加合并后的数据
+   worksheet = XLSX.utils.json_to_sheet(newData);
+   workbook.Sheets[sheetName] = worksheet;
+
+   // 确保工作簿中有这个新的工作表
+   if (!workbook.SheetNames.includes(sheetName)) {
+      XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+   }
+
+   // 写回工作簿
+   XLSX.writeFile(workbook, path);
+});
+
+// 现有需求，判断路径是否生效，怎么写，并通知渲染进程，然后弹消息
