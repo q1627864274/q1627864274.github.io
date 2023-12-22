@@ -1,34 +1,21 @@
-      ipcMain.on('save-excel', (event, { data, path }) => {
-   let workbook;
-   let worksheet;
-   const sheetName = "Data";
-   let oldData = [];
-
-   // 检查文件是否存在并读取旧数据
-   if (fs.existsSync(path)) {
-      workbook = XLSX.readFile(path);
-      if (workbook.SheetNames.includes(sheetName)) {
-         worksheet = workbook.Sheets[sheetName];
-         oldData = XLSX.utils.sheet_to_json(worksheet);
+     在config.vue页面中
+      <hui-checkbox v-model:checked="productSystem.plcChecked" theme="#8268FF" @change="handlePlcChecked">
+         启用PLC模式
+      </hui-checkbox>
+      // 启用PLC模式
+      const handlePlcChecked = (isChecked) => {
+         console.log('触发改变PLC方法')
+         if (isChecked) {
+            if (!timer.value) {
+               startTimer()
+            }
+         } else {
+            if (timer.value) {
+               clearInterval(timer.value)
+               timer.value = null
+               // 对请求队列处理
+               proxy.$SerialPortManager.filterRequestQueue()
+            }
+         }
       }
-   } else {
-      workbook = XLSX.utils.book_new();
-   }
-
-   // 合并旧数据和新数据
-   const newData = oldData.concat(data);
-
-   // 创建新的工作表并添加合并后的数据
-   worksheet = XLSX.utils.json_to_sheet(newData);
-   workbook.Sheets[sheetName] = worksheet;
-
-   // 确保工作簿中有这个新的工作表
-   if (!workbook.SheetNames.includes(sheetName)) {
-      XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
-   }
-
-   // 写回工作簿
-   XLSX.writeFile(workbook, path);
-});
-
-// 现有需求，判断路径是否生效，怎么写，并通知渲染进程，然后弹消息
+     现有需求希望，根据StatusStore.configIniFileData.ui.PLC的值来控制开关，并且当为true的时候，能够调用相应的方法
