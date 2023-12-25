@@ -1,38 +1,12 @@
-       // 开启保存数据
-   watchEffect(() => {
-      if (inputPath.value && interval.value) {
-         if (StatusStore.timerStore) {
-            console.log('关闭定时器')
-            StatusStore.clearTimerStore()
-         }
-         startTimer()
-         HuiMessage({
-            message: `启动成功`,
-            duration: 2000,
-            type: 'success'
-         })
-      } else if (!interval.value) {
-         console.log('进入停止计时器')
-         if (StatusStore.timerStore) {
-            StatusStore.clearTimerStore()
-         }
-         HuiMessage({
-            message: `停止成功`,
-            duration: 2000,
-            type: 'success'
-         })
-      }
-   })
+在vue3+electron+vite项目中，在主进程中通过这样选择文件  
+ipcMain.handle('select-save-path', async () => {
+   const result = await dialog.showSaveDialog({
+      title: '选择保存路径',
+      filters: [{ name: 'Excel Files', extensions: ['xlsx'] }],
+      defaultPath: 'data.xlsx'
+   });
 
-// 定时保存数据
-const startTimer = () => {
-   if (StatusStore.timerStore) return
-   console.log('数据储存的开启定时保存')
-   StatusStore.timerStore = setInterval(() => {
-      if (inputPath.value && interval.value && StatusStore.timerData) {
-         console.log('定时写入的数据', _.cloneDeep(StatusStore.combinedData), _.cloneDeep(inputPath.value))
-         ipcRenderer.send('save-excel', { data: _.cloneDeep(StatusStore.combinedData), path: _.cloneDeep(inputPath.value) });
-      }
-   }, interval.value * 1000);
-}
-// 使用watchEffect发现StatusStore.timerData也会触发，现在不想也StatusStore.timerData也触发，怎么做
+   if (result.canceled) return null;
+   return result.filePath;
+});
+现在需要只选择文件夹，文件名的名称以时间日期来定义，怎么处理
