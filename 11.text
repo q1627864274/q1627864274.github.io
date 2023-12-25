@@ -1,10 +1,39 @@
-       StatusStore.timerStore = setInterval(() => {
-      if (StatusStore.configIniFileData.csv.csvPath && StatusStore.configIniFileData.csv.csvTimeInter !== '4') {
-          
-         console.log('定时写入的数据', _.cloneDeep(StatusStore.combinedData), _.cloneDeep(StatusStore.configIniFileData.csv.csvPath))
-         ipcRenderer.send('save-excel', { data: _.cloneDeep(StatusStore.combinedData), path: _.cloneDeep(StatusStore.configIniFileData.csv.csvPath) });
-      }
-   }, interval * 1000);
+      vue3+electron中，在主进程使用下面方法，储存数据在Excel表格中
+      ipcMain.on('save-excel', (event, {
+         data,
+         path
+      }) => {
+         let workbook;
+         let worksheet;
+         const sheetName = "Data";
+         let oldData = [];
 
-   当每次运行定时器，如果当前的StatusStore.combinedData的值与上一次一样，则不执行 ipcRenderer.send('save-excel', { data: _.cloneDeep(StatusStore.combinedData), path: _.cloneDeep(StatusStore.configIniFileData.csv.csvPath) });
-   这一行代码
+         // 检查文件是否存在并读取旧数据
+         if (fs.existsSync(path)) {
+            workbook = XLSX.readFile(path);
+            if (workbook.SheetNames.includes(sheetName)) {
+               worksheet = workbook.Sheets[sheetName];
+               oldData = XLSX.utils.sheet_to_json(worksheet);
+            }
+         } else {
+            workbook = XLSX.utils.book_new();
+         }
+
+         // 合并旧数据和新数据
+         const newData = oldData.concat(data);
+
+         // 创建新的工作表并添加合并后的数据
+         worksheet = XLSX.utils.json_to_sheet(newData);
+         workbook.Sheets[sheetName] = worksheet;
+
+         // 确保工作簿中有这个新的工作表
+         if (!workbook.SheetNames.includes(sheetName)) {
+            XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+         }
+
+         // 写回工作簿
+         XLSX.writeFile(workbook, path);
+      });
+
+      因为上述代码是每一秒写入一次，当我打开改Excel表的时候，会提示’A JavaScript error occurred in the main process‘
+      现在想实现打开文件就不写入内容了，怎么实现？
