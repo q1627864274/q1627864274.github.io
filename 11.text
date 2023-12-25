@@ -1,39 +1,38 @@
-      vue3+electron中，在主进程使用下面方法，储存数据在Excel表格中
-      ipcMain.on('save-excel', (event, {
-         data,
-         path
-      }) => {
-         let workbook;
-         let worksheet;
-         const sheetName = "Data";
-         let oldData = [];
-
-         // 检查文件是否存在并读取旧数据
-         if (fs.existsSync(path)) {
-            workbook = XLSX.readFile(path);
-            if (workbook.SheetNames.includes(sheetName)) {
-               worksheet = workbook.Sheets[sheetName];
-               oldData = XLSX.utils.sheet_to_json(worksheet);
-            }
-         } else {
-            workbook = XLSX.utils.book_new();
+       // 开启保存数据
+   watchEffect(() => {
+      if (inputPath.value && interval.value) {
+         if (StatusStore.timerStore) {
+            console.log('关闭定时器')
+            StatusStore.clearTimerStore()
          }
-
-         // 合并旧数据和新数据
-         const newData = oldData.concat(data);
-
-         // 创建新的工作表并添加合并后的数据
-         worksheet = XLSX.utils.json_to_sheet(newData);
-         workbook.Sheets[sheetName] = worksheet;
-
-         // 确保工作簿中有这个新的工作表
-         if (!workbook.SheetNames.includes(sheetName)) {
-            XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+         startTimer()
+         HuiMessage({
+            message: `启动成功`,
+            duration: 2000,
+            type: 'success'
+         })
+      } else if (!interval.value) {
+         console.log('进入停止计时器')
+         if (StatusStore.timerStore) {
+            StatusStore.clearTimerStore()
          }
+         HuiMessage({
+            message: `停止成功`,
+            duration: 2000,
+            type: 'success'
+         })
+      }
+   })
 
-         // 写回工作簿
-         XLSX.writeFile(workbook, path);
-      });
-
-      因为上述代码是每一秒写入一次，当我打开改Excel表的时候，会提示’A JavaScript error occurred in the main process‘
-      现在想实现打开文件就不写入内容了，怎么实现？
+// 定时保存数据
+const startTimer = () => {
+   if (StatusStore.timerStore) return
+   console.log('数据储存的开启定时保存')
+   StatusStore.timerStore = setInterval(() => {
+      if (inputPath.value && interval.value && StatusStore.timerData) {
+         console.log('定时写入的数据', _.cloneDeep(StatusStore.combinedData), _.cloneDeep(inputPath.value))
+         ipcRenderer.send('save-excel', { data: _.cloneDeep(StatusStore.combinedData), path: _.cloneDeep(inputPath.value) });
+      }
+   }, interval.value * 1000);
+}
+// 使用watchEffect发现StatusStore.timerData也会触发，现在不想也StatusStore.timerData也触发，怎么做
