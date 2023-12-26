@@ -1,14 +1,21 @@
-  写进ini文件是这样
-  [
-  {
-    "title": "2023/12/26",
-    "subtitle": "16:18:31",
-    "titledesc": "发送读取版本号的指令"
-  },
-  {
-    "title": "2023/12/26",
-    "subtitle": "16:19:39",
-    "titledesc": "发送读取版本号的指令"
-  }
-]
-不行，需要这样格式 第一行 2023/12/26 16:18:31 发送读取版本号的指令 第二行 2023/12/26 16:19:39 发送读取版本号的指令
+// 写日志
+ ipcMain.handle('write-file', async (event, data) => {
+   const filePath = path.join(app.getPath('userData'), 'Log','2023-12-26log.ini');
+ 
+   // 将对象数组转换为字符串
+   let fileContent = '';
+   data.forEach(item => {
+     fileContent += `${item.title} ${item.subtitle} ${item.titledesc}\n`;
+   });
+ 
+   try {
+     fs.writeFileSync(filePath, fileContent);
+     return 'File written successfully';
+   } catch (error) {
+     return `Error writing file: ${error.message}`;
+   }
+ });
+ // 对上面函数优化
+ // 1. 2023-12-26为动态，使用dayjs处理
+ // 2. 当该路径没得这个文件的时候，新建一个
+ // 3. 不再是覆盖写，而是采用追加的写法
