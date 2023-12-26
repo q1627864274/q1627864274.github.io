@@ -1,12 +1,1 @@
-在vue3+electron+vite项目中，在主进程中通过这样选择文件  
-ipcMain.handle('select-save-path', async () => {
-   const result = await dialog.showSaveDialog({
-      title: '选择保存路径',
-      filters: [{ name: 'Excel Files', extensions: ['xlsx'] }],
-      defaultPath: 'data.xlsx'
-   });
-
-   if (result.canceled) return null;
-   return result.filePath;
-});
-现在需要只选择文件夹，文件名的名称以时间日期来定义，怎么处理
+   C:\Users\gwx1260384\Desktop\2023-12-26.xlsx  字符串中的2023-12-26替换成2023-12-25
