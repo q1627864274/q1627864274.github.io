@@ -1,14 +1,1 @@
-   在vue3+electron+vite项目中
-      将timeLineArry写进path.join(app.getPath('userData'), '2023-12-26log.ini')这个路径的文件里面
-      let timeLineArry = [{
-            "title": "2023/12/26",
-            "subtitle": "16:02:56",
-            "titledesc": "发送读取版本号的指令"
-         },
-         {
-            "title": "2023/12/26",
-            "subtitle": "16:04:41",
-            "titledesc": "发送读取版本号的指令"
-         }
-      ]
-      并且能够读取这个文件的内容，读出来的格式向上面timeLineArry一样的
+Error writing file: The "data" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined
