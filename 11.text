@@ -1,1 +1,14 @@
-Error writing file: The "data" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined
+  写进ini文件是这样
+  [
+  {
+    "title": "2023/12/26",
+    "subtitle": "16:18:31",
+    "titledesc": "发送读取版本号的指令"
+  },
+  {
+    "title": "2023/12/26",
+    "subtitle": "16:19:39",
+    "titledesc": "发送读取版本号的指令"
+  }
+]
+不行，需要这样格式 第一行 2023/12/26 16:18:31 发送读取版本号的指令 第二行 2023/12/26 16:19:39 发送读取版本号的指令
