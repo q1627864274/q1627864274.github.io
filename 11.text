@@ -1,3 +1,46 @@
-我的意思在vue文件中，基本是这样用的
-serialPortVal.value = StatusStore.configIniFileData.serialPort.com
-采用赋值的写法去处理，怎么同一处理这种情况，显得简便高效？
+      // 获取传感器参数
+      const getSensorParameters = () => {
+         let writeData = {
+            header: '0xAA',
+            commandId: '0x05',
+            data: []
+         }
+         if (Number(StatusStore.configIniFileData['%General'].logLevel) === 2) {
+            StatusStore.changeTimeLineArry('发送获取传感器参数的指令')
+         }
+         sendPortData(writeData, res => {
+            if (res) {
+               if (res.cmd === '0x05') {
+                  if (Number(StatusStore.configIniFileData['%General'].logLevel) === 2) {
+                     StatusStore.changeTimeLineArry('接收获取传感器参数的指令成功')
+                  }
+                  let convertData = convertHexPairsToDecimal(res.data)
+                  let keysArray = ['ECSX', 'ECSY', 'Hall_A',
+                     'Hall_B', 'Ana_Ref', 'Ana_Fdb', 'Anv_Ref', 'Anv_Fdb',
+                     'spare-3', 'spare-4'
+                  ]
+                  let combinArray = combineArraysAsObject(keysArray, convertData)
+                  let processArr = processArray(combinArray)
+
+                  // processArr转化用于Excel
+                  let transformedArr = dataToExcel(processArr)
+                  sensorData.value = transformedArr
+
+                  // 更新传感器读值 
+                  updateSensorInfo(processArr)
+
+                  // 对折线图数据进行修改，对globalProcessArr进行更新
+                  updateglobalProcessArr(processArr)
+               }
+            } else {
+               if (Number(StatusStore.configIniFileData['%General'].logLevel) === 2) {
+                  StatusStore.changeTimeLineArry('接收获取传感器参数的指令失败')
+               }
+            }
+         })
+      }
+      上述代码有3处
+      if (Number(StatusStore.configIniFileData['%General'].logLevel) === 2) {
+                     StatusStore.changeTimeLineArry('接收获取传感器参数的指令成功')
+                  }
+      能不能进行优化下？
