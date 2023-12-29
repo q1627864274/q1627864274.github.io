@@ -1,3 +1,102 @@
-   在vue+electron+vite项目中，我因为要储存大量数据，并且在适当的时候读取内容
-      我采用Dexie第三方库来处理，我现在想单独一个文件写增删改查来操作数据库，
-      请问这个文件怎么写？
+            // '54011403E807D083E887D00BB801F481F4012C00010203F9'
+            // 在vue3+electron+vite项目中，
+            // 想实现excel文件的批量导入和导出
+            // 导入和导入我都完成了
+            // 想在我的问题是：
+            // 导入的数据是这样
+            [{
+                  "EEPROMDef Version": "EXT_AnIn_Sel_Ref",
+                  "setting": 0,
+                  "Unit": "[0;1]",
+                  "Comment": "0=Current Input / 1=Voltage Input"
+               },
+               {
+                  "EEPROMDef Version": "EXT_AnIn_Sel_Act",
+                  "setting": 0,
+                  "Unit": "[0;1]",
+                  "Comment": "0=Current Input / 1=Voltage Input"
+               },
+               {
+                  "EEPROMDef Version": "EXT_Ref_Vmax",
+                  "setting": 10000,
+                  "Unit": "rpm",
+                  "Comment": "Maximum Input Signal equals"
+               },
+               {
+                  "EEPROMDef Version": "EXT_Act_Qmin_10V",
+                  "setting": 0,
+                  "Unit": "V",
+                  "Comment": "Minimum Sensor   0% equals"
+               },
+               ......
+            ]
+            // 里面有3个对象，需要将每个对象的内容改变分别3个vue文件组件中的值
+            // 例如：第一个对象对应着,要修改"EEPROMDef Version"相同，对应的value值改成上面的setting值
+            [{
+                  id: 11,
+                  title: '模拟输入-选择',
+                  contents: [{
+                        id: 111,
+                        title: '',
+                        head: '设置参考点输入信号',
+                        isSelect: true,
+                        "EEPROMDef Version": "EXT_AnIn_Sel_Ref",
+                        value: 0,
+                        unit: '',
+                        min: 0,
+                        max: 1000,
+                        description: '(*0=电流输入 / 1=电压输入)'
+                     },
+                     {
+                        id: 112,
+                        title: '',
+                        head: '设置传感器反馈信号',
+                        isSelect: true,
+                        "EEPROMDef Version": "EXT_AnIn_Sel_Act",
+                        value: 0,
+                        unit: '',
+                        min: 0,
+                        max: 1000,
+                        description: '(*0=电流输入 / 1=电压输入)'
+                     }
+                  ]
+               },
+               {
+                  id: 12,
+                  title: '设置风扇占空比',
+                  contents: [{
+                     id: 121,
+                     title: '',
+                     head: '设置风扇占空比',
+                     isSelect: false,
+                     unit: '%',
+                     "EEPROMDef Version": "EXT_Ref_Vmax",
+                     value: 10,
+                     min: 0,
+                     max: 100,
+                     description: '(*0=电流输入 / 1=电压输入)'
+                  }]
+               }
+            ]
+            // 另一个vue文件,对应这样的关系
+            [{
+                  id: 11,
+                  title: '选择',
+                  contents: [{
+                        id: 111,
+                        title: '',
+                        head: '输入信号',
+                        isSelect: true,
+                        "EEPROMDef Version": "EXT_Act_Qmin_10V",
+                        value: 0,
+                        unit: '',
+                        min: 0,
+                        max: 1000,
+                        description: '(*0=电流输入 / 1=电压输入)'
+                     },
+
+                  ]
+               },
+
+            ]
+            // 还存在n个这样的处理，请问怎么做，方便？
