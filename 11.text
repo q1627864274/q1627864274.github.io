@@ -1,102 +1,98 @@
-            // '54011403E807D083E887D00BB801F481F4012C00010203F9'
-            // 在vue3+electron+vite项目中，
-            // 想实现excel文件的批量导入和导出
-            // 导入和导入我都完成了
-            // 想在我的问题是：
-            // 导入的数据是这样
-            [{
-                  "EEPROMDef Version": "EXT_AnIn_Sel_Ref",
-                  "setting": 0,
-                  "Unit": "[0;1]",
-                  "Comment": "0=Current Input / 1=Voltage Input"
-               },
-               {
-                  "EEPROMDef Version": "EXT_AnIn_Sel_Act",
-                  "setting": 0,
-                  "Unit": "[0;1]",
-                  "Comment": "0=Current Input / 1=Voltage Input"
-               },
-               {
-                  "EEPROMDef Version": "EXT_Ref_Vmax",
-                  "setting": 10000,
-                  "Unit": "rpm",
-                  "Comment": "Maximum Input Signal equals"
-               },
-               {
-                  "EEPROMDef Version": "EXT_Act_Qmin_10V",
-                  "setting": 0,
-                  "Unit": "V",
-                  "Comment": "Minimum Sensor   0% equals"
-               },
-               ......
-            ]
-            // 里面有3个对象，需要将每个对象的内容改变分别3个vue文件组件中的值
-            // 例如：第一个对象对应着,要修改"EEPROMDef Version"相同，对应的value值改成上面的setting值
-            [{
-                  id: 11,
-                  title: '模拟输入-选择',
-                  contents: [{
-                        id: 111,
-                        title: '',
-                        head: '设置参考点输入信号',
-                        isSelect: true,
-                        "EEPROMDef Version": "EXT_AnIn_Sel_Ref",
-                        value: 0,
-                        unit: '',
-                        min: 0,
-                        max: 1000,
-                        description: '(*0=电流输入 / 1=电压输入)'
-                     },
-                     {
-                        id: 112,
-                        title: '',
-                        head: '设置传感器反馈信号',
-                        isSelect: true,
-                        "EEPROMDef Version": "EXT_AnIn_Sel_Act",
-                        value: 0,
-                        unit: '',
-                        min: 0,
-                        max: 1000,
-                        description: '(*0=电流输入 / 1=电压输入)'
-                     }
-                  ]
-               },
-               {
-                  id: 12,
-                  title: '设置风扇占空比',
-                  contents: [{
-                     id: 121,
-                     title: '',
-                     head: '设置风扇占空比',
-                     isSelect: false,
-                     unit: '%',
-                     "EEPROMDef Version": "EXT_Ref_Vmax",
-                     value: 10,
-                     min: 0,
-                     max: 100,
-                     description: '(*0=电流输入 / 1=电压输入)'
-                  }]
-               }
-            ]
-            // 另一个vue文件,对应这样的关系
-            [{
-                  id: 11,
-                  title: '选择',
-                  contents: [{
-                        id: 111,
-                        title: '',
-                        head: '输入信号',
-                        isSelect: true,
-                        "EEPROMDef Version": "EXT_Act_Qmin_10V",
-                        value: 0,
-                        unit: '',
-                        min: 0,
-                        max: 1000,
-                        description: '(*0=电流输入 / 1=电压输入)'
-                     },
+   // 绘制折线图
+      const drawLine = (processArr, label) => {
+         count++
+         numberCount++
+         newX = Number((newX + 0.1).toFixed(1))
 
-                  ]
-               },
+         // 对lineGraphSerialdata中data.data进行push
+         processArr.forEach(processItem => {
+            lineGraphSerialdata.value.forEach(graphItem => {
+               graphItem.data.forEach(dataItem => {
+                  if (dataItem.label === processItem.label) {
+                     // 需要以 [Number(newX.toFixed(2)), value] 的形式追加值
+                     dataItem.data.push([Number(newX.toFixed(2)), processItem.value]);
+                  }
+               });
+            });
+         });
+         Xlinedata.value.push(Number(newX.toFixed(1)))
+         if (Xlinedata.value.length > 44) {
+            // lineGraphSerialdata.value.splice(0, 5)
+            // 对lineGraphSerialdata中data.data清除前五个
+            // let time = +new Date()
+            lineGraphSerialdata.value.forEach(graphItem => {
+               graphItem.data.forEach(dataItem => {
+                  dataItem.data.splice(0, 5)
+               });
+            });
+            // console.log('999999',+new Date() - time)
+            Xlinedata.value.splice(0, 5)
+         }
+         let arr = []
+         let xMin = Math.min(...Xlinedata.value);
+         let xMax = Math.max(...Xlinedata.value);
+         // lineGraphSerialdata.value.forEach(item => {
+         //    arr.push(item[1])
+         // })
+         lineGraphSerialdata.value.forEach(graphItem => {
+            if (graphItem.label === label) {
+               graphItem.data.forEach(dataItem => {
+                  dataItem.data.forEach(dataItemson => {
+                     arr.push(dataItemson[1])
+                  })
+               });
+            }
+         });
 
-            ]
-            // 还存在n个这样的处理，请问怎么做，方便？
+         let maxValue = (Math.max(...arr))
+         maxValue = (maxValue >= 0 ? maxValue / 0.8 : maxValue * 0.8).toFixed(0)
+         let minValue = (Math.min(...arr))
+         minValue = (minValue >= 0 ? minValue * 0.8 : minValue / 0.8).toFixed(0)
+
+
+         if (count >= 4 && !isPause.value) {
+            console.log(`x轴多少秒${count}的speed的值`, _.cloneDeep(lineGraphSerialdata.value[1].data[0].data))
+            const getSeries = () => {
+               // 查找与标签匹配的对象
+               let selectedData = lineGraphSerialdata.value.find(item => item.label === label);
+               selectedData = _.cloneDeep(selectedData)
+               if (!selectedData) return []; // 如果没有找到数据则返回空数组
+
+               // 将每个数据项映射到一个序列对象
+               return selectedData.data.map(item => {
+                  return {
+                     type: 'line',
+                     data: item.data,
+                     name: item.label
+                  };
+               });
+            }
+            const getLegend = () => {
+               let selectedData = lineGraphSerialdata.value.find(item => item.label === label);
+               if (!selectedData) return []; // 如果没有找到数据则返回空数组
+               return selectedData.data.map(item => {
+                  return item.label
+               });
+            }
+            console.log('getSeries', getSeries())
+            myChart.setOption({
+               xAxis: {
+                  min: xMin,
+                  max: xMax,
+                  interval: 0.5, // 设置x轴刻度间隔
+               },
+               legend: {
+                  data: getLegend()
+               },
+               yAxis: [{
+                  min: minValue, // 设置Y轴最小值
+                  max: maxValue, // 设置Y轴最大值
+                  interval: 70, // 设置x轴刻度间隔
+               }],
+               series: getSeries()
+            })
+            count = 0
+         }
+      }
+     上述代码是绘制eachert折线图的代码，之前的逻辑是将每一次调用该函数lineGraphSerialdata和Xlinedata都进行增加，当大于44再删除5个
+     现在需要改变逻辑，不需要每次调用函数都加，而是在大于44时删除5个再增加5个，这个怎么写？
