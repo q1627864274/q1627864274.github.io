@@ -1,2 +1,17 @@
-   vue3+electron+vite项目中
-   使用第三方库eachart库，怎么绘制双y轴的，折线图，给一个能运行在html的实例
+    eachart中dataZoom 配置如下        {
+            type: 'slider',
+            xAxisIndex: 0,
+            start: 0,
+            end: 100,
+            bottom: 18,
+            width: 990,
+            left: 43,
+            right: 115,
+            brushSelect: false,
+            // handleIcon: 'MO;O vO',
+            // showDetail:false,
+            fillerColor: '#eeeeee',
+            showDataShadow: false, // 关闭趋势阴影的显示
+            handleIcon: `image://${silder}`
+         },
+      怎么使得左右滑块，滑到最左边或者最右边不出框？
