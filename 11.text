@@ -1,11 +1,28 @@
-     const y1Min = Number(coordinateBottomValue.value[0].valueShow);
-   const y1Max = Number(coordinateBottomValue.value[1].valueShow);
-   const y2Min = Number(coordinateBottomValue.value[2].valueShow);
-   const y2Max = Number(coordinateBottomValue.value[3].valueShow);
-   xRange = Number(coordinateBottomValue.value[4].valueShow);
-   StatusStore.changeConfigIniFileData('customPlot', 'y1Min', y1Min)
-   StatusStore.changeConfigIniFileData('customPlot', 'y1Max', y1Max)
-   StatusStore.changeConfigIniFileData('customPlot', 'y2Min', y2Min)
-   StatusStore.changeConfigIniFileData('customPlot', 'y2Max', y2Max)
-   StatusStore.changeConfigIniFileData('customPlot', 'xRange', xRange)
-   将上述代码优化
+    const coordinateBottomValue = ref([
+   {
+      label: 'Y1下限',
+      valueShow: '-100.569'
+   },
+   {
+      label: 'Y1上限',
+      valueShow: '99.569'
+   },
+   {
+      label: 'Y2下限',
+      valueShow: '-200'
+   },
+   {
+      label: 'Y2上限',
+      valueShow: '200'
+   },
+   {
+      label: 'X范围',
+      valueShow: '0.200'
+   },
+])
+let xRangeipt = 4.5
+let y1Minipt = 1
+let y1Maxipt = 2
+let y2Minipt = 3
+let y2Maxipt = 4
+将coordinateBottomValue里面对应的valueShow修改为下面对应的值
