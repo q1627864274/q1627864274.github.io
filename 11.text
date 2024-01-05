@@ -1,28 +1,57 @@
-    const coordinateBottomValue = ref([
+   ProductQuery.vue有下面内容
+  <hui-tabs type="card" v-model:value="active" :moreNum="8">
+         <hui-tab-item v-for="(tab, index) in tabsData" :key="index" :value="tab.value" :label="tab.name">
+               <component :is="componentToRender"></component>
+         </hui-tab-item>
+</hui-tabs>
+每一个component是一个vue文件，每个vue有个
+const cardData = ref([
    {
-      label: 'Y1下限',
-      valueShow: '-100.569'
+      id: 11,
+      title: '模拟输入-选择',
+      contents: [
+         {
+            id: 111,
+            title: '',
+            head: '设置参考点输入信号',
+            isSelect: true,
+            value: 0,
+            unit: '',
+            min: 0,
+            max: 1000,
+            description: '(*0=电流输入 / 1=电压输入)'
+         },
+         {
+            id: 112,
+            title: '',
+            head: '设置传感器反馈信号',
+            isSelect: true,
+            value: 0,
+            unit: '',
+            min: 0,
+            max: 1000,
+            description: '(*0=电流输入 / 1=电压输入)'
+         }
+      ]
    },
    {
-      label: 'Y1上限',
-      valueShow: '99.569'
+      id: 12,
+      title: '设置风扇占空比',
+      contents: [
+         {
+            id: 121,
+            title: '',
+            head: '设置风扇占空比',
+            isSelect: false,
+            unit: '%',
+            value: 10,
+            min: 0,
+            max: 100,
+            description: '(*0=电流输入 / 1=电压输入)'
+         }
+      ]
    },
-   {
-      label: 'Y2下限',
-      valueShow: '-200'
-   },
-   {
-      label: 'Y2上限',
-      valueShow: '200'
-   },
-   {
-      label: 'X范围',
-      valueShow: '0.200'
-   },
-])
-let xRangeipt = 4.5
-let y1Minipt = 1
-let y1Maxipt = 2
-let y2Minipt = 3
-let y2Maxipt = 4
-将coordinateBottomValue里面对应的valueShow修改为下面对应的值
+   
+]);
+   
+现在有需求， ProductQuery.vue有一个导出按钮，需要将，每个vue文件中cardData中的value值导入，然后形成一个Excel文件，怎么做？
