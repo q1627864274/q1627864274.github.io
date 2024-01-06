@@ -1,8 +1,116 @@
-       <hui-tabs type="card" v-model:value="active" :moreNum="8">
+      <hui-tabs type="card" v-model:value="active" :moreNum="8">
          <hui-tab-item v-for="(tab, index) in tabsData" :key="index" :value="tab.value" :label="tab.name">
-            <keep-alive>
+            <!-- <keep-alive> -->
                <component :is="componentToRender"></component>
-            </keep-alive>
+            <!-- </keep-alive> -->
          </hui-tab-item>
       </hui-tabs>
-      发现keep-alive没缓存成功
+      mport { ref, markRaw, watch, onMounted, onBeforeUnmount} from 'vue';
+const { ipcRenderer } = require('electron');
+
+import rightHead from '@/components/rightHead.vue';
+// 出厂配置
+import DefaultSettings from '@/components/DefaultSettings.vue';
+// 模拟输入校准
+import InputCalibration from '@/components/InputCalibration.vue';
+// 设置点信号
+import SetpointSignal from '@/components/SetpointSignal.vue';
+// 过程传感器信号
+import SensorSignal from '@/components/SensorSignal.vue';
+// PLC输出信号
+import PLC from '@/components/PLC.vue';
+// 过程PI参数
+import PIData from '@/components/PIData.vue';
+// 速度配置
+import SpeedConfiguration from '@/components/SpeedConfiguration.vue';
+// 告警/启动配置
+import WarningStart from '@/components/WarningStart.vue';
+// import {modalVisible} from '../hooks/useUnlockModeal'
+import unlockModeal from '../components/UnlockModeal.vue'
+import useUnlockModeal from '../hooks/useUnlockModeal'
+import {useStatusStore} from '../store/index'
+const store = useStatusStore()
+const {modalVisible} = useUnlockModeal()
+let active = ref('1');
+const componentToRender = ref(markRaw(DefaultSettings));
+let tabsData = ref([
+   {
+      name: '出厂配置',
+      value: '1'
+   },
+   {
+      name: '模拟输入校准',
+      value: '2'
+   },
+   {
+      name: '设置点信号',
+      value: '3'
+   },
+   {
+      name: '过程传感器信号',
+      value: '4'
+   },
+   {
+      name: 'PLC输出信号',
+      value: '5'
+   },
+   {
+      name: '过程PI参数',
+      value: '6'
+   },
+   {
+      name: '速度配置',
+      value: '7'
+   },
+   {
+      name: '告警/启动配置',
+      value: '8'
+   }
+]);
+// const modalVisible = ref(false)
+const isChoose = ref(false)
+// const passwordInput = ref('')
+const changeModel = (val) => {
+   isChoose.value = val
+   if (!isChoose.value) {
+      modalVisible.value = true
+   }
+}
+watch(
+   active,
+   () => {
+      switch (active.value) {
+         case '1':
+            componentToRender.value = markRaw(DefaultSettings);
+            break;
+         case '2':
+            componentToRender.value = markRaw(InputCalibration);
+            break;
+         case '3':
+            componentToRender.value = markRaw(SetpointSignal);
+            break;
+         case '4':
+            componentToRender.value = markRaw(SensorSignal);
+            break;
+         case '5':
+            componentToRender.value = markRaw(PLC);
+            break;
+         case '6':
+            componentToRender.value = markRaw(PIData);
+            break;
+         case '7':
+            componentToRender.value = markRaw(SpeedConfiguration);
+            break;
+         case '8':
+            componentToRender.value = markRaw(WarningStart);
+            break;
+         default:
+            break;
+      }
+   },
+   {
+      immediate: true // 是否初始化立即执行一次, 默认是false
+   }
+);
+
+我发现在点击切换tab时，例如我在DefaultSettings，onMouted中打印，发现切换会打印多次，意味着我点击对应tab，调用了多次mounted，这是什么情况？
