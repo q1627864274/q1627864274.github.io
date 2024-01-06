@@ -1,57 +1,65 @@
-   ProductQuery.vue有下面内容
-  <hui-tabs type="card" v-model:value="active" :moreNum="8">
-         <hui-tab-item v-for="(tab, index) in tabsData" :key="index" :value="tab.value" :label="tab.name">
-               <component :is="componentToRender"></component>
-         </hui-tab-item>
-</hui-tabs>
-每一个component是一个vue文件，每个vue有个
-const cardData = ref([
-   {
-      id: 11,
-      title: '模拟输入-选择',
-      contents: [
-         {
-            id: 111,
-            title: '',
-            head: '设置参考点输入信号',
-            isSelect: true,
-            value: 0,
-            unit: '',
-            min: 0,
-            max: 1000,
-            description: '(*0=电流输入 / 1=电压输入)'
+   在pina中的数据为
+      importEEPROMexcelData = [{
+            "EEPROMDef Version": "EXT_AnIn_Sel_Ref",
+            "setting": 0,
+            "Unit": "[0;1]",
+            "Comment": "0=Current Input / 1=Voltage Input"
          },
          {
-            id: 112,
-            title: '',
-            head: '设置传感器反馈信号',
-            isSelect: true,
-            value: 0,
-            unit: '',
-            min: 0,
-            max: 1000,
-            description: '(*0=电流输入 / 1=电压输入)'
+            "EEPROMDef Version": "EXT_AnIn_Sel_Act",
+            "setting": 0,
+            "Unit": "[0;1]",
+            "Comment": "0=Current Input / 1=Voltage Input"
          }
+         ...等等
       ]
-   },
-   {
-      id: 12,
-      title: '设置风扇占空比',
-      contents: [
+      每个vue文件都有cardData 或者 cardData1和cardData2
+      cardData = [{
+            id: 11,
+            title: '模拟输入-选择',
+            contents: [{
+                  id: 111,
+                  title: '',
+                  head: '设置参考点输入信号',
+                  isSelect: true,
+                  'EEPROMDef Version': "EXT_AnIn_Sel_Ref",
+                  value: 0,
+                  unit: '',
+                  min: 0,
+                  max: 1000,
+                  description: '(*0=电流输入 / 1=电压输入)'
+               },
+               {
+                  id: 112,
+                  title: '',
+                  head: '设置传感器反馈信号',
+                  isSelect: true,
+                  'EEPROMDef Version': "EXT_AnIn_Sel_Act",
+                  value: 0,
+                  unit: '',
+                  min: 0,
+                  max: 1000,
+                  description: '(*0=电流输入 / 1=电压输入)'
+               }
+            ]
+         },
          {
-            id: 121,
-            title: '',
-            head: '设置风扇占空比',
-            isSelect: false,
-            unit: '%',
-            value: 10,
-            min: 0,
-            max: 100,
-            description: '(*0=电流输入 / 1=电压输入)'
+            id: 12,
+            title: '设置风扇占空比',
+            contents: [{
+               id: 121,
+               title: '',
+               head: '设置风扇占空比',
+               isSelect: false,
+               unit: '%',
+               'EEPROMDef Version': "Set_Fan_Duty",
+               value: 10,
+               min: 0,
+               max: 100,
+               description: '(*0=电流输入 / 1=电压输入)'
+            }]
          }
-      ]
-   },
-   
-]);
-   
-现在有需求， ProductQuery.vue有一个导出按钮，需要将，每个vue文件中cardData中的value值导入，然后形成一个Excel文件，怎么做？
+      ],
+     
+      现在的需求是，在每个vue文件，将importEEPROMexcelData中EEPROMDef Version"与cardData中EEPROMDef Version一致的将，如果存在就， setting值给cardData对应的value,
+      替换完成后，再将Comment一致的，将cardData的selectCheckBox_value的值 1 ==> true，0 ==> false，并且要监听importEEPROMexcelData有变化，就自动变化
