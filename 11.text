@@ -1,27 +1,19 @@
- const updateCardData = () => {
-   console.log('执行updateCardData函数')
-    cardData.forEach(card => {
-      card.contents.forEach(content => {
-         if (content['EEPROMDef Version']) {
-            // 更新基于 EEPROMDef Version
-            const matchedEEPROMByVersion = store.importEEPROMexcelData.filter(eeprom => eeprom["EEPROMDef Version"] === content["EEPROMDef Version"]);
-            if (matchedEEPROMByVersion.length === 1) {
-              content.value = Number(matchedEEPROMByVersion[0].setting) ;
-            }else {
-             console.log(`未找到匹配的EEPROMDef Version${matchedEEPROMByVersion}`)
-            }
-         }
+let dataTo3e = ''
+this.serialport.on('data', res => {
+// 每次接收到的数据
+console.log('每次接收的数据', res.toString('hex'))
 
-        // 更新基于 Comment
-        if (content.Comment) {
-          const matchedEEPROMByComment = store.importEEPROMexcelData.filter(eeprom => eeprom.Comment === content.Comment);
-          if (matchedEEPROMByComment.length === 1) {
-            content.selectCheckBox_value = matchedEEPROMByComment[0].setting === 1 ? true : false;
-          }else {
-            console.log(`未找到匹配的Comment${matchedEEPROMByVersion}`)
-          }
-        }
-      });
-    });
-  };
-  修改上述函数，当content时对象是{}时继续上述，如果是[]array再foreach下，使用loash库进行判定，怎么写？
+// 对固件在线升级的协议做容错处理，可能会发乱码
+if (this.request.cmd === '0x3e') {
+   dataTo3e += res.toString('hex')
+   if (dataTo3e.includes('543e02aaaa94')) {
+      clearTimeout(this.timeout);
+      this.timeout = null;
+      let result = new YtbResult(this.dataString);
+      this.callback(result);
+      this.next();
+         // 重置缓冲区
+      dataTo3e = '';
+   }
+}
+dataTo3e中的字符串要包含543e02aaaa94或者543e02ffff94 的时候，并将对应的字符串提取出来，然后传进let result = new YtbResult()，怎么实现？
