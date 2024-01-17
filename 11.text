@@ -1,12 +1,42 @@
-vue2开发中
-handleActive() {
-      this.status.forEach(item => {
-         console.log('item', item)
-         if (item.planStatus === 1 && item.activatedBy === item.createBy) {
-            console.log(111)
-            this.$message.warning(this.$t("dcpPlan.activeHint"));
-            return;
+myChart.setOption({
+      title: {
+         text: ''
+      },
+      tooltip: {
+         trigger: 'item',  // 触发类型，默认数据项触发
+         borderColor: '#DFDFDF', // 边框颜色
+         borderWidth: 1, // 边框宽度
+         backgroundColor: '#FFFFFF', // 背景色
+         extraCssText: 'box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);width: 200px; height: 110px;',
+         formatter: function (params) {
+            console.log('params', params)
+            return `<div class='lineWindow'>
+              <p class='item'>
+                  <span class='label'>
+                     Time
+                  </span>
+                  <span class='text'>
+                     ${params.value[0]}s
+                  </span>
+               </p>
+              <p class='item'>
+               <span class='label'>
+                 rpm
+               </span>
+               <span class='text'>
+                  ${params.value[1]}
+               </span>
+              </p>
+            </div>`;
          }
-      })
-}
-// 针对上述函数return想要结束handleActive而不是forEach怎么写？
+      }})
+// 针对formatter的函数进行改变，当params.seriesName为"Speed_Feedback"的时候  <span class='label'>
+                 rpm
+</span>
+// 为Current_DriveA、Current_DriveB、Current_BearingA、Current_BearingB为mA
+// 为Temp_IGBT、Temp_Motor为°C
+// 为ECSX、ECSY为um
+// 为Hall_A、Hall_B为°
+// 为Ana_Ref、Ana_Fdb为mA
+// 为Anv_Ref、Anv_Fdb为V
+// 怎么实现？
