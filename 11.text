@@ -1,96 +1,10 @@
-      if 
-          myChart.setOption({
-            xAxis: {
-               min: xMin,
-               max: xMax,
-               interval: xinterval, // 设置x轴刻度间隔
-            },
-            legend: {
-               data: getLegend(label)
-            },
-            yAxis: [
-               {
-                  min: Y1minValue, // 设置Y轴最小值
-                  max: Y1maxValue, // 设置Y轴最大值
-                  interval: Y1interval, // 设置x轴刻度间隔
-                  name: getYName(label) + ' Y1'
-               },
-               {
-                  show: false
-               }
-            ],
-            series: getSeries(label, 0)
-         })
-         count = 0
-      } else {
-         let seriesArray = []
-         seriesArray.push(...getSeries('Speed', 0))
-         seriesArray.push(...getSeries('Currents', 1))
-         let legendArray = []
-         legendArray.push(...getLegend('Speed'))
-         legendArray.push(...getLegend('Currents'))
-
-         let Y1maxValue
-         let Y1minValue
-         let Y2maxValue
-         let Y2minValue
-
-         if (isSelfOptimizing.value === '1') {
-            if (!trendChartChecked.value) {
-               Y1maxValue = countYMaxMin(lineGraphSerialdata.value, 'Speed').maxValue
-               Y1minValue = countYMaxMin(lineGraphSerialdata.value, 'Speed').minValue
-               Y2maxValue = countYMaxMin(lineGraphSerialdata.value, 'Currents').maxValue
-               Y2minValue = countYMaxMin(lineGraphSerialdata.value, 'Currents').minValue
-            } else {
-               Y1maxValue = countYMaxMin(lineGraphSerialTotalData.value, 'Speed').maxValue
-               Y1minValue = countYMaxMin(lineGraphSerialTotalData.value, 'Speed').minValue
-               Y2maxValue = countYMaxMin(lineGraphSerialTotalData.value, 'Currents').maxValue
-               Y2minValue = countYMaxMin(lineGraphSerialTotalData.value, 'Currents').minValue
-            }
-            // 给全局
-            y1Maxipt = countYMaxMin(lineGraphSerialdata.value, 'Speed').maxValue
-            y1Minipt = countYMaxMin(lineGraphSerialdata.value, 'Speed').minValue
-            y2Maxipt = countYMaxMin(lineGraphSerialdata.value, 'Currents').maxValue
-            y2Minipt = countYMaxMin(lineGraphSerialdata.value, 'Currents').minValue
-
-         } else {
-            Y1maxValue = y1Maxipt
-            Y1minValue = y1Minipt
-            Y2maxValue = y2Maxipt
-            Y2minValue = y2Minipt
-         } 
-         let Y1interval = 70
-         Y1interval = countInterval(Y1maxValue, Y1minValue, 70, 15)
-         let Y2interval = 70
-         Y2interval = countInterval(Y2maxValue, Y2minValue, 70, 15)
-         console.log('seriesArray', seriesArray)
-         myChart.setOption({
-            xAxis: {
-               min: xMin,
-               max: xMax,
-               interval: xinterval, // 设置x轴刻度间隔
-            },
-            legend: {
-               data: legendArray
-            },
-            yAxis: [
-               {
-                  min: Y1minValue, // 设置Y1轴最小值
-                  max: Y1maxValue, // 设置Y1轴最大值
-                  interval: Y1interval, // 设置y1轴刻度间隔
-                  name: getYName('Speed') + ' Y1'
-               },
-               {
-                  min: Y2minValue, // 设置Y2轴最小值
-                  max: Y2maxValue, // 设置Y2轴最大值
-                  interval: Y2interval, // 设置y2轴刻度间隔
-                  show: true,
-                  name: getYName('Currents') + ' Y2'
-               }
-            ],
-            series: seriesArray
-         })
-         count = 0
-      }
-      每一秒调用上面代码。针对不同的label调用不同的setOption，第一个setOption是4条线，第二个是5条线，但是发现当5条切换4条时，多了一条线，随着不断调用，多了那一条慢慢消失
-      怎么解决这个情况？
+      watch: {
+   parameterDataList: {
+      handler(newValue, oldValue) {
+         console.log('对象内部值改变', newValue)
+         this.parameterDataList = newValue.filter(item => item.isTransient !== "Transient")
+      },
+      deep: true
+   }
+  },
+  运行报错：You may have an infinite update loop in watcher with expression "parameterDataList"，什么情况？
