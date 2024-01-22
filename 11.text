@@ -1,10 +1,10 @@
-      watch: {
-   parameterDataList: {
-      handler(newValue, oldValue) {
-         console.log('对象内部值改变', newValue)
-         this.parameterDataList = newValue.filter(item => item.isTransient !== "Transient")
-      },
-      deep: true
-   }
-  },
-  运行报错：You may have an infinite update loop in watcher with expression "parameterDataList"，什么情况？
+Launching backend server with path D:\02-work_space\02-Project\hy_wh_wph_evaluate_frontend\java...
+(node:4876) UnhandledPromiseRejectionWarning: Error: spawn UNKNOWN
+    at ChildProcess.spawn (node:internal/child_process:413:11)
+    at Object.spawn (node:child_process:737:9)
+    at startServer (D:\02-work_space\02-Project\hy_wh_wph_evaluate_frontend\dist_electron\main\index.js:190:38)
+    at D:\02-work_space\02-Project\hy_wh_wph_evaluate_frontend\dist_electron\main\index.js:160:3
+(Use `electron --trace-warnings ...` to show where the warning was created)
+(node:4876) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without
+ a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CL
+I flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 1)
