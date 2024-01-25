@@ -1,75 +1,50 @@
-      arrayTwo = [
-            [
-               "00",
-               "0d"
-            ],
-            [
-               "00",
-               "04"
-            ],
-            [
-               "00",
-               "01"
-            ],
-            [
-               "00",
-               "0f"
-            ],
-            [
-               "00",
-               "19"
-            ]
-         ]
-      arrayEight =  [
-            [
-               "40",
-               "8f",
-               "40",
-               "00",
-               "00",
-               "00",
-               "00",
-               "00"
-            ],
-            [
-               "40",
-               "91",
-               "30",
-               "00",
-               "00",
-               "00",
-               "00",
-               "00"
-            ],
-            [
-               "40",
-               "92",
-               "c0",
-               "00",
-               "00",
-               "00",
-               "00",
-               "00"
-            ],
-            [
-               "40",
-               "94",
-               "50",
-               "00",
-               "00",
-               "00",
-               "00",
-               "00"
-            ],
-            [
-               "40",
-               "95",
-               "e0",
-               "00",
-               "00",
-               "00",
-               "00",
-               "00"
-            ]
-         ]
-      // 将arrayTwo、arrayEight子元素的数组去掉变成字符串
+     Promise.myAll = function(proms){
+         // 1. 返回的是一个promise,有可能完成，有可能失败
+         let res, rej
+         const p = new Promise((resolve, reject) => {
+            res = resolve
+            rej = reject
+         })
+         // 2. 传递进来的参数不一定是数组，可以是迭代器对象
+         //  采用for...of..循环，可以循环所有的可迭代对象, 通过i增加长度
+         let i = 0
+         let fullFiled = 0
+         const result = []
+         for (const prom of proms) {
+            const index = i
+            i++
+            // 3.不是空数组，保证传进来的都是promise
+            // 4. 处理每个传进来的promise的成功，失败状态
+            //     promise.all的逻辑是：只要有一个失败了，其他都失败  ==>  调用rej(rej只有第一次调用的时候才生效，状态一旦确定下来就不能更改了)
+
+            // 因为是异步代码，所以执行时其他同步代码都已经完成了
+            Promise.resolve(prom).then((data) =>{
+               // 5.把完成的数据汇总到最终结果
+               // 保存index = i ，形成闭包环境
+               console.log('index', index)
+               console.log('i', i)
+               result[index] = data
+               // 6. 判断是否全部完成
+               fullFiled++
+               if (fullFiled === i) {
+                  res(result)
+               }
+            }, rej)
+         }
+         if (i ===0 ) {
+            res([])
+         }
+         // rej()
+         return p
+         
+
+      }
+      Promise.myAll([1,2, Promise.resolve(123)]).then((res) => {
+         console.log(res)
+      },
+      (err) => {
+         console.log('err', err)
+      }
+      )
+
+      上述代码运行的结果： 打印的index的值依次是0,1,2 i的值：3 ，3,3 这是为什么？
