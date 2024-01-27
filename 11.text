@@ -1,23 +1,29 @@
-
-      let btn = [1, 2, 3, 4, 5]
-      for (var i = 0; i < btn.length; i++) {
-         console.log(i)
+     Promise.myall = function (proms) {
+         return new Promise((resolve, reject) => {
+            let successResult = []
+            let i = 0
+            let fullFiled = 0
+            for (const prom of (proms)) {
+               const index = i
+               i++
+         
+               Promise.resolve(prom).then((data) => {
+                  successResult[index] = data
+                  fullFiled++
+       
+                  if (i === proms.length) {
+                     console.log('运行了')
+                     resolve(successResult)
+                  }
+               }, reject)
+            }
+         })
       }
-
-      for (let i = 0; i < btn.length; i++) {
-         console.log(i)
-      }
-      这种打印都是0,1,2,3,4
-      let btn = [1, 2, 3, 4, 5]
-      for (var i = 0; i < btn.length; i++) {
-         setTimeout(() => {
-            console.log(i)
-         }, 0);
-      }
-
-      for (let i = 0; i < btn.length; i++) {
-         setTimeout(() => {
-            console.log(i)
-         }, 0);
-      }
-      这种上面全是5，下面是0,1,2,3,4,怎么解释？
+      Promise.myall([Promise.resolve(1234),Promise.resolve(123), 2 ]).then((res) => {
+            console.log('res', res)
+         },
+         (error) => {
+            console.log('error', error)
+         }
+      )
+      // 为什么打印的结果是[1234, 123, 2]，而不是[1234]，不是promise状态确认了就不能修改了吗？
