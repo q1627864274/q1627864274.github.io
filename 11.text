@@ -1,2 +1,43 @@
-    url = window.URL.createObjectURL(new Blob([data], { type:'text/xml;charset:utf-8'}));
+import {getMetadataInfo} from "@/api/system/metadaManager";
+
+export default {
+    name: "metadataInfoSub",
+    props: {
+        name: { type: String },
+        type: { type: String },
+        title: { type: String },
+    },
+    data () {
+      return {
+        isDisable:true,
+        disabled:false,
+      };
+    },
+    methods: {
+        getMetadataInfo () {
+           console.log(1111)
+            let url = '';
+            getMetadataInfo(this.type).then(res => {
+                const {data} = res;
+                if (this.isDisable === false) {
+                    if (data.code === 204) {
+                        this.disabled = true;
+                    } else {
+                        this.disabled = false;
+                    }
+                    this.isDisable = true;
+                    return;
+                }
+
+                url = window.URL.createObjectURL(new Blob([data], { type:'text/xml;charset:utf-8'}));
                 window.open(url, '_blank');
+            })
+        }
+    },
+    created () {
+        this.isDisable = false;
+        this.getMetadataInfo();
+    },
+  };
+
+  为什么一进入改页面，没打开新窗口展示，而是点击按钮才打开新窗口展示？
