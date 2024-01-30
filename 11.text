@@ -3,15 +3,53 @@
     <esd:NodeDescriptionResults>
        <esd:NodeDescription>
             <esd:EquipmentNodeId>Etch equipment/EFEM/Aligner</esd:EquipmentNodeId>
+            <esd:Parameter parameterName="Routines.DST1.subpartID" typeName="String">
+               <esd:Data isTransient="Transient"/>
+               <esd:Description>Routines.DST1.subpartID</esd:Description>
+               <esd:SECSVariable SECS-VID="6000141" SECSVarClass="ECV"/>
+           </esd:Parameter>
+           <esd:Parameter parameterName="Routines.DST1.wfcountAlarmThreshold" typeName="long">
+               <esd:Data isTransient="Transient"/>
+               <esd:Description>Routines.DST1.wfcountAlarmThreshold</esd:Description>
+               <esd:SECSVariable SECS-VID="6000142" SECSVarClass="ECV"/>
+           </esd:Parameter>
         </esd:NodeDescription>
          <esd:NodeDescription>
             <esd:EquipmentNodeId>Etch equipment/EFEM/Aligner</esd:EquipmentNodeId>
+            <esd:Parameter parameterName="Routines.DST1.subpartID" typeName="String">
+               <esd:Data isTransient="Transient"/>
+               <esd:Description>Routines.DST1.subpartID</esd:Description>
+               <esd:SECSVariable SECS-VID="6000141" SECSVarClass="ECV"/>
+           </esd:Parameter>
         </esd:NodeDescription>
          <esd:NodeDescription>
             <esd:EquipmentNodeId>Etch equipment/EFEM/AtmRobot2</esd:EquipmentNodeId>
+            <esd:Parameter parameterName="Routines.DST1.subpartID" typeName="String">
+               <esd:Data isTransient="Transient"/>
+               <esd:Description>Routines.DST1.subpartID</esd:Description>
+               <esd:SECSVariable SECS-VID="6000141" SECSVarClass="ECV"/>
+           </esd:Parameter>
+           <esd:Parameter parameterName="Routines.DST1.wfcountAlarmThreshold" typeName="long">
+               <esd:Data isTransient="Transient"/>
+               <esd:Description>Routines.DST1.wfcountAlarmThreshold</esd:Description>
+               <esd:SECSVariable SECS-VID="6000142" SECSVarClass="ECV"/>
+               ......
+           </esd:Parameter>
         </esd:NodeDescription>
          <esd:NodeDescription>
             <esd:EquipmentNodeId>Etch equipment/EFEM/AtmRobot1</esd:EquipmentNodeId>
+            <esd:Parameter parameterName="Routines.DST1.subpartID" typeName="String">
+               <esd:Data isTransient="Transient"/>
+               <esd:Description>Routines.DST1.subpartID</esd:Description>
+               <esd:SECSVariable SECS-VID="6000141" SECSVarClass="ECV"/>
+               ......
+           </esd:Parameter>
+           <esd:Parameter parameterName="Routines.DST1.wfcountAlarmThreshold" typeName="long">
+               <esd:Data isTransient="Transient"/>
+               <esd:Description>Routines.DST1.wfcountAlarmThreshold</esd:Description>
+               <esd:SECSVariable SECS-VID="6000142" SECSVarClass="ECV"/>
+               .....
+           </esd:Parameter>
         </esd:NodeDescription>
         ........
     </esd:NodeDescriptionResults>
@@ -23,10 +61,25 @@
     <esd:NodeDescriptionResults>
        <esd:NodeDescription>
             <esd:EquipmentNodeId>Etch equipment/EFEM/Aligner</esd:EquipmentNodeId>
-        </esd:NodeDescription>
-         <esd:NodeDescription>
+            <esd:Parameter parameterName="Routines.DST1.subpartID" typeName="String">
+               <esd:Data isTransient="Transient"/>
+               <esd:Description>Routines.DST1.subpartID</esd:Description>
+               <esd:SECSVariable SECS-VID="6000141" SECSVarClass="ECV"/>
+           </esd:Parameter>
+           <esd:Parameter parameterName="Routines.DST1.wfcountAlarmThreshold" typeName="long">
+               <esd:Data isTransient="Transient"/>
+               <esd:Description>Routines.DST1.wfcountAlarmThreshold</esd:Description>
+               <esd:SECSVariable SECS-VID="6000142" SECSVarClass="ECV"/>
+           </esd:Parameter>
+       </esd:NodeDescription>
+       <esd:NodeDescription>
             <esd:EquipmentNodeId>Etch equipment/EFEM/Aligner</esd:EquipmentNodeId>
-        </esd:NodeDescription>
-        ......
+            <esd:Parameter parameterName="Routines.DST1.subpartID" typeName="String">
+               <esd:Data isTransient="Transient"/>
+               <esd:Description>Routines.DST1.subpartID</esd:Description>
+               <esd:SECSVariable SECS-VID="6000141" SECSVarClass="ECV"/>
+           </esd:Parameter>
+      </esd:NodeDescription>
+
     </esd:NodeDescriptionResults>
 </esd:GetEquipmentNodeDescriptionsResponse>
