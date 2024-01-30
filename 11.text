@@ -1,43 +1,32 @@
-import {getMetadataInfo} from "@/api/system/metadaManager";
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<esd:GetEquipmentNodeDescriptionsResponse xmlns:ccs="urn:semi-org:xsd.E138.V0709.ccs" xmlns:esd="urn:semi-org:xsd.E125.V0710.esd" xmlns:cem="urn:semi-org:xsd.E120-1.V0310.CommonEquipmentModel">
+    <esd:NodeDescriptionResults>
+       <esd:NodeDescription>
+            <esd:EquipmentNodeId>Etch equipment/EFEM/Aligner</esd:EquipmentNodeId>
+        </esd:NodeDescription>
+         <esd:NodeDescription>
+            <esd:EquipmentNodeId>Etch equipment/EFEM/Aligner</esd:EquipmentNodeId>
+        </esd:NodeDescription>
+         <esd:NodeDescription>
+            <esd:EquipmentNodeId>Etch equipment/EFEM/AtmRobot2</esd:EquipmentNodeId>
+        </esd:NodeDescription>
+         <esd:NodeDescription>
+            <esd:EquipmentNodeId>Etch equipment/EFEM/AtmRobot1</esd:EquipmentNodeId>
+        </esd:NodeDescription>
+        ........
+    </esd:NodeDescriptionResults>
+</esd:GetEquipmentNodeDescriptionsResponse>
 
-export default {
-    name: "metadataInfoSub",
-    props: {
-        name: { type: String },
-        type: { type: String },
-        title: { type: String },
-    },
-    data () {
-      return {
-        isDisable:true,
-        disabled:false,
-      };
-    },
-    methods: {
-        getMetadataInfo () {
-           console.log(1111)
-            let url = '';
-            getMetadataInfo(this.type).then(res => {
-                const {data} = res;
-                if (this.isDisable === false) {
-                    if (data.code === 204) {
-                        this.disabled = true;
-                    } else {
-                        this.disabled = false;
-                    }
-                    this.isDisable = true;
-                    return;
-                }
-
-                url = window.URL.createObjectURL(new Blob([data], { type:'text/xml;charset:utf-8'}));
-                window.open(url, '_blank');
-            })
-        }
-    },
-    created () {
-        this.isDisable = false;
-        this.getMetadataInfo();
-    },
-  };
-
-  为什么一进入改页面，没打开新窗口展示，而是点击按钮才打开新窗口展示？
+例如我只想要Etch equipment/EFEM/Aligner的节点，过滤之后就是
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<esd:GetEquipmentNodeDescriptionsResponse xmlns:ccs="urn:semi-org:xsd.E138.V0709.ccs" xmlns:esd="urn:semi-org:xsd.E125.V0710.esd" xmlns:cem="urn:semi-org:xsd.E120-1.V0310.CommonEquipmentModel">
+    <esd:NodeDescriptionResults>
+       <esd:NodeDescription>
+            <esd:EquipmentNodeId>Etch equipment/EFEM/Aligner</esd:EquipmentNodeId>
+        </esd:NodeDescription>
+         <esd:NodeDescription>
+            <esd:EquipmentNodeId>Etch equipment/EFEM/Aligner</esd:EquipmentNodeId>
+        </esd:NodeDescription>
+        ......
+    </esd:NodeDescriptionResults>
+</esd:GetEquipmentNodeDescriptionsResponse>
