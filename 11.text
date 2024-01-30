@@ -1,1 +1,2 @@
-10sccm-30sccm 去除字符串中所有的sccm
+    url = window.URL.createObjectURL(new Blob([data], { type:'text/xml;charset:utf-8'}));
+                window.open(url, '_blank');
