@@ -1,10 +1,21 @@
-      let p = new Promise((resolve, reject) => {
-         resolve(124)
-      })
-      async function mm () {
-         let s = 1233
-         let n = await p
-         return s
+      const handleGasName = (data) => {
+         let match = data.match(/-(\w+)-(\d+(-\d+)?)\s?(SLM|SCCM)-/);
+         if (match) {
+            return [match[1], match[2], match[4]];
+         }
+         return [];
       }
-      console.log(mm())
-      // 打印的结果为什么是一个promise，而不是1233
+      console.log(handleGasName('质量流量控制器-气体质量流量控制器-热式-N2-10-30 SCCM-NC-1/4"VCR-Devicenet-24V'))
+      console.log(handleGasName('质量流量控制器-气体质量流量控制器-热式-N2-10-30 SCCM-NC-IGS-Ethercat-24V'))
+      console.log(handleGasName('质量流量控制器-气体质量流量控制器-热式-N2-30-100 SCCM-NC-1/4" VCR-Devicenet-24V'))
+      console.log(handleGasName('质量流量控制器-气体质量流量控制器-热式-N2-30-100 SCCM-NC-IGS-Ethercat-24V'))
+      console.log(handleGasName('质量流量控制器-气体质量流量控制器-热式-N2-1-3 SLM-NC-1/4" VCR-Ethercat-24V'))
+      console.log(handleGasName('质量流量控制器-气体质量流量控制器-热式-N2-1-3 SLM-NC-IGS-Ethercat-24V'))
+      console.log(handleGasName('质量流量控制器-气体质量流量控制器-热式-N2-10-20 SLM-NC-IGS-Ethercat-24V'))
+      console.log(handleGasName('质量流量控制器-气体质量流量控制器-热式-N2-30-40 SLM-NC-IGS-Ethercat-24V'))
+      
+      console.log(handleGasName('质量流量控制器-气体质量流量控制器-热式-N2-0.3-1 SLM-NC-IGS-Ethercat-24V'))
+      console.log(handleGasName('质量流量控制器-气体质量流量控制器-热式-N2-0.3-1 SLM-NC-1/4" VCR-Devicenet-24V'))
+      console.log(handleGasName('质量流量控制器-气体质量流量控制器-热式-N2-0.3-1 SLM-NC-IGS-Ethercat-24V'))
+
+// 运行结果 最后3条不通过，修改上述函数，让其都通过
