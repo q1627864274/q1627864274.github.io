@@ -1,49 +1,89 @@
-import { ref, onMounted, onUnmounted } from 'vue';
+APP.vue
+<template>
+   <div>
+      <h1>右键点击下面的区域</h1>
+      <div @contextmenu.prevent="showContextMenu" class="right-click-area">
+         右键点击我
+      </div>
+      <ContextMenu :items="menuItems" @select="handleMenuSelect" ref="contextMenu" />
+   </div>
+</template>
  
- export default {
-   props: {
-     items: {
-       type: Array,
-       required: true
-     }
-   },
-   setup(props, { emit }) {
-     const visible = ref(false);
-     const posX = ref(0);
-     const posY = ref(0);
- 
-     const showMenu = (event) => {
-       event.preventDefault();
-       posX.value = event.clientX;
-       posY.value = event.clientY;
-       visible.value = true;
-     };
- 
-     const hideMenu = () => {
-       visible.value = false;
-     };
- 
-     const itemSelected = (item) => {
-       emit('select', item);
-       hideMenu();
-     };
- 
-     const handleClickOutside = (event) => {
-       if (!event.target.closest('.context-menu')) {
-         hideMenu();
-       }
-     };
- 
-     onMounted(() => {
-       window.addEventListener('click', handleClickOutside);
-     });
- 
-     onUnmounted(() => {
-       window.removeEventListener('click', handleClickOutside);
-     });
- 
-     return { visible, posX, posY, showMenu, itemSelected };
-   }
- };
+<script setup>
+import ContextMenu from './ContextMenu.vue';
+import { ref } from 'vue';
 
- 上述代码换成vue3的setup语法糖的写法
+
+const contextMenu = ref(null);
+const menuItems = ref([
+   { text: '选项一' },
+   { text: '选项二' },
+   { text: '选项三' }
+]);
+
+const showContextMenu = (event) => {
+   contextMenu.value.showMenu(event);
+};
+
+const handleMenuSelect = (item) => {
+   console.log('选中的菜单项：', item);
+};
+
+ContextMenu.vue
+<template>
+   <div v-if="visible" :style="{ top: posY + 'px', left: posX + 'px' }" class="context-menu">
+     <ul>
+       <li v-for="(item, index) in items" :key="index" @click="itemSelected(item)">
+         {{ item.text }}
+       </li>
+     </ul>
+   </div>
+ </template>
+ 
+ <script setup>
+import { ref, onMounted, onUnmounted, defineProps, defineEmits } from 'vue';
+
+const props = defineProps({
+  items: {
+    type: Array,
+    required: true
+  }
+});
+
+const emit = defineEmits(['select']);
+
+const visible = ref(false);
+const posX = ref(0);
+const posY = ref(0);
+
+const showMenu = (event) => {
+  event.preventDefault();
+  posX.value = event.clientX;
+  posY.value = event.clientY;
+  visible.value = true;
+};
+
+const hideMenu = () => {
+  visible.value = false;
+};
+
+const itemSelected = (item) => {
+  emit('select', item);
+  hideMenu();
+};
+
+const handleClickOutside = (event) => {
+  if (!event.target.closest('.context-menu')) {
+    hideMenu();
+  }
+};
+
+onMounted(() => {
+  window.addEventListener('click', handleClickOutside);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('click', handleClickOutside);
+});
+
+发现右键点击报错，contextMenu.value.showMenu is not a function 是什么原因？
