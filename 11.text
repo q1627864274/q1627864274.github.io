@@ -1,17 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Document</title>
-   <style>
-      .box {
-         width: 213px;
-      }
-   </style>
-</head>
-<body>
-   <div class="box">CE-T301-03-3CT1-200C14CLHSP0013</div>
-   发现是两行对齐，而不是第一行撑满宽度，再下一行
-</body>
-</html>
+import { ref, onMounted, onUnmounted } from 'vue';
+ 
+ export default {
+   props: {
+     items: {
+       type: Array,
+       required: true
+     }
+   },
+   setup(props, { emit }) {
+     const visible = ref(false);
+     const posX = ref(0);
+     const posY = ref(0);
+ 
+     const showMenu = (event) => {
+       event.preventDefault();
+       posX.value = event.clientX;
+       posY.value = event.clientY;
+       visible.value = true;
+     };
+ 
+     const hideMenu = () => {
+       visible.value = false;
+     };
+ 
+     const itemSelected = (item) => {
+       emit('select', item);
+       hideMenu();
+     };
+ 
+     const handleClickOutside = (event) => {
+       if (!event.target.closest('.context-menu')) {
+         hideMenu();
+       }
+     };
+ 
+     onMounted(() => {
+       window.addEventListener('click', handleClickOutside);
+     });
+ 
+     onUnmounted(() => {
+       window.removeEventListener('click', handleClickOutside);
+     });
+ 
+     return { visible, posX, posY, showMenu, itemSelected };
+   }
+ };
+
+ 上述代码换成vue3的setup语法糖的写法
