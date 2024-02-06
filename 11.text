@@ -31,17 +31,23 @@ const handleMenuSelect = (item) => {
 
 ContextMenu.vue
 <template>
-   <div v-if="visible" :style="{ top: posY + 'px', left: posX + 'px' }" class="context-menu">
-     <ul>
-       <li v-for="(item, index) in items" :key="index" @click="itemSelected(item)">
-         {{ item.text }}
-       </li>
-     </ul>
-   </div>
+   <div class="container">
+      <div class="inner">
+         <Teleport to="boby">
+            <div v-if="visible" :style="{ top: posY + 'px', left: posX + 'px' }" class="context-menu">
+              <ul>
+                <li v-for="(item, index) in items" :key="index" @click="itemSelected(item)">
+                  {{ item.text }}
+                </li>
+              </ul>
+            </div>
+            </Teleport>
+         </div>
+      </div>
  </template>
  
  <script setup>
-import { ref, onMounted, onUnmounted, defineProps, defineEmits } from 'vue';
+import { ref, onMounted, onUnmounted, defineProps, defineEmits, defineExpose } from 'vue';
 
 const props = defineProps({
   items: {
@@ -85,5 +91,8 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('click', handleClickOutside);
 });
+defineExpose({
+   showMenu
+})
 
-发现右键点击报错，contextMenu.value.showMenu is not a function 是什么原因？
+发现右键点击报错， TypeError: Cannot read properties of null (reading 'nextSibling') 是什么原因？
