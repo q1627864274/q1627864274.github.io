@@ -1,1 +1,1 @@
-xlsx.mjs:23430 Uncaught Error: File is password-protected
+electron+vue3项目，读取有密码保护的Excel文件
