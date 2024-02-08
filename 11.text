@@ -1,1 +1,1 @@
-加密之后，选择文件解密，报错 Error occurred in handler for 'decrypt-excel-file': Error: An object could not be cloned.
+Error decrypting Excel file: TypeError: Converting circular structure to JSON
