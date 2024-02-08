@@ -1,1 +1,1 @@
-使用xlsx-populate对受保护的excel文件进行读取
+加密之后，选择文件解密，报错 Error occurred in handler for 'decrypt-excel-file': Error: An object could not be cloned.
