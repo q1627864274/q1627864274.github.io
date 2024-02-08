@@ -1,1 +1,8 @@
 Error decrypting Excel file: TypeError: Converting circular structure to JSON
+    --> starting at object with constructor 'RichText'
+    |     property '_node' -> object with constructor 'Array'
+    |     index 0 -> object with constructor 'RichTextFragment'
+    --- property '_richText' closes the circle
+    at JSON.stringify (<anonymous>)
+    at D:\YTB\HX_YTB_ClientToolSw\dist-electron\index.js:249:17
+    at async WebContents.<anonymous> (node:electron/js2c/browser_init:2:89579)
