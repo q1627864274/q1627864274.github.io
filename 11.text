@@ -1,1 +1,14 @@
-D:\YTB\HX_YTB_ClientToolSw\SEMI_gas_code.xlsx 解析结果不对少了个public
+Error decrypting Excel file: TypeError: Cannot read properties of undefined (reading 'root')
+    at parse_zip (D:\YTB\HX_YTB_ClientToolSw\node_modules\cfb\cfb.js:1499:30)
+    at Object.parse (D:\YTB\HX_YTB_ClientToolSw\node_modules\cfb\cfb.js:356:47)
+    at Encryptor.decryptAsync (D:\YTB\HX_YTB_ClientToolSw\node_modules\xlsx-populate\lib\Encryptor.js:238:28)
+    at D:\YTB\HX_YTB_ClientToolSw\node_modules\xlsx-populate\lib\Workbook.js:651:34
+    at async D:\YTB\HX_YTB_ClientToolSw\dist-electron\index.js:240:22
+    at async WebContents.<anonymous> (node:electron/js2c/browser_init:2:89579)
+Error occurred in handler for 'decrypt-excel-file': TypeError: Cannot read properties of undefined (reading 'root')
+    at parse_zip (D:\YTB\HX_YTB_ClientToolSw\node_modules\cfb\cfb.js:1499:30)
+    at Object.parse (D:\YTB\HX_YTB_ClientToolSw\node_modules\cfb\cfb.js:356:47)
+    at Encryptor.decryptAsync (D:\YTB\HX_YTB_ClientToolSw\node_modules\xlsx-populate\lib\Encryptor.js:238:28)
+    at D:\YTB\HX_YTB_ClientToolSw\node_modules\xlsx-populate\lib\Workbook.js:651:34
+    at async D:\YTB\HX_YTB_ClientToolSw\dist-electron\index.js:240:22
+    at async WebContents.<anonymous> (node:electron/js2c/browser_init:2:89579)
