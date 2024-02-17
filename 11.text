@@ -1,1 +1,64 @@
-   xlsx-populate库在浏览器环境实现加密public文件下的excel和解密public文件下excel
+   electron+vue3+vite项目中
+   主进程index.ts文件中
+   // 解密 Excel 文件
+   ipcMain.handle('decrypt-excel-file', async (event, { filePath, password }) => {
+     try {
+       console.log('filePath', filePath)
+     //   filePath = path.join(app.getAppPath(), filePath)
+     //   console.log('filePath', filePath)
+       const workbook = await XlsxPopulate.fromFileAsync(filePath, { password: password });
+       const sheet = workbook.sheet(0);
+       const usedRange = sheet.usedRange();
+       const rows = usedRange ? usedRange.value() : [];
+   
+       const headers = rows[0];
+       const data = rows.slice(1).map(row => {
+         return headers.reduce((rowData, header, index) => {
+           const cellValue = row[index];
+           // 检查单元格值是否为复杂对象
+           if (cellValue && typeof cellValue === 'object') {
+             // 特别处理 RichText 对象
+             if (cellValue.richText) {
+               rowData[header] = cellValue.richText.map(fragment => fragment.text).join('');
+             } else {
+               // 对于其他类型的复杂对象，尝试其他处理方式或转换为字符串
+               rowData[header] = 'Complex Data';
+             }
+           } else {
+             rowData[header] = cellValue;
+           }
+           return rowData;
+         }, {});
+       });
+   
+       return JSON.stringify(data);
+     } catch (error) {
+       console.error("Error decrypting Excel file:", error);
+       throw error;
+     }
+   });
+
+   在vue文件中去调用const decryptFile = async () => {
+      if (!selectedFile.value) {
+        alert('Please select a file first.');
+        return;
+      }
+    
+      let filePath = selectedFile.value.path; 
+      filePath = 'SEMI_gas_code.xlsx'
+      filePath = 'SEMI_gas_code.xlsx'
+      console.log('filePath', filePath)
+      try {
+        const message = await ipcRenderer.invoke('decrypt-excel-file', { filePath, password: password.value });
+       //  console.log('message',  message)
+        console.log('message', JSON.parse(message))
+       
+        alert(message);
+      } catch (error) {
+        console.error("Error in decrypting Excel file:", error);
+        alert("Failed to decrypt the Excel file.");
+      }
+    };
+
+    我想用 filePath = 'SEMI_gas_code.xlsx'相对路径，因为我是放在public文件夹下面的，按照vue运行可以正常解析，但是我传入主进程
+    发现它并没有解析，导致找不到正常的目录，这个怎么处理？
