@@ -1,1 +1,32 @@
-Element-plus组件库中的 ElMessage.closeAll()用法? 
+     // 高阶函数-并发量的控制
+      function paralleTask(tasks, paralleCount = 2) {
+         return new Promise(resolve => {
+            if (tasks.length === 0) {
+               resolve()
+               return
+            }
+            let nextIndex = 0
+            let finishCount = 0
+            function _run() {
+               // 运行下一个任务
+               const task = tasks[nextIndex]
+               nextIndex++
+               task().then(() => {
+                  finishCount++
+                  // 运行下一个
+                  if (nextIndex < tasks.length) {
+                     _run()
+                  }
+                  else if (finishCount === tasks.length) {
+                     // 任务完成
+                     resolve()
+                  }
+               })
+            }
+            for (let i = 0; i < paralleCount && i < tasks.length; i++) {
+               _run()
+            }
+         })
+      }
+
+      // 给出例子，测一下上述函数，是不是能控制每次并发？
