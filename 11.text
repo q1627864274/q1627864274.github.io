@@ -1,3 +1,12 @@
-  electron + vue3 + vite 项目通过serialport来进行串口通信
-通过连接串口，再闭关串口，反复进行都可以，但是我在连接串口后，中途将串口线拔掉，然后再插上串口线，发现再去连接串口提示Access denied‘
-这是怎么回事？重新打开软件又可以正常运行该串口
+      // 有下列三种情况
+             if (data[0] === '00') {
+               DeviceNetisTrue.value = true
+               isDiffPressECAT.value = false
+            } else if (data[0] === '02') {
+               DeviceNetisTrue.value = false
+               isDiffPressECAT.value = false
+            } else if (data[0] === '01') {
+               DeviceNetisTrue.value = false
+               isDiffPressECAT.value = true
+            }
+      // 我只想在不是01这个状态做操作，这个怎么写逻辑？
