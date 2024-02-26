@@ -1,12 +1,1 @@
-      // 有下列三种情况
-             if (data[0] === '00') {
-               DeviceNetisTrue.value = true
-               isDiffPressECAT.value = false
-            } else if (data[0] === '02') {
-               DeviceNetisTrue.value = false
-               isDiffPressECAT.value = false
-            } else if (data[0] === '01') {
-               DeviceNetisTrue.value = false
-               isDiffPressECAT.value = true
-            }
-      // 我只想在不是01这个状态做操作，这个怎么写逻辑？
+我的意思是通过DeviceNetisTrue.value，isDiffPressECAT.value来判定
