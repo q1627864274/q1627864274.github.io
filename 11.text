@@ -1,56 +1,152 @@
-   const SerialPort = require('serialport');
+// import { SerialPort } from 'serialport';
+const {SerialPort} = require('serialport')
+import { MfcRequest } from './MfcRequest';
+import { MfcResult } from './MfcResult';
+import { HuiMessage } from '@hui/vue3'
 
-      class SerialComm {
-         constructor(portName) {
-            this.port = new SerialPort(portName, {
-               baudRate: 9600 // 根据需要设置波特率
-            });
+export class SerialPortManager {
+  constructor() {
+    this.serialport = {};
+    this.callback = null;
+    this.requestArr = [];
+    this.time = 100;
+    this.isRun = false;
+   //  this.timeoutTime = 3000; // 超时时间 1000ms
+   //  this.timeout = null; // 超时定时器
+  }
 
-            // 创建一个内部的Promise解决（resolve）和拒绝（reject）方法的存储
-            this.resolve = null;
-            this.reject = null;
-
-            // 接收数据的监听器
-            this.port.on('data', data => {
-               if (this.resolve) {
-                  this.resolve(data);
-                  this.resetPromise(); // 在解决（resolve）后重置Promise处理器
-               }
-            });
-
-            // 错误处理
-            this.port.on('error', err => {
-               if (this.reject) {
-                  this.reject(err);
-                  this.resetPromise(); // 在拒绝（reject）后重置Promise处理器
-               }
-            });
-         }
-
-         // 发送数据并返回一个Promise
-         send(data) {
-            return new Promise((resolve, reject) => {
-               this.resolve = resolve;
-               this.reject = reject;
-               this.port.write(data);
-            });
-         }
-
-         // 重置Promise处理器
-         resetPromise() {
-            this.resolve = null;
-            this.reject = null;
-         }
+  // 获取串口列表
+  listPort(callback) {
+    this.callback = callback;
+    SerialPort.list().then((ports, err) => {
+      if (err) {
+        return err;
+      } else {
+        this.callback(ports);
+        return true;
       }
+    });
+  }
 
-      // 使用
-      const serialComm = new SerialComm('COM6');
-
-      // 在Vue文件中
-      serialComm.send('发送的数据').then(res => {
-         console.log('接收到的数据:', res);
-      }).catch(err => {
-         console.error('发生错误:', err);
+  /**
+   * 打开串口
+   * @param {path}   串口号
+   * @param {baudRate} 波特率
+   * @return {Promise} 打开状态  成功/失败
+   */
+  open(path, baudRate) {
+    if (!path || !baudRate) {
+      return false;
+    }
+    this.serialport = new SerialPort({
+      path: path,
+      baudRate: baudRate,
+      parity: 'odd',
+      autoOpen: false,
+    });
+    return new Promise(resolve => {
+      this.serialport.open(err => {
+        if (this.serialport.isOpen) {
+          resolve(true);
+          this.serialport.on('data', res => {
+            let result = new MfcResult(res.toString('hex'));
+            console.log('每次接收的数据', result)
+            // clearTimeout(this.timeout);
+            // this.timeout = null;
+            this.callback(result);
+            this.next();
+          });
+          this.serialport.on('error', error => {
+            this.callback(error);
+            this.next();
+          });
+        } else {
+          if (err) {
+            resolve(err);
+          }
+        }
       });
+    });
+  }
 
-      // 只是针对单个请求，针对多个，怎么处理？
+  /**
+   * 关闭串口
+   * @return {Promise} 关闭状态
+   */
+  close(path) {
+    return new Promise(resolve => {
+      this.serialport.close(err => {
+        if (!this.serialport.isOpen && this.serialport.path === path) {
+          resolve(true);
+        } else {
+          if (err) {
+            resolve(err);
+          } else {
+            resolve(false);
+          }
+        }
+      });
+    });
+  }
+
+  /**
+   * 串口发送数据
+   * @return {commandId} 大命令字
+   * @return {subCommandId} 小命令字
+   * @return {data} 命令数据
+   */
+  write({ commandId, subCommandId, data }, callback) {
+    if (!this.serialport.isOpen) {
+      callback(false);
+      return;
+    }
+    let request = new MfcRequest(commandId, subCommandId, data);
+    this.requestArr.push({
+      request,
+      callback,
+    });
+    if (!this.isRun) {
+      this.isRun = true;
+      this.run();
+    }
+  }
+
+  /**
+   * 执行requestArr队列
+   */
+  run() {
+   // console.log('请求队列', this.requestArr)
+   if (this.requestArr.length === 0) {
+      this.isRun = false;
+      return
+   }
+   // 设置超时定时器
+   // this.timeout = setTimeout(() => {
+   //    HuiMessage({
+   //       message: `请求超时未收到数据`,
+   //       duration: 1000,
+   //       type: 'error'
+   //    })
+   //    clearTimeout(this.timeout);
+   //    this.timeout = null;
+   //    this.next(); // 超时后继续处理下一个请求
+   // }, this.timeoutTime);
+    let [request] = this.requestArr;
+    if (!request) {
+      this.isRun = false;
+      return;
+    }
+    this.callback = request.callback;
+    this.serialport.write(request.request.getBuffer());
+  }
+
+  next() {
+    this.requestArr.shift();
+    setTimeout(()=> {
+      this.run();
+    }, this.time);
+  }
+}
+
+
+根据上面你给我的写法，改造下我提供的代码
