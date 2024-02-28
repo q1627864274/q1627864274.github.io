@@ -1,213 +1,146 @@
-const {SerialPort} = require('serialport')
-import { MfcRequest } from './MfcRequest';
-import { MfcResult } from './MfcResult';
-import { HuiMessage } from '@hui/vue3';
-
+const {
+   SerialPort
+} = require('serialport')
+import {
+   MfcRequest
+} from './MfcRequest';
+import {
+   MfcResult
+} from './MfcResult';
+import {
+   HuiMessage
+} from '@hui/vue3';
+// 多并发+队列处理
 export class SerialPortManagerCopy {
-  constructor() {
-    this.serialport = {};
-    this.requestArr = [];
-    this.time = 100; // 间隔时间
-    this.isRun = false; // 是否正在运行
-    this.timeoutTime = 3000; // 超时时间 3000ms
-    this.timeout = null; // 超时定时器
-  }
+   constructor(parallelCount = 4) {
+      this.serialport = {};
+      this.requestArr = [];
+      this.time = 100; // 间隔时间
+      this.parallelCount = parallelCount; // 并发数
+      this.activeRequests = 0; // 当前活动请求的数量
+      this.callbackArray = [];
+      this.index = 0
+   }
 
-  // 获取串口列表
-  listPort() {
-    return SerialPort.list();
-  }
+   // 获取串口列表
+   listPort() {
+      return SerialPort.list();
+   }
 
-  // 打开串口
-  open(path, baudRate) {
-    return new Promise((resolve, reject) => {
-      if (!path || !baudRate) {
-        reject(false);
-        return;
-      }
-      
-      this.serialport = new SerialPort({
-        path: path,
-        baudRate: baudRate,
-        parity: 'odd',
-        autoOpen: false,
-      });
+   // 打开串口
+   open(path, baudRate) {
+      return new Promise((resolve, reject) => {
+         if (!path || !baudRate) {
+            reject(false);
+            return;
+         }
 
-      this.serialport.open((err) => {
-        if (err) {
-          reject(err);
-        } else {
-          this.serialport.on('data', (data) => {
-            this.handleData(data);
-          });
+         this.serialport = new SerialPort({
+            path: path,
+            baudRate: baudRate,
+            parity: 'odd',
+            autoOpen: false,
+         });
 
-          this.serialport.on('error', (error) => {
-            this.handleError(error);
-          });
-
-          resolve('串口打开成功');
-        }
-      });
-    });
-  }
-
-  // 处理接收到的数据
-  handleData(data) {
-    if (this.requestArr.length > 0) {
-      const { callback } = this.requestArr[0];
-      let result = new MfcResult(data.toString('hex'));
-      callback(null, result);
-      this.next();
-    }
-  }
-
-  // 处理错误
-  handleError(error) {
-    if (this.requestArr.length > 0) {
-      const { callback } = this.requestArr[0];
-      callback(error, null);
-      this.next();
-    }
-  }
-
-  // 关闭串口
-  close() {
-    return new Promise((resolve, reject) => {
-      this.serialport.close((err) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve('串口关闭成功');
-        }
-      });
-    });
-  }
-
-  // 串口发送数据
-  write({ commandId, subCommandId, data }) {
-    return new Promise((resolve, reject) => {
-      if (!this.serialport.isOpen) {
-        reject('串口未打开');
-        return;
-      }
-
-      let request = new MfcRequest(commandId, subCommandId, data);
-      this.requestArr.push({
-        request,
-        callback: (error, result) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(result);
-          }
-        },
-      });
-
-      if (!this.isRun) {
-        this.isRun = true;
-        this.run();
-      }
-    });
-  }
-
-  // 执行requestArr队列
-  run() {
-    if (this.requestArr.length === 0) {
-      this.isRun = false;
-      return;
-    }
-
-    let { request } = this.requestArr[0];
-    this.serialport.write(request.getBuffer(), (err) => {
-      if (err) {
-        this.requestArr[0].callback(err, null);
-        this.next();
-      }
-    });
-
-    // 设置超时定时器
-    this.timeout = setTimeout(() => {
-      HuiMessage({
-        message: '请求超时未收到数据',
-        duration: 1000,
-        type: 'error',
-      });
-      this.requestArr[0].callback(new Error('Timeout'), null);
-      this.next();
-    }, this.timeoutTime);
-  }
-
-  // 处理下一个请求
-  next() {
-    clearTimeout(this.timeout);
-    this.timeout = null;
-    this.requestArr.shift();
-    setTimeout(() => {
-      this.run();
-    }, this.time);
-  }
-}
- 
- 
- 现在队列的请求，进行run的时候是走一个得到结果再进行，下一个请求，能不能进行改变
-例如像下面这样并发，两个两个进行发，接收对两个进行处理之类的
-      function paralleTask(tasks, paralleCount = 2) {
-         return new Promise(resolve => {
-            if (tasks.length === 0) {
-               resolve([]);
-               return;
-            }
-            let nextIndex = 0;
-            let finishCount = 0;
-            let resultArray = []
-            function _run() {
-               if (nextIndex >= tasks.length) {
-                  return;
-               }
-               const index = nextIndex; // 保存当前任务的索引
-               const task = tasks[index];
-               nextIndex++;
-               task().then((result) => {
-                  resultArray[index] = result; // 使用任务的原始索引来放置结果
-                  finishCount++;
-                  if (finishCount === tasks.length) {
-                     resolve(resultArray);
-                  } else if (nextIndex < tasks.length) {
-                     _run();
-                  }
+         this.serialport.open((err) => {
+            if (err) {
+               reject(err);
+            } else {
+               this.serialport.on('data', (data) => {
+                  this.handleData(data);
                });
-            }
-            for (let i = 0; i < paralleCount && i < tasks.length; i++) {
-               _run();
+
+               this.serialport.on('error', (error) => {
+                  this.handleError(error);
+               });
+
+               resolve('串口打开成功');
             }
          });
-      }
-
-      // 修改 createTask 函数，使其返回包含任务 ID 和结果的对象
-      function createTask(id, delay) {
-         return function () {
-            const startTime = new Date().toISOString();
-            console.log(`Task ${id} started at ${startTime}`);
-            return new Promise(resolve => {
-               setTimeout(() => {
-                  const endTime = new Date().toISOString();
-                  resolve(id); 
-               }, delay);
-            });
-         };
-      }
-
-      // 测试任务
-      const tasks = [
-         createTask(1, 3000),
-         createTask(2, 500),
-         createTask(3, 3000),
-         createTask(4, 2000),
-         createTask(5, 6000),
-         createTask(6, 3000),
-      ];
-
-      paralleTask(tasks, 2).then((res) => {
-         console.log('All tasks completed');
-         console.log('res', res);
       });
+   }
+
+   // 处理接收到的数据
+   
+   handleData(data) {
+      let result = data.toString('hex');
+      if (result.length === 48) {
+         if (!this.callbackArray[this.index]) return
+         this.callbackArray[this.index].callback(null, result);
+         this.index++
+         this.activeRequests--
+         this.checkAndRun()
+      }
+   }
+
+   // 处理错误
+   handleError(error) {
+   
+
+   }
+
+   // 关闭串口
+   close() {
+      return new Promise((resolve, reject) => {
+         this.serialport.close((err) => {
+            if (err) {
+               reject(err);
+            } else {
+               resolve('串口关闭成功');
+            }
+         });
+      });
+   }
+   // 修改串口发送数据方法以支持并发
+   write({
+      commandId,
+      subCommandId,
+      data
+   }) {
+      return new Promise((resolve, reject) => {
+         // debugger
+         if (!this.serialport.isOpen) {
+            reject('串口未打开');
+            return;
+         }
+
+         let request = new MfcRequest(commandId, subCommandId, data);
+         this.requestArr.push({
+            request,
+            callback: (error, result) => {
+               if (error) {
+                  reject(error);
+               } else {
+                  resolve(result);
+               }
+            },
+         });
+
+         this.checkAndRun();
+      });
+   }
+
+   // 检查并运行请求
+   checkAndRun() {
+      while (this.activeRequests < this.parallelCount && this.requestArr.length > 0) {
+         this.run();
+      }
+   }
+
+   // 执行请求
+   run() {
+      if (this.requestArr.length === 0) {
+         return;
+      }
+
+      const {
+         request,
+         callback
+      } = this.requestArr.shift();
+      this.callbackArray.push({request, callback}) 
+      this.activeRequests++;
+      this.serialport.write(request.getBuffer());
+   }
+}
+
+// 上述代码存在当有很多请求的时候，this.callbackArray就会很大，有什么其他办法处理？
