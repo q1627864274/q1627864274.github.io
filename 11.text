@@ -1,146 +1,26 @@
-const {
-   SerialPort
-} = require('serialport')
-import {
-   MfcRequest
-} from './MfcRequest';
-import {
-   MfcResult
-} from './MfcResult';
-import {
-   HuiMessage
-} from '@hui/vue3';
-// 多并发+队列处理
-export class SerialPortManagerCopy {
-   constructor(parallelCount = 4) {
-      this.serialport = {};
-      this.requestArr = [];
-      this.time = 100; // 间隔时间
-      this.parallelCount = parallelCount; // 并发数
-      this.activeRequests = 0; // 当前活动请求的数量
-      this.callbackArray = [];
-      this.index = 0
-   }
-
-   // 获取串口列表
-   listPort() {
-      return SerialPort.list();
-   }
-
-   // 打开串口
-   open(path, baudRate) {
-      return new Promise((resolve, reject) => {
-         if (!path || !baudRate) {
-            reject(false);
-            return;
+    const dutyFactorRead = (index) => {
+            const findItem = cardData.value.find(item => item.id === index)
+            const currentValue = findItem.contents[0].value
+            console.log('currentValue', currentValue)
+            if (currentValue !== 55 && currentValue !== 100) {
+               HuiMessage({
+                  message: `请输入55或100`,
+                  duration: 2000,
+                  type: 'error'
+               })
+               return
+            }
          }
 
-         this.serialport = new SerialPort({
-            path: path,
-            baudRate: baudRate,
-            parity: 'odd',
-            autoOpen: false,
-         });
-
-         this.serialport.open((err) => {
-            if (err) {
-               reject(err);
-            } else {
-               this.serialport.on('data', (data) => {
-                  this.handleData(data);
-               });
-
-               this.serialport.on('error', (error) => {
-                  this.handleError(error);
-               });
-
-               resolve('串口打开成功');
+         // 想把这一块封装成函数         
+           const currentValue = findItem.contents[0].value
+            console.log('currentValue', currentValue)
+            if (currentValue !== 55 && currentValue !== 100) {
+               HuiMessage({
+                  message: `请输入55或100`,
+                  duration: 2000,
+                  type: 'error'
+               })
+               return
             }
-         });
-      });
-   }
-
-   // 处理接收到的数据
-   
-   handleData(data) {
-      let result = data.toString('hex');
-      if (result.length === 48) {
-         if (!this.callbackArray[this.index]) return
-         this.callbackArray[this.index].callback(null, result);
-         this.index++
-         this.activeRequests--
-         this.checkAndRun()
-      }
-   }
-
-   // 处理错误
-   handleError(error) {
-   
-
-   }
-
-   // 关闭串口
-   close() {
-      return new Promise((resolve, reject) => {
-         this.serialport.close((err) => {
-            if (err) {
-               reject(err);
-            } else {
-               resolve('串口关闭成功');
-            }
-         });
-      });
-   }
-   // 修改串口发送数据方法以支持并发
-   write({
-      commandId,
-      subCommandId,
-      data
-   }) {
-      return new Promise((resolve, reject) => {
-         // debugger
-         if (!this.serialport.isOpen) {
-            reject('串口未打开');
-            return;
-         }
-
-         let request = new MfcRequest(commandId, subCommandId, data);
-         this.requestArr.push({
-            request,
-            callback: (error, result) => {
-               if (error) {
-                  reject(error);
-               } else {
-                  resolve(result);
-               }
-            },
-         });
-
-         this.checkAndRun();
-      });
-   }
-
-   // 检查并运行请求
-   checkAndRun() {
-      while (this.activeRequests < this.parallelCount && this.requestArr.length > 0) {
-         this.run();
-      }
-   }
-
-   // 执行请求
-   run() {
-      if (this.requestArr.length === 0) {
-         return;
-      }
-
-      const {
-         request,
-         callback
-      } = this.requestArr.shift();
-      this.callbackArray.push({request, callback}) 
-      this.activeRequests++;
-      this.serialport.write(request.getBuffer());
-   }
-}
-
-// 上述代码存在当有很多请求的时候，this.callbackArray就会很大，有什么其他办法处理？
+            这里的return结束的是外面函数，这个怎么封装
