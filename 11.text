@@ -1,26 +1,34 @@
-    const dutyFactorRead = (index) => {
-            const findItem = cardData.value.find(item => item.id === index)
-            const currentValue = findItem.contents[0].value
-            console.log('currentValue', currentValue)
-            if (currentValue !== 55 && currentValue !== 100) {
-               HuiMessage({
-                  message: `请输入55或100`,
-                  duration: 2000,
-                  type: 'error'
-               })
-               return
-            }
-         }
+    // 父组件 
+      <testComponent ref="testCop" a="a" b="b" c="c" @handleClick="handleClick">
+         <template #before>
+            <span>http:</span>
+         </template>
+         <template #after>
+            <span>.com</span>
+         </template>
+      </testComponent>
+      const testCop = ref(null)
+      onMounted(() => {
+         console.log('testCop', testCop.value)
+      })
+      // 子组件
+      <template>
+   <div>
+    
+      <hui-input ref="huiIpt" v-bind="proxy.$attrs">
+         <template v-for="(_, name) in proxy.$slots" #[name] ='scopeData'>
+              <slot :name="name" v-bind="scopeData"></slot>
+         </template>
+      </hui-input>
 
-         // 想把这一块封装成函数         
-           const currentValue = findItem.contents[0].value
-            console.log('currentValue', currentValue)
-            if (currentValue !== 55 && currentValue !== 100) {
-               HuiMessage({
-                  message: `请输入55或100`,
-                  duration: 2000,
-                  type: 'error'
-               })
-               return
-            }
-            这里的return结束的是外面函数，这个怎么封装
+   </div>
+</template>
+<script setup>
+import { ref, watchEffect, onMounted, getCurrentInstance, computed}  from 'vue'
+const { proxy } = getCurrentInstance();
+const huiIpt = ref(null)
+onMounted(() => {
+   for (const key in huiIpt.value) {
+      proxy[key] = huiIpt.value[key]
+   }
+})在子组件中已经ref弄给当前组件了，为什么打印testCop.value没得那些值？
