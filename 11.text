@@ -1,34 +1,45 @@
-    // 父组件 
-      <testComponent ref="testCop" a="a" b="b" c="c" @handleClick="handleClick">
-         <template #before>
-            <span>http:</span>
-         </template>
-         <template #after>
-            <span>.com</span>
-         </template>
-      </testComponent>
-      const testCop = ref(null)
-      onMounted(() => {
-         console.log('testCop', testCop.value)
-      })
-      // 子组件
-      <template>
-   <div>
-    
-      <hui-input ref="huiIpt" v-bind="proxy.$attrs">
-         <template v-for="(_, name) in proxy.$slots" #[name] ='scopeData'>
-              <slot :name="name" v-bind="scopeData"></slot>
-         </template>
-      </hui-input>
-
-   </div>
-</template>
-<script setup>
-import { ref, watchEffect, onMounted, getCurrentInstance, computed}  from 'vue'
-const { proxy } = getCurrentInstance();
-const huiIpt = ref(null)
-onMounted(() => {
-   for (const key in huiIpt.value) {
-      proxy[key] = huiIpt.value[key]
+const valueAddSub = (method) => {
+   if (method === 'add') {
+      switch (productSystem.value.productSelectedValue) {
+         case '转速模式':
+            productSystem.value.input += 100
+            break;
+         case '电流模式':
+            productSystem.value.input += 1
+            if (productSystem.value.input > 20) {
+               productSystem.value.input = 20
+            }
+            break;
+         case '电压模式':
+            productSystem.value.input += 1
+            if (productSystem.value.input > 10) {
+               productSystem.value.input = 10
+            }
+         default:
+            break
+      }
+   }else {
+      switch (productSystem.value.productSelectedValue) {
+         case '转速模式':
+            productSystem.value.input -= 100
+            if (productSystem.value.input < 0) {
+               productSystem.value.input = 0
+            }
+            break;
+         case '电流模式':
+            productSystem.value.input -= 1
+            if (productSystem.value.input < 4) {
+               productSystem.value.input = 4
+            }
+            break;
+         case '电压模式':
+            productSystem.value.input -= 1
+            if (productSystem.value.input < 0) {
+               productSystem.value.input = 0
+            }
+         default:
+            break
+      }
    }
-})在子组件中已经ref弄给当前组件了，为什么打印testCop.value没得那些值？
+}
+优化上述代码
