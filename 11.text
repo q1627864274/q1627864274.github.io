@@ -1,53 +1,38 @@
-      <div class="buttonBox">
-            <div class="buttonitem" @click="valueAddSub('sub')">
-               -
-            </div>
-            <div class="buttonitem" @click="valueAddSub('add')">
-               +
-            </div>
-         </div>
-         const valueAddSub = (method) => {
-   if (method === 'add') {
-      switch (productSystem.value.productSelectedValue) {
+      watch(() => productSystem.value.productSelectedValue, (newValue) => {
+      switch (newValue) {
          case '转速模式':
-            productSystem.value.input += 100
+            productSystem.value.valueLabel = '速度点'
+            productSystem.value.unit = 'rpm'
+            productSystem.value.inputmin = undefined
+            productSystem.value.inputMax = undefined
+            productSystem.value.precision = undefined
+            productSystem.value.input = 20
+            productSystem.value.valueShow = '20rpm'
             break;
          case '电流模式':
-            productSystem.value.input += 1
-            if (productSystem.value.input > 20) {
-               productSystem.value.input = 20
-            }
+            productSystem.value.valueLabel = '过程量'
+            productSystem.value.unit = 'mA'
+            productSystem.value.inputmin = 4
+            productSystem.value.inputMax = 20
+            productSystem.value.precision = 1
+            productSystem.value.input = 4.0
+            productSystem.value.valueShow = '4.0mA'
             break;
          case '电压模式':
-            productSystem.value.input += 1
-            if (productSystem.value.input > 10) {
-               productSystem.value.input = 10
-            }
-         default:
-            break
-      }
-   }else {
-      switch (productSystem.value.productSelectedValue) {
-         case '转速模式':
-            productSystem.value.input -= 100
-            if (productSystem.value.input < 0) {
-               productSystem.value.input = 0
-            }
+            productSystem.value.valueLabel = '过程量'
+            productSystem.value.unit = 'V'
+            productSystem.value.inputmin = 0
+            productSystem.value.inputMax = 10
+            productSystem.value.precision = 1
+            productSystem.value.input = 0.0
+            productSystem.value.valueShow = '0.0V'
             break;
-         case '电流模式':
-            productSystem.value.input -= 1
-            if (productSystem.value.input < 4) {
-               productSystem.value.input = 4
-            }
-            break;
-         case '电压模式':
-            productSystem.value.input -= 1
-            if (productSystem.value.input < 0) {
-               productSystem.value.input = 0
-            }
          default:
-            break
+            break;
       }
+   },
+   {
+      immediate: true
    }
-}
-vue中优化上述函数，怎么优化？
+   )
+   请优化下上述vue代码
