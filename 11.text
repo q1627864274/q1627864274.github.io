@@ -1,4 +1,12 @@
-const valueAddSub = (method) => {
+      <div class="buttonBox">
+            <div class="buttonitem" @click="valueAddSub('sub')">
+               -
+            </div>
+            <div class="buttonitem" @click="valueAddSub('add')">
+               +
+            </div>
+         </div>
+         const valueAddSub = (method) => {
    if (method === 'add') {
       switch (productSystem.value.productSelectedValue) {
          case '转速模式':
@@ -42,4 +50,4 @@ const valueAddSub = (method) => {
       }
    }
 }
-优化上述代码
+vue中优化上述函数，怎么优化？
