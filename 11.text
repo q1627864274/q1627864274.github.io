@@ -1,38 +1,30 @@
-      watch(() => productSystem.value.productSelectedValue, (newValue) => {
-      switch (newValue) {
-         case '转速模式':
-            productSystem.value.valueLabel = '速度点'
-            productSystem.value.unit = 'rpm'
-            productSystem.value.inputmin = undefined
-            productSystem.value.inputMax = undefined
-            productSystem.value.precision = undefined
-            productSystem.value.input = 20
-            productSystem.value.valueShow = '20rpm'
-            break;
-         case '电流模式':
-            productSystem.value.valueLabel = '过程量'
-            productSystem.value.unit = 'mA'
-            productSystem.value.inputmin = 4
-            productSystem.value.inputMax = 20
-            productSystem.value.precision = 1
-            productSystem.value.input = 4.0
-            productSystem.value.valueShow = '4.0mA'
-            break;
-         case '电压模式':
-            productSystem.value.valueLabel = '过程量'
-            productSystem.value.unit = 'V'
-            productSystem.value.inputmin = 0
-            productSystem.value.inputMax = 10
-            productSystem.value.precision = 1
-            productSystem.value.input = 0.0
-            productSystem.value.valueShow = '0.0V'
-            break;
-         default:
-            break;
-      }
-   },
-   {
-      immediate: true
-   }
-   )
-   请优化下上述vue代码
+      // vue3 + electron + vite项目中
+      // 在App.vue中autofit.js库进行自适应
+      import autofit from 'autofit.js'
+      onMounted(() => {
+         autofit.init({
+               dh: 1080,
+               dw: 1920,
+               el: '#app',
+               resize: true,
+               limit: 0.05
+            },
+            false
+         )
+      })
+      // 在index.js文件中，即主进程中
+      const createWindow = () => {
+      win = new BrowserWindow({
+         frame: false,
+         show: false,
+         minWidth: 1280,
+         minHeight: 720,
+         webPreferences: {
+            contextIsolation: false, // 是否开启隔离上下文
+            nodeIntegration: true, // 渲染进程使用Node API
+         }
+      });
+   win.setAspectRatio(1.7778);
+
+   // 现在问题是这个只适用于1920 * 1080的，现在想动态获取dh,dw的值，并且动态设置win.setAspectRatio(1.7778);
+   // 这两个值根据1.7778来的 minWidth: 1280, minHeight: 720,怎么处理？
