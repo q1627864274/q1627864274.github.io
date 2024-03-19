@@ -1,30 +1,85 @@
-      // vue3 + electron + vite项目中
-      // 在App.vue中autofit.js库进行自适应
-      import autofit from 'autofit.js'
-      onMounted(() => {
-         autofit.init({
-               dh: 1080,
-               dw: 1920,
-               el: '#app',
-               resize: true,
-               limit: 0.05
-            },
-            false
-         )
-      })
-      // 在index.js文件中，即主进程中
-      const createWindow = () => {
-      win = new BrowserWindow({
-         frame: false,
-         show: false,
-         minWidth: 1280,
-         minHeight: 720,
-         webPreferences: {
-            contextIsolation: false, // 是否开启隔离上下文
-            nodeIntegration: true, // 渲染进程使用Node API
-         }
-      });
-   win.setAspectRatio(1.7778);
+<!DOCTYPE html>
+<html>
 
-   // 现在问题是这个只适用于1920 * 1080的，现在想动态获取dh,dw的值，并且动态设置win.setAspectRatio(1.7778);
-   // 这两个值根据1.7778来的 minWidth: 1280, minHeight: 720,怎么处理？
+<head>
+   <title>交通灯</title>
+   <style>
+      .traffic-light {
+         width: 50px;
+         height: 150px;
+         background-color: black;
+         padding: 10px;
+         border-radius: 10px;
+         position: relative;
+         transform: rotateZ(-90deg);
+         margin-left: 100px
+      }
+
+      .light {
+         width: 30px;
+         height: 30px;
+         border-radius: 50%;
+         margin: 10px auto;
+         transition: background-color 0.5s;
+      }
+
+      #red {
+         background-color: grey;
+      }
+
+      #yellow {
+         background-color: grey;
+      }
+
+      #green {
+         background-color: grey;
+      }
+
+      .red div:nth-child(1) {
+         background-color: red !important;
+      }
+
+      .yellow div:nth-child(2) {
+         background-color: yellow !important;
+      }
+
+      .green div:nth-child(3) {
+         background-color: green !important;
+      }
+   </style>
+</head>
+
+<body>
+   <div class="traffic-light">
+      <div id="red" class="light"></div>
+      <div id="yellow" class="light"></div>
+      <div id="green" class="light"></div>
+   </div>
+   <p>时间: <span class="time">0</span> 秒</p>
+
+   <script>
+      let redTime = 3; // 红灯时间
+      let yellowTime = 1; // 黄灯时间
+      let greenTime = 3; // 绿灯时间
+
+      function changeLight() {
+         document.getElementById('red').style.backgroundColor = "red";
+         document.querySelector('.time').textContent = redTime;
+         setTimeout(() => {
+            document.getElementById('red').style.backgroundColor = "grey";
+            document.getElementById('yellow').style.backgroundColor = "yellow";
+            document.querySelector('.time').textContent = yellowTime;
+            setTimeout(() => {
+               document.getElementById('yellow').style.backgroundColor = "grey";
+               document.getElementById('green').style.backgroundColor = "green";
+               document.querySelector('.time').textContent = greenTime;
+               setTimeout(() => {
+                  document.getElementById('green').style.backgroundColor = "grey";
+                  changeLight(); // 重新开始循环
+               }, greenTime * 1000);
+            }, yellowTime * 1000);
+         }, redTime * 1000);
+      }
+   
+      changeLight(); // 开始灯光切换循环
+      // 这种写法，<p>时间: <span class="time">0</span> 秒</p>这个标签的时间是静态，希望呈现3 2,1这样倒计时，然后切换灯之后再倒计时，怎么实现？
