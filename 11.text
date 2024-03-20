@@ -1,85 +1,102 @@
-<!DOCTYPE html>
-<html>
+               <div class="demo-grid">
+            <div class="DemoDrid">
+               <span class="DemoDridTitle">通信</span>
+               <div class="selectBox">
+                  <hui-select v-model:value="productQuery.communications.selectedValue" size="medium"
+                     class="FlowGasDropDown">
+                     <hui-option v-for="item in productQuery.communications.selectDatas" :key="item.value"
+                        :value="item.value" :label="item.label" :disabled="item.disabled">
+                     </hui-option>
+                  </hui-select>
+                  <!-- <div class="FootText" style="left: 25px;">Rs 485/DeviceNet/etherCat</div> -->
+               </div>
 
-<head>
-   <title>交通灯</title>
-   <style>
-      .traffic-light {
-         width: 50px;
-         height: 150px;
-         background-color: black;
-         padding: 10px;
-         border-radius: 10px;
-         position: relative;
-         transform: rotateZ(-90deg);
-         margin-left: 100px
-      }
+            </div>
+         </div>
+         <div class="demo-grid">
+            <div class="DemoDrid">
+               <span class="DemoDridTitle">测量原理</span>
+               <div class="selectBox">
 
-      .light {
-         width: 30px;
-         height: 30px;
-         border-radius: 50%;
-         margin: 10px auto;
-         transition: background-color 0.5s;
-      }
+                  <hui-select v-model:value="productQuery.measurement.selectedValue" size="medium" class="FlowGasDropDown">
+                     <hui-option v-for="item in productQuery.measurement.selectDatas" :key="item.value" :value="item.value"
+                        :label="item.label" :disabled="item.disabled">
+                     </hui-option>
+                  </hui-select>
+                  <!-- <div class="FootText" style="left: 34px;">差压式/ 热式</div> -->
+               </div>
+            </div>
+         </div>
+         const productQuery = ref({
+   gas: {
+      selectedValue: 1,
+      selectDatas: [
+         {
+            value: 0,
+            label: 'He'
+         }
+      ]
+   },
+   port: {
+      selectedValue: 3,
+      selectDatas: [
+         {
+            value: 3,
+            label: 'IGS'
+         },
+         {
+            value: 'L',
+            label: 'VCR'
+         }
+      ]
+   },
+   communications: {
+      selectedValue: 3,
+      selectDatas: [
+         {
+            value: 3,
+            label: 'DeviceNet',
+            disabled: false
+         },
+         {
+            value: 5,
+            label: 'EtherCAT'
+         },
+      ]
+   },
+   measurement: {
+      selectedValue: 'D',
+      selectDatas: [
+         {
+            value: 'D',
+            label: '差压式'
+         },
+         {
+            value: 'T',
+            label: '热式'
+         }
+      ]
+   },
+   pressure: {
+      selectedValue: 2,
+      selectDatas: [
+         {
+            value: 2,
+            label: '低压（110~350kPa）'
+         },
+         {
+            value: 0,
+            label: '中压（240~450kPa）'
+         },
+         {
+            value: 3,
+            label: '高压（350~750kPa）'
+         },
+      ]
+   },
+   measuringRange: {
+      iptValue: 20,
+   },
+})
 
-      #red {
-         background-color: grey;
-      }
-
-      #yellow {
-         background-color: grey;
-      }
-
-      #green {
-         background-color: grey;
-      }
-
-      .red div:nth-child(1) {
-         background-color: red !important;
-      }
-
-      .yellow div:nth-child(2) {
-         background-color: yellow !important;
-      }
-
-      .green div:nth-child(3) {
-         background-color: green !important;
-      }
-   </style>
-</head>
-
-<body>
-   <div class="traffic-light">
-      <div id="red" class="light"></div>
-      <div id="yellow" class="light"></div>
-      <div id="green" class="light"></div>
-   </div>
-   <p>时间: <span class="time">0</span> 秒</p>
-
-   <script>
-      let redTime = 3; // 红灯时间
-      let yellowTime = 1; // 黄灯时间
-      let greenTime = 3; // 绿灯时间
-
-      function changeLight() {
-         document.getElementById('red').style.backgroundColor = "red";
-         document.querySelector('.time').textContent = redTime;
-         setTimeout(() => {
-            document.getElementById('red').style.backgroundColor = "grey";
-            document.getElementById('yellow').style.backgroundColor = "yellow";
-            document.querySelector('.time').textContent = yellowTime;
-            setTimeout(() => {
-               document.getElementById('yellow').style.backgroundColor = "grey";
-               document.getElementById('green').style.backgroundColor = "green";
-               document.querySelector('.time').textContent = greenTime;
-               setTimeout(() => {
-                  document.getElementById('green').style.backgroundColor = "grey";
-                  changeLight(); // 重新开始循环
-               }, greenTime * 1000);
-            }, yellowTime * 1000);
-         }, redTime * 1000);
-      }
-   
-      changeLight(); // 开始灯光切换循环
-      // 这种写法，<p>时间: <span class="time">0</span> 秒</p>这个标签的时间是静态，希望呈现3 2,1这样倒计时，然后切换灯之后再倒计时，怎么实现？
+// vue3+electron+vite开发的, 现在想当measurement.selectedValue为D的时候，communications下面只有EtherCAT选项，另外一个禁用，其他的无影响，现在想通过disabled属性实现，怎么写？
