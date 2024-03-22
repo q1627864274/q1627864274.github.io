@@ -1,46 +1,45 @@
-    在vue3+electron+vite 项目中
-      <myInput :a="134" v-model:value="mm" ref="myIut" :width="360">
-         <template #before>
-            <span>0x</span>
-         </template>
-      </myInput>
-
-      myInput.vue文件代码内容如下   
- <template>
-   <div class="myInput" :style="{width: width + 'px'}">
-      <hui-input v-bind="proxy.$attrs" ref="huiIpt">
-         <template v-for="(_, name) in proxy.$slots" #[name]='scopeData'>
-            <slot :name="name" v-bind="scopeData"></slot>
-         </template>
+     在vue3+electron+vite 项目中
+      <hui-input v-model:value="input">
       </hui-input>
-   </div>
-</template>
+      let input = ref('123')
+      这样可以双向绑定
 
-<script setup>
-import { onMounted, getCurrentInstance, ref } from 'vue'
-const { proxy } = getCurrentInstance();
-const huiIpt = ref(null)
-defineProps({
-   width: Number
-})
-onMounted(() => {
-   console.log('proxy.$attrs', proxy.$attrs)
-   console.log('proxy.$slots', proxy.$slots)
-})
-// 暴露给父组件的方法
-const getInternalData = () => {
-   return huiIpt.value;
-}
+      我现在对hui-input进行二次封装
+      <template>
+         <div class="myInput" :style="{width: width + 'px', '--size-32': height + 'px'}">
+            <hui-input v-bind="proxy.$attrs" ref="huiIpt">
+               <template v-for="(_, name) in proxy.$slots" #[name]='scopeData'>
+                  <slot :name="name" v-bind="scopeData"></slot>
+               </template>
+            </hui-input>
+         </div>
+      </template>
 
-// 将方法绑定到组件实例上
-defineExpose({
-   getInternalData,
-});
-</script>
+      <script setup>
+      import { onMounted, getCurrentInstance, ref } from 'vue'
+      const { proxy } = getCurrentInstance();
+      const huiIpt = ref(null)
+      defineProps({
+         width: Number,
+         height: Number
+      })
+      onMounted(() => {
+         console.log('proxy.$attrs', proxy.$attrs)
+         console.log('proxy.$slots', proxy.$slots)
+      })
+      // 暴露给父组件的方法
+      const getInternalData = () => {
+         return huiIpt.value;
+      }
 
-<style scoped>
-.myInput {
-  --size-32: 40px;
-}
+      // 将方法绑定到组件实例上
+      defineExpose({
+         getInternalData,
+      });
+      </script>
 
-现在想把 --size-32: 40px;，作为属性传进来，怎么实现？
+      <style scoped>
+      .myInput {
+      }
+      
+      想要使用<myInput  v-model:value="input"></myInput> 这样能实现双向绑定，我怎么在二次封装组件里面处理？
