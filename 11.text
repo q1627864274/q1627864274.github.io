@@ -1,5 +1,46 @@
- 使用第三方<hui-input></hui-input>在浏览器调试台发现它的高度是下面这样
-      .hui-input-medium {
-      height: var(--size-32); 
-      }
-      我该怎么去修改高度？
+    在vue3+electron+vite 项目中
+      <myInput :a="134" v-model:value="mm" ref="myIut" :width="360">
+         <template #before>
+            <span>0x</span>
+         </template>
+      </myInput>
+
+      myInput.vue文件代码内容如下   
+ <template>
+   <div class="myInput" :style="{width: width + 'px'}">
+      <hui-input v-bind="proxy.$attrs" ref="huiIpt">
+         <template v-for="(_, name) in proxy.$slots" #[name]='scopeData'>
+            <slot :name="name" v-bind="scopeData"></slot>
+         </template>
+      </hui-input>
+   </div>
+</template>
+
+<script setup>
+import { onMounted, getCurrentInstance, ref } from 'vue'
+const { proxy } = getCurrentInstance();
+const huiIpt = ref(null)
+defineProps({
+   width: Number
+})
+onMounted(() => {
+   console.log('proxy.$attrs', proxy.$attrs)
+   console.log('proxy.$slots', proxy.$slots)
+})
+// 暴露给父组件的方法
+const getInternalData = () => {
+   return huiIpt.value;
+}
+
+// 将方法绑定到组件实例上
+defineExpose({
+   getInternalData,
+});
+</script>
+
+<style scoped>
+.myInput {
+  --size-32: 40px;
+}
+
+现在想把 --size-32: 40px;，作为属性传进来，怎么实现？
