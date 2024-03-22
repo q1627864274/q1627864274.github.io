@@ -1,84 +1,38 @@
-// 在vue3+electron+vite 项目中
-// 下面是App.vue的代码
-<template>
-  <div class="x-top">
-    <MenuBar></MenuBar>
-  </div>
-  <div class="x-container">
-    <div class="x-container-left">
-      <ContainerLeft v-model:page="page"></ContainerLeft>
-    </div>
-    <div class="x-container-right">
-      <transition name="fade-transform" mode="out-in">
-         <div :key="page" style="height: 100%;">
-            <keep-alive :include="['ProductQuery']">
-               <component :is="componentToRender"></component>
-            </keep-alive>
-         </div>
-      </transition>
-    </div>
-  </div>
-  <div class="x-bottom">
-    
-  </div>
-</template>
+const formProductConfig = ref([
+   {
+      id: 1,
+      type: 'no',
+      label: '设备状态',
+      valueShow: '已扫描',
+   },
+   {
+      id: 2,
+      type: 'input',
+      label: 'Mac ID',
+      valueShow: '0x125',
+      valueSet: '',
+      placeholder: '',
+   },
+   {
+      id: 3,
+      type: 'select',
+      label: '安装姿态',
+      valueShow: 'Vertical Inlet Up',
+      valueSet: '',
+      placeholder: '',
+      options: deviceDataMap.InstallGesture
+   },
+   {
+      id: 4,
+      type: 'select',
+      label: '出口压力类型',
+      label1: '档位',
+      valueShow: 'Middle',
+      valueSet: '',
+      placeholder: '',
+      options: deviceDataMap.PressureType,
+      options1: deviceDataMap.gearsType
+   }
+])
 
-      import { onMounted } from "vue";
-      import MenuBar from "./components/MenuBar.vue";
-      import Configuration from "./views/BasicInfo.vue";
-      import Update from "./views/Update.vue";
-
-      import ContainerLeft from "./components/ContainerLeft.vue";
-      import { ref, computed, watchEffect} from 'vue'
-      import ProductQuery from "./views/ProductQuery.vue"
-      import Log from "./views/LogDisplay.vue"
-      import Empty from "./views/Empty.vue"
-      import { storeToRefs } from 'pinia'
-      import { useStatusStore } from './store/index';
-      let StatusStore = useStatusStore()
-      let { isShow } = storeToRefs(StatusStore)
-      let page = ref('Empty')
-
-      // 根据page的值返回相应的组件
-      const componentToRender = ref(Empty)
-
-      // 使用 watchEffect 监听 page 的变化
-      watchEffect(() => {
-         if (StatusStore.isShow) {
-            switch (page.value) {
-               case 'ProductQuery':
-                  componentToRender.value = ProductQuery;
-                  break;
-               case 'Log':
-                  componentToRender.value = Log;
-                  break;
-               case 'Configuration':
-                  componentToRender.value = Configuration;
-                  break;
-               case 'Update':
-                  componentToRender.value = Update;
-                  break;
-               default:
-                  componentToRender.value = Empty; // 默认使用Empty组件
-                  break;
-            }
-         }else{
-            switch (page.value) {
-               case 'ProductQuery':
-                  componentToRender.value = ProductQuery;
-                  break;
-               default:
-                  componentToRender.value = Empty; // 默认使用Empty组件
-                  break;
-            }
-         }
-      })
-// 在上述代码中发现
-<transition name="fade-transform" mode="out-in">
-         <div :key="page" style="height: 100%;">
-            <keep-alive :include="['ProductQuery']">
-               <component :is="componentToRender"></component>
-            </keep-alive>
-         </div>
-      </transition>
-这样写keep-alive不生效，transition生效，如果去掉:key="page"，keep-alive 生效，transition不生效，怎么实现两个都生效？
+去掉第一个对象，怎么实现？
