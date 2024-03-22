@@ -1,38 +1,7 @@
-const formProductConfig = ref([
-   {
-      id: 1,
-      type: 'no',
-      label: '设备状态',
-      valueShow: '已扫描',
-   },
-   {
-      id: 2,
-      type: 'input',
-      label: 'Mac ID',
-      valueShow: '0x125',
-      valueSet: '',
-      placeholder: '',
-   },
-   {
-      id: 3,
-      type: 'select',
-      label: '安装姿态',
-      valueShow: 'Vertical Inlet Up',
-      valueSet: '',
-      placeholder: '',
-      options: deviceDataMap.InstallGesture
-   },
-   {
-      id: 4,
-      type: 'select',
-      label: '出口压力类型',
-      label1: '档位',
-      valueShow: 'Middle',
-      valueSet: '',
-      placeholder: '',
-      options: deviceDataMap.PressureType,
-      options1: deviceDataMap.gearsType
-   }
-])
-
-去掉第一个对象，怎么实现？
+      let arr = [1,2,3]
+      console.log(arr.map(item => {
+         if (item > 1) {
+            return item
+         }
+      }))
+      // 为什么第一个会返回undfined ?
