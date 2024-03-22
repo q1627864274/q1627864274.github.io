@@ -1,4 +1,4 @@
- 使用第三方<hui-input></hui-input>发现它的高度是下面这样
+ 使用第三方<hui-input></hui-input>在浏览器调试台发现它的高度是下面这样
       .hui-input-medium {
       height: var(--size-32); 
       }
