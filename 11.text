@@ -1,79 +1,11 @@
-在vue3+electron+vite 项目中
-      <hui-table :columns="tableColumns" :options="options" border class="table-base">
-                  <template #type="{ row }">
-                     <hui-select v-model:value="row.type" :disabled="!DeviceNetisTrue && isDiffPressECAT" searchable class="selectInput" :options="gasTypeOptions"
-                        @change="gasTypeChange(row)">
-                     </hui-select>
-                  </template>
-                  <template #id="{ row }">
-                     <div>
-                        {{ row.id }}
-                     </div>
-                  </template>
-                  <template #range="{ row }">
+      在vue3+electron+vite 项目中
+
+      <template #range="{ row }">
                      <div>
                         <hui-input-number class="iptNumber" v-model:value="row.range" type="hide" :disabled="!DeviceNetisTrue && isDiffPressECAT" placeholder="" @input="changeRange(row)" />
                      </div>
                   </template>
-                  <template #scale="{ row }">
-                     <div>
-                        {{ row.scale }}
-                     </div>
-                  </template>
-                  <template #status="{ row }">
-                     <div v-if="row.status" class="formValueShowSwitch">
-                        <img src="../assets/on.svg" />
-                        Activated
-                     </div>
-                     <hui-button v-else class="activate" :disabled="!DeviceNetisTrue && isDiffPressECAT" @click="activateGasRange(row)">激活</hui-button>
-                  </template>
-               </hui-table>
 
-               const options = ref([
-   {
-      num: 1,
-      type: '',
-      id: '',
-      range: '10',
-      scale: '10-100',
-      status: false,
-   },
-   {
-      num: 2,
-      type: '',
-      id: '',
-      range: '',
-      scale: '',
-      status: false
-   },
-   {
-      num: 3,
-      type: '',
-      id: '',
-      range: '',
-      scale: '',
-      status: false
-   },
-   {
-      num: 4,
-      type: '',
-      id: '',
-      range: '',
-      scale: '',
-      status: false
-   },
-   {
-      num: 5,
-      type: '',
-      id: '',
-      range: '',
-      scale: '',
-      status: false
-   }
-])
-const changeRange = ( row) => {
-   console.log('row.range', row.range)
-   options.value[row.num - 1].range = row.range
-   // console.log('options.value', options.value)
-}
-发现打印的值一直是10
+                  @input	输入时触发	(value)=>{}
+
+                  默认不传changeRange，会传给value值，我现在先传一个值row，两个都获得到，怎么做？
