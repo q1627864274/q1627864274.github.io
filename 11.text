@@ -1,22 +1,44 @@
-     在vue3+electron+vite 项目中
-      <myInput v-model:value="mm.type">
-         <template #before>
-            <span>0x</span>
-         </template>
-      </myInput>
-        
-      在myInput.vue文件中
-      <hui-input :value="value.name" @update:value = "handleChange" 
-         ref="huiIpt">
-      </hui-input>
-      const emit = defineEmits(['update:value']);
-
-      function handleChange(val) {
-      // 发出一个自定义事件来更新父组件的值
-      emit('update:value', {
-         ...props.value,
-         name: val
-      });
-      }
-
-      // 发现写@update:value和@input事件，都是一样的，@update:value这个事件是什么？
+      在vue3+electron+vite 项目中
+      const options = ref([
+         {
+            num: 1,
+            type: '',
+            id: '',
+            range: '10',
+            scale: '10-100',
+            status: false,
+         },
+         {
+            num: 2,
+            type: '',
+            id: '',
+            range: '',
+            scale: '',
+            status: false
+         },
+         {
+            num: 3,
+            type: '',
+            id: '',
+            range: '',
+            scale: '',
+            status: false
+         },
+         {
+            num: 4,
+            type: '',
+            id: '',
+            range: '',
+            scale: '',
+            status: false
+         },
+         {
+            num: 5,
+            type: '',
+            id: '',
+            range: '',
+            scale: '',
+            status: false
+         }
+      ])
+      想监听每个对象的range，当range变化时，判断是否在scale范围内，输入的值不在范围就给它更正
