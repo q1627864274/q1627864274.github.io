@@ -1,1 +1,25 @@
- element中Input 输入框change和input事件的区别？
+     在vue3+electron+vite 项目中
+
+      const options = ref([
+   {
+      num: 1,
+      type: '',
+      id: '',
+      range: '10',
+      scale: '10-100',
+      min: '10',
+      max: '100',
+      status: false,
+   },
+   {
+      num: 2,
+      type: '',
+      id: '',
+      range: '',
+      scale: '',
+      min: '',
+      max: '',
+      status: false
+   },
+])
+当对象里面的scale发生变化，min和max也要变化，例如 scale变为'100-1000'，那么min，max变化为100，1000，怎么实现？
