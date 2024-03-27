@@ -1,8 +1,1 @@
-    在vue3+electron+vite 项目中
-      <template #range="{ row }">
-         <div>
-            <hui-input-number class="iptNumber" v-model:value="row.range" :min="row.min" :max="row.max" type="hide" :disabled="!DeviceNetisTrue && isDiffPressECAT" placeholder="" @change="(val) => changeRange(row, val)" />
-        
-          </div>
-      </template>
-      使用@change="(val) => changeRange(row, val)"的好处，是什么？
+ element中Input 输入框change和input事件的区别？
